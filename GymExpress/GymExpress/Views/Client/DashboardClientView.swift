@@ -1,0 +1,40 @@
+//
+//  DashboardClientView.swift
+//  GymExpress
+//
+//  Created by William Leroux on 2025-01-28.
+//
+
+import SwiftUI
+
+struct DashboardClientView: View {
+    var body: some View {
+        Grid {
+            GridRow {
+                VStack{
+                    HStack{
+                        smallBox(title: "Titre", view: Text("Allo"))
+                        smallBox(view: Text("Allo"))
+                    }
+                    HStack{
+                        smallBox(view: Text("Allo"))
+                        smallBox(view: Text("Allo"))
+                    }
+                    
+                    
+                }
+                
+                mediumBox(view: Text("Allo"))
+            }
+            GridRow {
+                //smallBox(view: Text("Allo"))
+                longBox(view: Text("allo"))
+            }
+            .gridCellColumns(3)
+        }
+        
+    }
+}
+#Preview {
+    RootNavigation()
+}
