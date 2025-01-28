@@ -2,18 +2,18 @@
 //  AdminNavigationView.swift
 //  GymExpress
 //
-//  Created by Nicolas Morin on 2025-01-27.
+//  Created by Nicolas Morin, William Leroux on 2025-01-27.
 //
 
 import SwiftUI
 
 struct RootNavigation: View {
-    @State private var selectedItem : String? = "Dashboard" // item sélectionné
+    @State private var selectedItem : String? = "Accueil" // item sélectionné
     
-    private var userType: UserType = .admin // Type d'utilisateur
+    private var userType: UserType // Type d'utilisateur
     private var navOption: [String] = [] // Liste des options
     
-    init (userType: UserType = .admin) {
+    init (userType: UserType = .client) {
         self.userType = userType
         self.navOption = Utils.shared.getNavOptions(userType: userType)
     }
@@ -57,12 +57,17 @@ struct RootNavigation: View {
                     switch selectedItem {
                     case "Finances":
                         FinanceView()
-                    case "Dashboard":
-                        DashboardAdminView()
+                    case "Accueil":
+                        if userType == .client {
+                            DashboardClientView()
+                        } else {
+                            DashboardAdminView()
+                        }
+                        
                     case "Employés":
                         EmployesView()
                     default:
-                        DashboardAdminView()
+                        DashboardClientView()
                     }
                 } else {
                     Text("Sélectionnez un élément")
