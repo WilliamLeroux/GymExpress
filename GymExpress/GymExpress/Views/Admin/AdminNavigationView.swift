@@ -23,12 +23,18 @@ struct AdminNavigationView: View {
                         .bold()
                         .foregroundStyle(.black)
                     Spacer()
-                    List(NavigationItemAdmin.allCases, id: \.self, selection: $selectedItem) { item in
-                        Text(item.rawValue)
-                            .frame(maxWidth: .infinity)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, 30)
-                            //.listRowBackground(item == selectedItem ? Color.main : Color.white)
+                    List {
+                        ForEach(NavigationItemAdmin.allCases, id: \.self) { item in
+                            Text(item.rawValue)
+                                .frame(maxWidth: .infinity)
+                                .multilineTextAlignment(.center)
+                                .padding(.vertical, 30)
+                                .paletteSelectionEffect(item == selectedItem)
+                                .onTapGesture {
+                                    selectedItem = item
+                                }
+                                .listRowBackground(Color.clear)
+                        }
                     }
                     .listStyle(.sidebar)
                     .scrollContentBackground(.hidden)
