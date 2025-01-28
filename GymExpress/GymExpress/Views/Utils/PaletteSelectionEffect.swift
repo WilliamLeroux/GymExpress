@@ -14,9 +14,8 @@ struct PaletteSelectionEffect: ViewModifier {
     func body(content: Content) -> some View {
         content
             .background(isSelected ? Color.main : Color.white)
-            .foregroundStyle(isSelected ? Color.white : Color.black)
+            .foregroundStyle(Color.black)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .shadow(color: isSelected ? .green.opacity(0.5) : .clear, radius: 5, x: 0, y: 2)
     }
 }
 
