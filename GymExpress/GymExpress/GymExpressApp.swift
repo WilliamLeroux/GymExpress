@@ -11,7 +11,7 @@ import SwiftUI
 struct GymExpressApp: App {
     var body: some Scene {
         WindowGroup {
-            AdminNavigationView()
+            RootNavigation()
                 .preferredColorScheme(.light)
         }.windowStyle(.hiddenTitleBar)
     }

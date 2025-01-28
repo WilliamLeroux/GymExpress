@@ -7,8 +7,16 @@
 
 import SwiftUI
 
-struct AdminNavigationView: View {
-    @State private var selectedItem: NavigationItemAdmin? = .dashboard ///< Contient la liste de navigation (Accueil est sélectionné par défaut)
+struct RootNavigation: View {
+    @State private var selectedItem : String? = "Dashboard" // item sélectionné
+    
+    private var userType: UserType = .admin // Type d'utilisateur
+    private var navOption: [String] = [] // Liste des options
+    
+    init (userType: UserType = .admin) {
+        self.userType = userType
+        self.navOption = Utils.shared.getNavOptions(userType: userType)
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -23,9 +31,10 @@ struct AdminNavigationView: View {
                         .bold()
                         .foregroundStyle(.black)
                     Spacer()
+                    
                     List {
-                        ForEach(NavigationItemAdmin.allCases, id: \.self) { item in
-                            Text(item.rawValue)
+                        ForEach(navOption, id: \.self) { item in
+                            Text(item)
                                 .frame(maxWidth: .infinity)
                                 .multilineTextAlignment(.center)
                                 .padding(.vertical, 30)
@@ -46,12 +55,14 @@ struct AdminNavigationView: View {
             detail: {
                 if let selectedItem = selectedItem {
                     switch selectedItem {
-                    case .finances:
+                    case "Finances":
                         FinanceView()
-                    case .dashboard:
-                        DashboardView()
-                    case .employes:
+                    case "Dashboard":
+                        DashboardAdminView()
+                    case "Employés":
                         EmployesView()
+                    default:
+                        DashboardAdminView()
                     }
                 } else {
                     Text("Sélectionnez un élément")
@@ -66,5 +77,5 @@ struct AdminNavigationView: View {
 }
 
 #Preview {
-    AdminNavigationView()
+    RootNavigation()
 }
