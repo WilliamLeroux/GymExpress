@@ -19,6 +19,9 @@ enum NavigationItemTrainer: String, CaseIterable {
 
 enum NavigationItemClient: String, CaseIterable {
     case dashboard = "Accueil"
-    case finances = "Finances"
-    case employes = "Employés"
+    case appointment = "Rendez-vous"
+    case progress = "Progrès"
+    case subscription = "Abonnement"
+    case training = "Plan d'entraînement"
+    case frequence = "Fréquence"
 }

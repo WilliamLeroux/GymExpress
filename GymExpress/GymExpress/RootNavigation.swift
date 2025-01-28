@@ -66,6 +66,16 @@ struct RootNavigation: View {
                         
                     case "Employés":
                         EmployesView()
+                    case "Rendez-vous":
+                        AppointmentView()
+                    case "Progrès":
+                        ProgressView()
+                    case "Abonnement":
+                        SubscriptionView()
+                    case "Plan d'entraînement":
+                        TrainingPlanView()
+                    case "Fréquence":
+                        WorkoutFrequenceView()
                     default:
                         DashboardClientView()
                     }
