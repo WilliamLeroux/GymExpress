@@ -12,6 +12,7 @@ struct GymExpressApp: App {
     var body: some Scene {
         WindowGroup {
             AdminNavigationView()
+                .preferredColorScheme(.light)
         }.windowStyle(.hiddenTitleBar)
     }
 }
