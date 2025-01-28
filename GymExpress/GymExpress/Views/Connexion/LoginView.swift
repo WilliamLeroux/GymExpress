@@ -13,14 +13,7 @@ struct LoginView: View {
         HStack {
             Image(.logo512T)
             VStack {
-                Form {
-                    TextField(text: "Nom d'utilisateur", prompt: Text("Required")) {
-                        Text("Username")
-                    }
-                    SecureField(text: "Mot de passe", prompt: Text("Required")) {
-                        Text("Password")
-                    }
-                }
+
             }
         }
         .background(Color.white)
