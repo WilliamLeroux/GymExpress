@@ -72,7 +72,7 @@ struct TrainingPlanView: View {
                                             Text(client)
                                                 .padding()
                                                 .frame(maxWidth: .infinity, alignment: .center)
-                                                .background(selectedClient == client ? Color.main.opacity(0.2) : Color.clear)
+                                                .background(selectedClient == client ? Color.main.opacity(0.4) : Color.clear)
                                                 .cornerRadius(8)
                                                 .contentShape(Rectangle())
                                                 .onTapGesture {
@@ -90,7 +90,7 @@ struct TrainingPlanView: View {
                     .padding()
                 }
                 
-                // Section des jours (visible seulement si un client est sélectionné)
+                // Section des jours
                 if let client = selectedClient {
                     GroupBox {
                         VStack {
