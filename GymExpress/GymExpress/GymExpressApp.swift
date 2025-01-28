@@ -11,7 +11,7 @@ import SwiftUI
 struct GymExpressApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
-        }
+            AdminNavigationView()
+        }.windowStyle(.hiddenTitleBar)
     }
 }
