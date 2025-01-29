@@ -13,7 +13,7 @@ struct RootNavigation: View {
     private var userType: UserType // Type d'utilisateur
     private var navOption: [String] = [] // Liste des options
     
-    init (userType: UserType = .client) {
+    init (userType: UserType = .trainer) {
         self.userType = userType
         self.navOption = Utils.shared.getNavOptions(userType: userType)
     }
@@ -60,12 +60,16 @@ struct RootNavigation: View {
                     case "Accueil":
                         if userType == .client {
                             DashboardClientView()
-                        } else {
+                        }
+                        if userType == .trainer {
+                            TrainingPlanView()
+                        }
+                        if userType == .admin {
                             DashboardAdminView()
                         }
                         
                     case "Employés":
-                        EmployesView()
+                        ExercisePlanCreationView()
                     default:
                         DashboardClientView()
                     }
