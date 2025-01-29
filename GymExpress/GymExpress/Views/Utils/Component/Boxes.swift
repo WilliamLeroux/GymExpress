@@ -39,7 +39,7 @@ extension View {
     func mediumBox(title: String = " ", view: some View, action: @escaping Action = {}) -> some View {
         return GroupBox(label: Text(title)) {
             view
-                .frame(width: 200, height: 200)
+                .frame(width: 208, height: 208)
         }
         .groupBoxStyle(ClearMediumBoxStyle())
         .modifier(HoverState())
@@ -59,7 +59,7 @@ extension View {
     func longBox(title: String = " ", view: some View, action: @escaping Action = {}) -> some View {
         return GroupBox(label: Text(title)) {
             view
-                .frame(width: 400, height: 100)
+                .frame(width: 424, height: 100)
         }
         .groupBoxStyle(ClearLongBoxStyle())
         .modifier(HoverState())
@@ -104,8 +104,8 @@ struct ClearMediumBoxStyle: GroupBoxStyle {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 5)
-                .frame(width: 200, alignment: .leading) // Même taille que la boite
-                .frame(height: 200, alignment: .top) // Même taille que la boite
+                .frame(width: 208, alignment: .leading) // Même taille que la boite
+                .frame(height: 208, alignment: .top) // Même taille que la boite
         }
     }
 }
@@ -124,7 +124,7 @@ struct ClearLongBoxStyle: GroupBoxStyle {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 5)
-                .frame(width: 400, alignment: .leading) // Même taille que la boite
+                .frame(width: 424, alignment: .leading) // Même taille que la boite
                 .frame(height: 100, alignment: .top) // Même taille que la boite
         }
     }
