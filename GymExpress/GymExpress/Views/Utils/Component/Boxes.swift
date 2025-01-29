@@ -62,7 +62,7 @@ extension View {
                 .frame(width: 400, height: 100)
         }
         .groupBoxStyle(ClearLongBoxStyle())
-        .background(Color.white)
+        .modifier(HoverState())
         .cornerRadius(15)
         .onTapGesture {
             action()
