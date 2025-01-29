@@ -17,7 +17,10 @@ struct DashboardClientView: View {
                                     Image(.progress)
                             .resizable()
                             .scaledToFit()
-                            .scaleEffect(0.60)
+                            .scaleEffect(0.60),
+                                 action: {
+                            print(UserDefaults.standard.string)
+                        }
                         )
                         smallBox(title: "Gérer mon abonnement", view:
                                     Image(.subscription)
