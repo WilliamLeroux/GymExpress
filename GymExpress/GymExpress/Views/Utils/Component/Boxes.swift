@@ -23,12 +23,11 @@ extension View {
                 .frame(width: 100, height: 100)
         }
         .groupBoxStyle(ClearSmallBoxStyle())
-        .background(Color.white)
+        .modifier(HoverState())
         .cornerRadius(15)
         .onTapGesture {
             action()
         }
-        
     }
     
     /// Crée une boite de taille médium
@@ -42,12 +41,13 @@ extension View {
             view
                 .frame(width: 200, height: 200)
         }
-        .background(Color.white)
         .groupBoxStyle(ClearMediumBoxStyle())
+        .modifier(HoverState())
         .cornerRadius(15)
         .onTapGesture {
             action()
         }
+        
     }
     
     /// Crée une boite longue
@@ -62,7 +62,7 @@ extension View {
                 .frame(width: 400, height: 100)
         }
         .groupBoxStyle(ClearLongBoxStyle())
-        .background(Color.white)
+        .modifier(HoverState())
         .cornerRadius(15)
         .onTapGesture {
             action()
@@ -127,6 +127,21 @@ struct ClearLongBoxStyle: GroupBoxStyle {
                 .frame(width: 400, alignment: .leading) // Même taille que la boite
                 .frame(height: 100, alignment: .top) // Même taille que la boite
         }
+    }
+}
+
+/// Gérer l'effet de survol d'une view lorsqu'on passe au dessus avev la souris
+struct HoverState: ViewModifier {
+    @State private var isHovered = false
+    
+    func body(content: Content) -> some View {
+        content
+            .background(isHovered ? Color.main : Color.white)
+            .onHover { hovering in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isHovered = hovering
+                }
+            }
     }
 }
 #Preview {
