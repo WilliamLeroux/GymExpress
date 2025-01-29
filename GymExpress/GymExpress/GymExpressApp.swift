@@ -13,6 +13,11 @@ struct GymExpressApp: App {
         WindowGroup {
             RootNavigation()
                 .preferredColorScheme(.light)
-        }.windowStyle(.hiddenTitleBar)
+                .frame(maxWidth: 1300, maxHeight: 800)
+                .frame(minWidth: 1000, minHeight: 600)
+        }
+        .windowStyle(.hiddenTitleBar)
+        .defaultSize(width: 1300, height: 800)
+        .windowResizability(.contentSize)
     }
 }

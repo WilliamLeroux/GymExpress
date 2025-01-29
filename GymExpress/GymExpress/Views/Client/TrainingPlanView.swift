@@ -8,11 +8,111 @@
 import SwiftUI
 
 struct TrainingPlanView: View {
+    @State private var workoutList: [String] = ["1", "2", "3"] // Changer pour la vraie liste
+    @State private var exerciceList: [String] = ["4", "5", "6"] // Changer pour la vraie liste
+    @State private var isShowingSheet: Bool = false
+    @State private var selectedWorkout: String?
+    
     var body: some View {
-        Text("Plan d'entraînement")
+        GroupBox() {
+            List {
+                ForEach(workoutList, id: \.self) { workout in
+                    GroupBox(label: Text(workout)) {
+                        ScrollView(.horizontal) {
+                            HStack{
+                                ForEach(exerciceList, id: \.self) { exercice in
+                                    Image(.icon) // Changer .icon pour l'icone de l'exercice
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 90, height: 90)
+                                        .cornerRadius(15)
+                                        .onTapGesture {
+                                            selectedWorkout = exercice
+                                        }
+                                        .onChange(of: selectedWorkout) {
+                                            if selectedWorkout != "" {
+                                                isShowingSheet.toggle()
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                    }
+                    .groupBoxStyle(WorkoutBoxStyle())
+                }
+            }
+            .cornerRadius(15)
+            .padding()
+        }
+        .sheet(isPresented: $isShowingSheet) {
+            VStack {
+                Text(selectedWorkout ?? "Aucun exercice sélectionné")
+                    .font(.title)
+                    .padding(50)
+                Image(.icon)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .cornerRadius(15)
+                VStack{
+                    Grid {
+                        GridRow {
+                            Text("Séries:")
+                            Text("Répétitions:")
+                        }
+                        
+                        GridRow{
+                            Text("Charge:")
+                            Text("Repo:")
+                        }
+                        
+                        GridRow{
+                            Text("Description:")
+                            Text("Notes:")
+                        }
+                    }
+                }
+                .frame(width: 300, height: 200)
+                .background(Color.gray.opacity(0.3))
+                .cornerRadius(15)
+                
+                Button(action: {}) {
+                    Text("Retour")
+                }
+                .buttonStyle(RoundedButtonStyle(
+                    width: 75,
+                    height: 50,
+                    color: Color.main,
+                    action: {
+                        selectedWorkout = ""
+                        isShowingSheet.toggle()
+                    }))
+                .padding()
+            }
+            .frame(width: 500, height: 500)
+        }
+    }
+}
+
+struct WorkoutBoxStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Spacer()
+        VStack(alignment: .leading) {
+            configuration.label
+                .padding(.top, 5)
+                .padding(.leading, 10)
+                .font(.system(size: 15, weight: .bold))
+            configuration.content
+                .background(.clear)
+                .padding(.vertical, 5)
+                .padding(.horizontal, 10)
+            Spacer()
+        }
+        .background(Color.gray.opacity(0.1))
+        Spacer()
     }
 }
 
 #Preview {
-    TrainingPlanView()
+    RootNavigation()
 }
