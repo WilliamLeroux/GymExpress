@@ -15,6 +15,7 @@ struct AppointmentView: View {
     @State private var selectedIndex: Int = -1
     @State private var selectedEditIndex: Int = -1
     @State private var selectedDate: Date = Date()
+    @State private var selectedTime: Date = Date()
     
     var body: some View {
         GroupBox {
@@ -65,7 +66,7 @@ struct AppointmentView: View {
                     Text("Voulez-vous vraiment annuler \(appointmentList[selectedIndex]) ?")
                     HStack {
                         Button(action: {}){
-                            Text("Annuler")
+                            Text("Retour")
                         }
                         .buttonStyle(RoundedButtonStyle(width: 75, height: 40, color: Color.main, hoveringColor: Color.green, action: {
                             selectedIndex = -1
@@ -99,18 +100,27 @@ struct AppointmentView: View {
                     
                     Text("Modification de la date:")
                     DatePicker(
-                        "Rendez-vous",
+                        "",
                         selection: $selectedDate,
                         in: DateUtils.shared.getDateRange(),
-                        displayedComponents: [.date, .hourAndMinute]
+                        displayedComponents: [.date]
                     )
-                    .datePickerStyle(.automatic)
+                    .datePickerStyle(.graphical)
+                    
+                    DatePicker(
+                        "",
+                        selection: $selectedTime,
+                        in: DateUtils.shared.getTimeRange(),
+                        displayedComponents: [.hourAndMinute]
+                    )
+                    .datePickerStyle(.stepperField)
+                    Text("Date: \(selectedDate.description.split(separator: " ")[0]) - Heure: \(selectedTime.description.split(separator: " ")[1])")
                     HStack {
                         Button(action: {}) {
-                            Text("Annuler")
+                            Text("Retour")
                         }
                         .buttonStyle(RoundedButtonStyle(
-                            width: 80,
+                            width: 85,
                             height: 40,
                             action: {
                                 selectedEditIndex = -1
@@ -122,7 +132,7 @@ struct AppointmentView: View {
                             Text("Sauvegarder")
                         }
                         .buttonStyle(RoundedButtonStyle(
-                            width: 80,
+                            width: 85,
                             height: 40,
                             action: {
                                 selectedEditIndex = -1
