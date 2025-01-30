@@ -49,15 +49,16 @@ struct TrainingPlaningView: View {
                             searchClients()
                         }) {
                             Text("Recherche")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .foregroundColor(.black)
                                 .font(.headline)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.main)
+                        .buttonStyle(RoundedButtonStyle(width: 350, height: 75, action: {
+                            searchClients()
+                        }))
                         .frame(maxWidth: .infinity)
-                        .cornerRadius(8)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .center)
+
+
                         
                         VStack(alignment: .leading, spacing: 8) {
                             if selectedClients.isEmpty {
@@ -122,7 +123,7 @@ struct TrainingPlaningView: View {
         selectedClients = allClients.filter { client in
             let fullName = client.lowercased()
             return (lowercasedFirstName.isEmpty || fullName.contains(lowercasedFirstName)) &&
-                   (lowercasedLastName.isEmpty || fullName.contains(lowercasedLastName))
+            (lowercasedLastName.isEmpty || fullName.contains(lowercasedLastName))
         }
         
         // Réinitialise le client sélectionné si aucun ne correspond
@@ -135,6 +136,7 @@ struct TrainingPlaningView: View {
 struct DayColumn: View {
     let day: String
     @State private var isDeleteMode: Bool = false
+    @State private var showExercisePlan: Bool = false
     
     var body: some View {
         VStack {
@@ -159,12 +161,34 @@ struct DayColumn: View {
             
             HStack(spacing: 15) {
                 Button(action: {
-                    editDay()
+                    showExercisePlan.toggle()
                 }) {
                     Image(systemName: "pencil")
                         .foregroundColor(.black)
                 }
-                
+                .sheet(isPresented: $showExercisePlan) {
+                    VStack {
+                        ExercisePlanCreationView(day: day)
+
+                        HStack{
+                            Button(action: {}) {
+                                Text("Sauvegarder")
+                                    .font(.headline)
+                            }
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75, action: {showExercisePlan.toggle()}))
+                            .padding()
+                            
+                            Button(action: {}) {
+                                Text("Annuler")
+                                    .font(.headline)
+                            }
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75,color: .red, action: {showExercisePlan.toggle()}))
+                            .padding()
+                        }
+                    }
+                    .frame(minWidth: 800, minHeight: 700)
+                }
+
                 Button(action: {
                     isDeleteMode.toggle()
                     if isDeleteMode {

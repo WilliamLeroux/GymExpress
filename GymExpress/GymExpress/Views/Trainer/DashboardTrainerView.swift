@@ -21,7 +21,7 @@ struct DashboardTrainerView: View {
             GridRow {
                 VStack{
                     HStack{
-                        smallBox(title: "Titre", view: Text("Allo"))
+                        smallBox(title: "DASHBOARD", view: Text("Allo"))
                         smallBox(view: Text("Allo"))
                     }
                     HStack{

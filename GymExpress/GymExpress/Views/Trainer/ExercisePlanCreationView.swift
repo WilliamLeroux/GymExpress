@@ -15,6 +15,8 @@ struct ExercisePlanCreationView: View {
     @State private var repos: String = ""
     @State private var addedExercises: Set<String> = []
     
+    let day: String
+    
     let exerciseTypes = ["Musculation", "Cardio", "Étirement", "Corps-poids"]
     
     let exercisesByType: [String: [String]] = [
@@ -39,110 +41,118 @@ struct ExercisePlanCreationView: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView(.vertical, showsIndicators: false) {
-                HStack(spacing: 20) {
-                    VStack(alignment: .leading, spacing: 20) {
-                        GroupBox {
-                            VStack(alignment: .leading, spacing: 15) {
-                                Picker("Type d'exercice", selection: $selectedType) {
-                                    ForEach(exerciseTypes, id: \.self) { type in
-                                        Text(type).tag(type as String?)
-                                    }
-                                }
-                                .pickerStyle(MenuPickerStyle())
-                                .frame(maxWidth: .infinity)
-                                
-                                ScrollView {
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        ForEach(exercisesByType[selectedType] ?? [], id: \.self) { exercise in
-                                            HStack {
-                                                Button(action: {
-                                                    selectedExercise = exercise
-                                                }) {
-                                                    HStack {
-                                                        Image(systemName: selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
-                                                            .foregroundColor(selectedExercise == exercise ? Color.main : .gray)
-                                                        Text(exercise)
-                                                            .foregroundColor(.primary)
-                                                    }
-                                                }
-                                                Spacer()
-                                            }
-                                            .padding(.vertical, 4)
-                                        }
-                                    }
-                                }
-                                .frame(minHeight: 100, maxHeight: geometry.size.height / 2)
-                            }
-                        }
-                        
-                        GroupBox(label: Text("Paramètres")) {
-                            VStack(spacing: 15) {
-                                ParameterField(title: "Nombre de séries", text: $series)
-                                ParameterField(title: "Nombre de répétitions", text: $reps)
-                                ParameterField(title: "Charge", text: $charge)
-                                ParameterField(title: "Temps de repos", text: $repos)
-                            }
-                            .padding()
-                        }
-                        .frame(maxWidth: .infinity)
-                        
-                        Button(action: {
-                            addExercise()
-                        }) {
-                            Text("Ajouter")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .foregroundColor(.black)
-                                .font(.headline)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.main)
-                        .cornerRadius(8)
-                    }
+                
+                VStack{
+                    Text("Plan d'exercice pour \(day)")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .padding(.top, 20)
+                        .padding(.horizontal, 20)
                     
-                    GroupBox() {
-                        ScrollView {
-                            VStack {
-                                Text("Exercices ajoutés :")
-                                    .font(.headline)
-                                    .padding(.bottom, 10)
-                                
-                                ForEach(addedExercises.sorted(), id: \.self) { exercise in
-                                    VStack {
-                                        Text(exercise)
-                                            .font(.headline)
-                                            .frame(maxWidth: .infinity, alignment: .center)
-                                        
-                                        VStack {
-                                            Text("Séries: \(series)")
-                                            Text("Répétitions: \(reps)")
-                                            Text("Charge: \(charge)")
-                                            Text("Repos: \(repos)")
+                    HStack(spacing: 20) {
+                        VStack(alignment: .leading, spacing: 20) {
+                            GroupBox {
+                                VStack(alignment: .leading, spacing: 15) {
+                                    Picker("Type d'exercice", selection: $selectedType) {
+                                        ForEach(exerciseTypes, id: \.self) { type in
+                                            Text(type).tag(type as String?)
                                         }
-                                        .foregroundColor(.gray)
-                                        .frame(maxWidth: .infinity, alignment: .center)
                                     }
-                                    .padding()
-                                    .background(Color.main)
-                                    .cornerRadius(8)
-                                    .padding(10)
+                                    .pickerStyle(MenuPickerStyle())
                                     .frame(maxWidth: .infinity)
-                                    .onTapGesture {
-                                        () //Vas devoir supprimer de la list
+                                    
+                                    ScrollView {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            ForEach(exercisesByType[selectedType] ?? [], id: \.self) { exercise in
+                                                HStack {
+                                                    Button(action: {
+                                                        selectedExercise = exercise
+                                                    }) {
+                                                        HStack {
+                                                            Image(systemName: selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
+                                                                .foregroundColor(selectedExercise == exercise ? Color.main : .gray)
+                                                            Text(exercise)
+                                                                .foregroundColor(.primary)
+                                                        }
+                                                    }
+                                                    Spacer()
+                                                }
+                                                .padding(.vertical, 4)
+                                            }
+                                        }
+                                    }
+                                    .frame(minHeight: 100, maxHeight: geometry.size.height / 2)
+                                }
+                            }
+                            
+                            GroupBox(label: Text("Paramètres")) {
+                                VStack(spacing: 15) {
+                                    ParameterField(title: "Nombre de séries", text: $series)
+                                    ParameterField(title: "Nombre de répétitions", text: $reps)
+                                    ParameterField(title: "Charge", text: $charge)
+                                    ParameterField(title: "Temps de repos", text: $repos)
+                                }
+                                .padding()
+                            }
+                            .frame(maxWidth: .infinity)
+                            
+                            Button(action: {
+                                addExercise()
+                            }) {
+                                Text("Ajouter")
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .foregroundColor(.black)
+                                    .font(.headline)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(Color.main)
+                            .cornerRadius(8)
+                        }
+                        
+                        GroupBox() {
+                            ScrollView {
+                                VStack {
+                                    Text("Exercices ajoutés :")
+                                        .font(.headline)
+                                        .padding(.bottom, 10)
+                                    
+                                    ForEach(addedExercises.sorted(), id: \.self) { exercise in
+                                        VStack {
+                                            Text(exercise)
+                                                .font(.headline)
+                                                .frame(maxWidth: .infinity, alignment: .center)
+                                            
+                                            VStack {
+                                                Text("Séries: \(series)")
+                                                Text("Répétitions: \(reps)")
+                                                Text("Charge: \(charge)")
+                                                Text("Repos: \(repos)")
+                                            }
+                                            .foregroundColor(.gray)
+                                            .frame(maxWidth: .infinity, alignment: .center)
+                                        }
+                                        .padding()
+                                        .background(Color.main)
+                                        .cornerRadius(8)
+                                        .padding(10)
+                                        .frame(maxWidth: .infinity)
+                                        .onTapGesture {
+                                            () //Vas devoir supprimer de la list
+                                        }
                                     }
                                 }
                             }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .cornerRadius(8)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .cornerRadius(8)
+                        .frame(maxWidth: geometry.size.width / 2)
                     }
-                    .frame(maxWidth: geometry.size.width / 2)
+                    .frame(maxHeight: .infinity)
+                    .padding(10)
                 }
-                .frame(maxHeight: .infinity)
-                .padding(10)
             }
         }
-
     }
     
     private func addExercise() {
@@ -175,6 +185,6 @@ struct ParameterField: View {
 
 struct ExercisePlanCreationView_Previews: PreviewProvider {
     static var previews: some View {
-        ExercisePlanCreationView()
+        ExercisePlanCreationView(day: "Lundi")
     }
 }

@@ -96,6 +96,10 @@ struct RootNavigation: View {
                     case "Fréquence":
                         WorkoutFrequenceView()
                             .frame(minWidth: 800, maxWidth: 900)
+                    case "Créer un entraînement":
+                        TrainingPlaningView()
+                            .frame(minWidth: 800, maxWidth: 900)
+
                     default:
                         DashboardClientView()
                             .frame(minWidth: 800, maxWidth: 900)
