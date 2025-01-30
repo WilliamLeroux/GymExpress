@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RootNavigation: View {
     @State private var selectedItem : String? = "Plan d'entraînement" // item sélectionné
+    @State private var hoveredItem: String? = nil
     
     private var userType: UserType // Type d'utilisateur
     private var navOption: [String] = [] // Liste des options
@@ -38,11 +39,14 @@ struct RootNavigation: View {
                                 .frame(maxWidth: .infinity)
                                 .multilineTextAlignment(.center)
                                 .padding(.vertical, 30)
-                                .paletteSelectionEffect(item == selectedItem)
+                                .background(hoveredItem == item ? Color.gray.opacity(0.3) : Color.clear)
                                 .onTapGesture {
                                     selectedItem = item
                                 }
-                                .listRowBackground(Color.clear)
+                                .onHover { hovering in
+                                    hoveredItem = hovering ? item : nil
+                                }
+                                .paletteSelectionEffect(item == selectedItem)
                         }
                     }
                     .listStyle(.sidebar)
