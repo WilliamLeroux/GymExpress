@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct AppointmentView: View {
-    @State private var appointmentList: [String] = ["1", "2", "3", "4", "5"]
-    @State private var descList: [String] = ["allo", "allo", "allo", "allo", "allo"]
+    @State private var appointmentList: [String] = ["1", "2", "3", "4", "5"] // Changer pour le model
+    @State private var descList: [String] = ["allo", "allo", "allo", "allo", "allo"] // Changer pour le model
+    @State private var trainerList: [String] = ["trainer1", "trainer2", "trainer3", "trainer4", "trainer5"] // Changer pour le model
     @State private var deleteAlert: Bool = false
     @State private var editAlert: Bool = false
     @State private var selectedIndex: Int = -1
@@ -23,7 +24,12 @@ struct AppointmentView: View {
                 ForEach(0..<appointmentList.count, id: \.self) { appointment in
                     GroupBox(label: Text(appointmentList[appointment])) {
                         HStack {
-                            Text(descList[appointment])
+                            VStack {
+                                Text(descList[appointment])
+                                Text(trainerList[appointment])
+                                    .font(.caption2)
+                            }
+                            
                             Spacer()
                             
                             HStack(spacing: 0){
