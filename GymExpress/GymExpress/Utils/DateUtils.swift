@@ -22,4 +22,13 @@ class DateUtils {
         let endComponents = DateComponents(year: currentYear + 5, month: 12, day: 31, hour: 23, minute: 59, second: 59)
         return calendar.date(from: startComponents)! ... calendar.date(from: endComponents)!
     }
+    
+    
+    /// Retourne une range d'heure entre 6h am et 10h pm
+    /// - Returns: Range fermé de date
+    func getTimeRange() -> ClosedRange<Date> {
+        let startComponents = DateComponents(hour: 6, minute: 0)
+        let endComponents = DateComponents(hour: 22, minute: 0)
+        return calendar.date(from: startComponents)! ... calendar.date(from: endComponents)!
+    }
 }
