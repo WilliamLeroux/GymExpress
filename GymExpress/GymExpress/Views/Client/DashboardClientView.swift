@@ -10,10 +10,10 @@ import SwiftUI
 struct DashboardClientView: View {
     var body: some View {
         NavigationStack {
-            Grid(horizontalSpacing: 5, verticalSpacing: 5) {
+            Grid {
                 GridRow() {
-                    VStack(spacing: 5){
-                        HStack(spacing: 5){
+                    VStack{
+                        HStack{
                             smallBox(title: "Progrès", view:
                                         Image(.progress)
                                 .resizable()

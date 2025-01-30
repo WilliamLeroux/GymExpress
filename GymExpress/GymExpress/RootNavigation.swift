@@ -64,34 +64,43 @@ struct RootNavigation: View {
                     switch selectedItem {
                     case "Finances":
                         FinanceView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     case "Accueil":
                         if userType == .client {
                             DashboardClientView()
+                                .frame(minWidth: 800, maxWidth: 900)
                         } else {
                             DashboardAdminView()
+                                .frame(minWidth: 800, maxWidth: 900)
                         }
                         
                     case "Employés":
                         EmployesView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     case "Rendez-vous":
                         AppointmentView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     case "Progrès":
                         ProgressView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     case "Abonnement":
                         SubscriptionView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     case "Plan d'entraînement":
                         TrainingPlanView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     case "Fréquence":
                         WorkoutFrequenceView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     default:
                         DashboardClientView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     }
                 } else {
                     Text("Sélectionnez un élément")
                 }
             }
             .navigationSplitViewStyle(.balanced)
-
         }
         .edgesIgnoringSafeArea(.top)
     }
