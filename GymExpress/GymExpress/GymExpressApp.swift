@@ -11,7 +11,7 @@ import SwiftUI
 struct GymExpressApp: App {
     var body: some Scene {
         WindowGroup {
-            RootNavigation()
+            LoginView()
                 .preferredColorScheme(.light)
                 .frame(maxWidth: 1300, maxHeight: 800)
                 .frame(minWidth: 1000, minHeight: 600)
