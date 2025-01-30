@@ -11,15 +11,17 @@ struct RoundedButtonStyle: ButtonStyle {
     var width: CGFloat /// Width du bouton
     var height: CGFloat /// Height du bouton
     var color: Color /// Couleur de fond du bouton
+    var hoveringColor: Color /// Couleur de fond du bouton lorsqu'il est survolé
     var action: () -> Void /// Action lors d'un clique
     @State var isPressed: Bool = false /// Booléen siginfiant que le bouton est cliqué
     @State private var isHovered: Bool = false /// Booléen signifiant que le bouton est survolé
     
-    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, action: @escaping () -> Void = {}) {
+    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .green ,action: @escaping () -> Void = {}) {
         self.action = action
         self.width = width
         self.height = height
         self.color = color
+        self.hoveringColor = hoveringColor
     }
     
     func makeBody(configuration: Configuration) -> some View {
@@ -27,14 +29,21 @@ struct RoundedButtonStyle: ButtonStyle {
             configuration.label
         }
         .frame(width: width, height: height)
-        .background(isHovered ? Color.green : color)
-        .cornerRadius(15)
-        .padding()
+        .background(isHovered ? hoveringColor : color)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {
                 isHovered = hovering
             }
+            if (hovering){
+                NSCursor.pointingHand.push()
+            }
+            else {
+                NSCursor.pop()
+            }
         }
+        .cornerRadius(15)
+        .padding()
+        
         .onTapGesture {
             isPressed.toggle()
             action()
