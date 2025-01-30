@@ -19,97 +19,100 @@ struct LoginView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                Header()
-                Spacer()
-                ZStack {
-                    Rectangle()
-                        .fill(Color.white)
-                        .shadow(radius: 12)
-                    VStack {
-                        Text("La forme en mode express")
-                            .fontWeight(.semibold)
-                            .font(.system(size:42))
-                            .padding(.top, 15)
-                        
-                        HStack {
-                            Image(.logo512T)
-                                .resizable()
-                                .frame(width: 250, height: 250)
-                                .padding(.horizontal, 20)
-                                .shadow(radius: 5)
-                            Divider()
-                            VStack(alignment: .center, spacing: 20) {
-                                TextField("Adresse courriel", text: $email)
-                                    .padding()
-                                    .frame(maxWidth: 350)
-                                    .background(Color.white)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color.main, lineWidth: isTypingEmail ? 4 : 1)
-                                    )
-                                    .focused($isTypingEmail)
+            ZStack {
+                Image(.backgroundLogin)
+                    .resizable()
+                VStack(spacing: 0) {
+                    Spacer()
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.white)
+                            .shadow(radius: 12)
+                        VStack {
+                            Text("La forme en mode express")
+                                .fontWeight(.semibold)
+                                .font(.system(size:42))
+                                .padding(.top, 50)
+                            HStack {
+                                Image(.logo512T)
+                                    .resizable()
+                                    .frame(width: 225, height: 225)
+                                    .padding(.horizontal, 50)
+                                    .shadow(radius: 5)
+                                Divider()
+                                VStack(alignment: .center, spacing: 20) {
+                                    TextField("Adresse courriel", text: $email)
+                                        .padding()
+                                        .frame(maxWidth: 350)
+                                        .background(Color.white)
+                                        .textFieldStyle(PlainTextFieldStyle())
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color.main, lineWidth: isTypingEmail ? 4 : 1)
+                                        )
+                                        .focused($isTypingEmail)
+                                    
+                                    SecureField("Mot de passe", text: $password)
+                                        .padding()
+                                        .frame(maxWidth: 350)
+                                        .background(Color.white)
+                                        .textFieldStyle(PlainTextFieldStyle())
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color.main, lineWidth: isTypingPassword ? 4 : 1)
+                                        )
+                                        .focused($isTypingPassword)
+                                    
+                                    NavigationLink(destination: RootNavigation()) {
+                                        Text("Se connecter")
+                                            .padding(.horizontal, 30)
+                                            .padding(.vertical, 15)
+                                            .foregroundColor(.white)
+                                            .background(isHover ? Color.green : Color.main)
+                                            .cornerRadius(8)
+                                            .frame(width: 250, height: 50)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .navigationBarBackButtonHidden(true)
+                                    .onHover { hovering in
+                                        withAnimation(.easeInOut(duration: 0.2)) {
+                                            isHover = hovering
+                                        }
+                                        if (hovering){
+                                            NSCursor.pointingHand.push()
+                                        }
+                                        else {
+                                            NSCursor.pop()
+                                        }
+                                    }
+                                    
+                                    Toggle(isOn: $isRememberMe) {
+                                        Text("Se souvenir de moi")
+                                    }
+                                    .toggleStyle(.checkbox)
+                                    .onHover { hovering in
+                                        if (hovering){
+                                            NSCursor.pointingHand.push()
+                                        }
+                                        else {
+                                            NSCursor.pop()
+                                        }
+                                    }
+                                } // VStack forms
+                                .padding()
                                 
-                                SecureField("Mot de passe", text: $password)
-                                    .padding()
-                                    .frame(maxWidth: 350)
-                                    .background(Color.white)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color.main, lineWidth: isTypingPassword ? 4 : 1)
-                                    )
-                                    .focused($isTypingPassword)
-                                
-                                NavigationLink(destination: RootNavigation()) {
-                                    Text("Se connecter")
-                                        .padding(.horizontal, 30)
-                                        .padding(.vertical, 15)
-                                        .foregroundColor(.white)
-                                        .background(isHover ? Color.green : Color.main)
-                                        .cornerRadius(8)
-                                        .frame(width: 250, height: 50)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                                .navigationBarBackButtonHidden(true)
-                                .onHover { hovering in
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        isHover = hovering
-                                    }
-                                    if (hovering){
-                                        NSCursor.pointingHand.push()
-                                    }
-                                    else {
-                                        NSCursor.pop()
-                                    }
-                                }
-                                
-                                Toggle(isOn: $isRememberMe) {
-                                    Text("Se souvenir de moi")
-                                }
-                                .toggleStyle(.checkbox)
-                                .onHover { hovering in
-                                    if (hovering){
-                                        NSCursor.pointingHand.push()
-                                    }
-                                    else {
-                                        NSCursor.pop()
-                                    }
-                                }
-                            } // VStack forms
-                            .padding()
-                            
-                        } // HStack
-                        .padding(45)
-                    } // VStack logo + forms
-                } // ZStack
-                .frame(width: 800, height: 400)
-                
-                Spacer()
-                Footer(isLoginPage: true)
+                            } // HStack
+                            .padding(.bottom, 60)
+                        } // VStack logo + forms
+                    } // ZStack
+                    .frame(width: 800, height: 400)
+                    .cornerRadius(6)
+                    
+                    Spacer()
+                    Footer(isLoginPage: true)
+                }
+                .edgesIgnoringSafeArea(.top)
             }
-            .edgesIgnoringSafeArea(.top)
         }
     }
 }
