@@ -165,7 +165,11 @@ struct DayColumn: View {
                 }) {
                     Image(systemName: "pencil")
                         .foregroundColor(.black)
+                        .imageScale(.large)
                 }
+                .buttonStyle(RoundedButtonStyle(width: 30, height: 30, action: {
+                    showExercisePlan.toggle()
+                }))
                 .sheet(isPresented: $showExercisePlan) {
                     VStack {
                         ExercisePlanCreationView(day: day)
@@ -196,8 +200,15 @@ struct DayColumn: View {
                     }
                 }) {
                     Image(systemName: "trash")
-                        .foregroundColor(isDeleteMode ? .red : .blue)
+                        .foregroundColor(.black)
+                        .imageScale(.large)
                 }
+                .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red , action: {
+                    isDeleteMode.toggle()
+                    if isDeleteMode {
+                        deleteDay()
+                    }
+                }))
             }
             .padding(.top, 5)
         }
