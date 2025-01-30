@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RootNavigation: View {
-    @State private var selectedItem : String? = "Plan d'entraînement" // item sélectionné
+    @State private var selectedItem : String? = "Rendez-vous" // item sélectionné
     @State private var hoveredItem: String? = nil
     
     private var userType: UserType // Type d'utilisateur

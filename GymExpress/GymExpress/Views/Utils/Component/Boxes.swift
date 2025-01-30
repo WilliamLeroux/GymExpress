@@ -59,7 +59,7 @@ extension View {
     func longBox(title: String = " ", view: some View, action: @escaping Action = {}) -> some View {
         return GroupBox(label: Text(title)) {
             view
-                .frame(width: 424, height: 100)
+                .frame(width: 420, height: 100)
         }
         .groupBoxStyle(ClearLongBoxStyle())
         .modifier(HoverState())
@@ -124,7 +124,7 @@ struct ClearLongBoxStyle: GroupBoxStyle {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 5)
-                .frame(width: 424, alignment: .leading) // Même taille que la boite
+                .frame(width: 420, alignment: .leading) // Même taille que la boite
                 .frame(height: 100, alignment: .top) // Même taille que la boite
         }
     }
