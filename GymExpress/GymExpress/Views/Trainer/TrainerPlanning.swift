@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TrainingPlanView: View {
+struct TrainingPlaningView: View {
     @State private var lastName: String = ""
     @State private var firstName: String = ""
     @State private var selectedClients: [String] = []

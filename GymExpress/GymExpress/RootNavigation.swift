@@ -68,24 +68,17 @@ struct RootNavigation: View {
                     case "Accueil":
                         if userType == .client {
                             DashboardClientView()
-<<<<<<< HEAD
+                                .frame(minWidth: 800, maxWidth: 900)
                         }
                         if userType == .trainer {
-                            TrainingPlanView()
-                        }
-                        if userType == .admin {
-=======
+                            DashboardTrainerView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         } else {
->>>>>>> main
                             DashboardAdminView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         }
                         
                     case "Employés":
-<<<<<<< HEAD
-                        ExercisePlanCreationView()
-=======
                         EmployesView()
                             .frame(minWidth: 800, maxWidth: 900)
                     case "Rendez-vous":
@@ -103,7 +96,6 @@ struct RootNavigation: View {
                     case "Fréquence":
                         WorkoutFrequenceView()
                             .frame(minWidth: 800, maxWidth: 900)
->>>>>>> main
                     default:
                         DashboardClientView()
                             .frame(minWidth: 800, maxWidth: 900)
