@@ -1,59 +1,119 @@
 //
-//  LoginView.swift
+//  LoginView.swift : Contient la vue de la page de connexion
 //  GymExpress
 //
 //  Created by Nicolas Morin on 2025-01-28.
 //
 
 import SwiftUI
+import AppKit
 
 struct LoginView: View {
-    @State private var email: String = ""
-    @State private var password: String = ""
+    @State private var email: String = "" ///< Email de l'utilisateur
+    @State private var password: String = "" ///< Mot de passe de l'utilisateur
+    @State private var isRememberMe: Bool = false ///< Se souvenir des informations de connexion
+    @State private var isHover = false ///< Vérifie si la souris survol le bouton de connexion
     
-    @FocusState private var isTypingEmail: Bool
-    @FocusState private var isTypingPassword: Bool
+    @FocusState private var isTypingEmail: Bool ///< Vérifie si l'utilisateur est dans le textfield email
+    @FocusState private var isTypingPassword: Bool ///< Vérifie si l'utilisateur est dans le textfield password
     
     var body: some View {
-        VStack(spacing: 0) {
-            Header()
-            Spacer()
-            HStack {
-                Image(.logo512T)
+        NavigationStack {
+            ZStack {
+                Image(.backgroundLogin)
                     .resizable()
-                    .frame(width: 250, height: 250)
-                    .padding(45)
-                VStack(spacing: 16) { // Espacement entre les champs
-                    // Email TextField
-                    TextField("Email", text: $email)
-                        .padding()
-                        .frame(maxWidth: 350)
-                        .background(Color.white) // Couleur de fond
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.main, lineWidth: isTypingEmail ? 4 : 2) // Bordure
-                        )
-                        .focused($isTypingEmail)
+                VStack(spacing: 0) {
+                    Spacer()
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.white)
+                            .shadow(radius: 12)
+                        VStack {
+                            Text("La forme en mode express")
+                                .fontWeight(.semibold)
+                                .font(.system(size:42))
+                                .padding(.top, 50)
+                            HStack {
+                                Image(.logo512T)
+                                    .resizable()
+                                    .frame(width: 225, height: 225)
+                                    .padding(.horizontal, 50)
+                                    .shadow(radius: 5)
+                                Divider()
+                                VStack(alignment: .center, spacing: 20) {
+                                    TextField("Adresse courriel", text: $email)
+                                        .padding()
+                                        .frame(maxWidth: 350)
+                                        .background(Color.white)
+                                        .textFieldStyle(PlainTextFieldStyle())
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color.main, lineWidth: isTypingEmail ? 4 : 1)
+                                        )
+                                        .focused($isTypingEmail)
+                                    
+                                    SecureField("Mot de passe", text: $password)
+                                        .padding()
+                                        .frame(maxWidth: 350)
+                                        .background(Color.white)
+                                        .textFieldStyle(PlainTextFieldStyle())
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color.main, lineWidth: isTypingPassword ? 4 : 1)
+                                        )
+                                        .focused($isTypingPassword)
+                                    
+                                    NavigationLink(destination: RootNavigation()) {
+                                        Text("Se connecter")
+                                            .padding(.horizontal, 30)
+                                            .padding(.vertical, 15)
+                                            .foregroundColor(.white)
+                                            .background(isHover ? Color.green : Color.main)
+                                            .cornerRadius(8)
+                                            .frame(width: 250, height: 50)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .navigationBarBackButtonHidden(true)
+                                    .onHover { hovering in
+                                        withAnimation(.easeInOut(duration: 0.2)) {
+                                            isHover = hovering
+                                        }
+                                        if (hovering){
+                                            NSCursor.pointingHand.push()
+                                        }
+                                        else {
+                                            NSCursor.pop()
+                                        }
+                                    }
+                                    
+                                    Toggle(isOn: $isRememberMe) {
+                                        Text("Se souvenir de moi")
+                                    }
+                                    .toggleStyle(.checkbox)
+                                    .onHover { hovering in
+                                        if (hovering){
+                                            NSCursor.pointingHand.push()
+                                        }
+                                        else {
+                                            NSCursor.pop()
+                                        }
+                                    }
+                                } // VStack forms
+                                .padding()
+                                
+                            } // HStack
+                            .padding(.bottom, 60)
+                        } // VStack logo + forms
+                    } // ZStack
+                    .frame(width: 800, height: 400)
+                    .cornerRadius(6)
                     
-                    // Password SecureField
-                    SecureField("Mot de passe", text: $password)
-                        .padding()
-                        .frame(maxWidth: 350)
-                        .background(Color.white)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.main, lineWidth: isTypingPassword ? 4 : 2)
-                        )
-                        .focused($isTypingPassword)
+                    Spacer()
+                    Footer(isLoginPage: true)
                 }
+                .edgesIgnoringSafeArea(.top)
             }
-            .padding(45)
-            .background(Color.white)
-            Spacer()
         }
-        .edgesIgnoringSafeArea(.top)
     }
 }
 

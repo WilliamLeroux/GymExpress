@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct RootNavigation: View {
-    @State private var selectedItem : String? = "Accueil" // item sélectionné
+    @State private var selectedItem : String? = "Plan d'entraînement" // item sélectionné
+    @State private var hoveredItem: String? = nil
     
     private var userType: UserType // Type d'utilisateur
     private var navOption: [String] = [] // Liste des options
@@ -38,48 +39,80 @@ struct RootNavigation: View {
                                 .frame(maxWidth: .infinity)
                                 .multilineTextAlignment(.center)
                                 .padding(.vertical, 30)
-                                .paletteSelectionEffect(item == selectedItem)
+                                .background(hoveredItem == item ? Color.gray.opacity(0.3) : Color.clear)
                                 .onTapGesture {
                                     selectedItem = item
                                 }
-                                .listRowBackground(Color.clear)
+                                .onHover { hovering in
+                                    hoveredItem = hovering ? item : nil
+                                }
+                                .paletteSelectionEffect(item == selectedItem)
                         }
                     }
                     .listStyle(.sidebar)
                     .scrollContentBackground(.hidden)
+                    .background(Color.white)
                     Spacer()
+                    Footer(isLoginPage: false)
                 }
                 .toolbar(removing: .sidebarToggle)
                 .background(Color(.white))
+            
             }
             detail: {
                 if let selectedItem = selectedItem {
                     switch selectedItem {
                     case "Finances":
                         FinanceView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     case "Accueil":
                         if userType == .client {
                             DashboardClientView()
+<<<<<<< HEAD
                         }
                         if userType == .trainer {
                             TrainingPlanView()
                         }
                         if userType == .admin {
+=======
+                                .frame(minWidth: 800, maxWidth: 900)
+                        } else {
+>>>>>>> main
                             DashboardAdminView()
+                                .frame(minWidth: 800, maxWidth: 900)
                         }
                         
                     case "Employés":
+<<<<<<< HEAD
                         ExercisePlanCreationView()
+=======
+                        EmployesView()
+                            .frame(minWidth: 800, maxWidth: 900)
+                    case "Rendez-vous":
+                        AppointmentView()
+                            .frame(minWidth: 800, maxWidth: 900)
+                    case "Progrès":
+                        ProgressView()
+                            .frame(minWidth: 800, maxWidth: 900)
+                    case "Abonnement":
+                        SubscriptionView()
+                            .frame(minWidth: 800, maxWidth: 900)
+                    case "Plan d'entraînement":
+                        TrainingPlanView()
+                            .frame(minWidth: 800, maxWidth: 900)
+                    case "Fréquence":
+                        WorkoutFrequenceView()
+                            .frame(minWidth: 800, maxWidth: 900)
+>>>>>>> main
                     default:
                         DashboardClientView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     }
                 } else {
                     Text("Sélectionnez un élément")
                 }
             }
-            .navigationSplitViewColumnWidth(400)
             .navigationSplitViewStyle(.balanced)
-
         }
         .edgesIgnoringSafeArea(.top)
     }
