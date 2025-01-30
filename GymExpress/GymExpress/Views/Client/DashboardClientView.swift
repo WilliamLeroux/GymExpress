@@ -21,7 +21,6 @@ struct DashboardClientView: View {
                         smallBox(view: Text("Allo"))
                     }
                     
-                    
                 }
                 
                 mediumBox(view: Text("Allo"))

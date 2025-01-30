@@ -47,10 +47,13 @@ struct RootNavigation: View {
                     }
                     .listStyle(.sidebar)
                     .scrollContentBackground(.hidden)
+                    .background(Color.white)
                     Spacer()
+                    Footer(isLoginPage: false)
                 }
                 .toolbar(removing: .sidebarToggle)
                 .background(Color(.white))
+            
             }
             detail: {
                 if let selectedItem = selectedItem {
@@ -73,7 +76,6 @@ struct RootNavigation: View {
                     Text("Sélectionnez un élément")
                 }
             }
-            .navigationSplitViewColumnWidth(400)
             .navigationSplitViewStyle(.balanced)
 
         }
