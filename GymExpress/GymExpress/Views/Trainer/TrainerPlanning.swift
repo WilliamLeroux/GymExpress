@@ -182,7 +182,7 @@ struct DayColumn: View {
                                 Text("Annuler")
                                     .font(.headline)
                             }
-                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75,color: .red, action: {showExercisePlan.toggle()}))
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75,color: .red.opacity(0.8), hoveringColor: .red ,action: {showExercisePlan.toggle()}))
                             .padding()
                         }
                     }
