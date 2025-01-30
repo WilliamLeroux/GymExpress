@@ -23,7 +23,6 @@ class DateUtils {
         return calendar.date(from: startComponents)! ... calendar.date(from: endComponents)!
     }
     
-     
     /// Retourne une range d'heure entre 6h am et 10h pm
     /// - Returns: Range fermé de date
     func getTimeRange() -> ClosedRange<Date> {
