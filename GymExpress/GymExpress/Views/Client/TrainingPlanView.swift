@@ -94,25 +94,6 @@ struct TrainingPlanView: View {
     }
 }
 
-struct WorkoutBoxStyle: GroupBoxStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        Spacer()
-        VStack(alignment: .leading) {
-            configuration.label
-                .padding(.top, 5)
-                .padding(.leading, 10)
-                .font(.system(size: 15, weight: .bold))
-            configuration.content
-                .background(.clear)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 10)
-            Spacer()
-        }
-        .background(Color.gray.opacity(0.1))
-        Spacer()
-    }
-}
-
 #Preview {
     RootNavigation()
 }

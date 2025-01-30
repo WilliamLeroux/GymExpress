@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RootNavigation: View {
-    @State private var selectedItem : String? = "Plan d'entraînement" // item sélectionné
+    @State private var selectedItem : String? = "Fréquence" // item sélectionné
     
     private var userType: UserType // Type d'utilisateur
     private var navOption: [String] = [] // Liste des options
