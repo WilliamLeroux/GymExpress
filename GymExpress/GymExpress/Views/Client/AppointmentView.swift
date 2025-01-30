@@ -92,17 +92,47 @@ struct AppointmentView: View {
             }
             .sheet(isPresented: $editAlert) { // Sheet pour la modification de rendez-vous
                 VStack {
-                    Text("Modification")
+                    Text("Modification du rendez-vous: ")
                         .font(.title)
+                    Text("\(appointmentList[selectedEditIndex])")
+                        .font(.title2)
                     
                     Text("Modification de la date:")
                     DatePicker(
                         "Rendez-vous",
                         selection: $selectedDate,
                         in: DateUtils.shared.getDateRange(),
-                        displayedComponents: [.date]
+                        displayedComponents: [.date, .hourAndMinute]
                     )
+                    .datePickerStyle(.automatic)
+                    HStack {
+                        Button(action: {}) {
+                            Text("Annuler")
+                        }
+                        .buttonStyle(RoundedButtonStyle(
+                            width: 80,
+                            height: 40,
+                            action: {
+                                selectedEditIndex = -1
+                                editAlert.toggle()
+                            }
+                        ))
+                        
+                        Button(action: {}) {
+                            Text("Sauvegarder")
+                        }
+                        .buttonStyle(RoundedButtonStyle(
+                            width: 80,
+                            height: 40,
+                            action: {
+                                selectedEditIndex = -1
+                                editAlert.toggle()
+                                // Ajouter la sauvegarde
+                            }
+                        ))
+                    }
                 }
+                .padding(20)
             }
         }
     }
