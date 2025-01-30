@@ -38,7 +38,7 @@ struct Footer: View {
         
         Text("© 2025 GymExpress - Tous droits réservés")
             .font(.footnote)
-            .foregroundColor(.gray)
+            .foregroundColor(isLoginPage ? Color.main : Color.gray)
             .padding(.bottom, 25)
     }
 }
