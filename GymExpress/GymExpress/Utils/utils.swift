@@ -31,4 +31,17 @@ class Utils {
             return tempList
         }
     }
+    
+    func getMembershipPrice(membership: MembershipGrade) -> Double {
+        switch membership {
+        case .bronze:
+            return 11.0
+        case .silver:
+            return 16.0
+        case .gold:
+            return 21.0
+        case .platinum:
+            return 26.0
+        }
+    }
 }

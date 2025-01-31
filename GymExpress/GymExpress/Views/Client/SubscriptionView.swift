@@ -21,8 +21,10 @@ struct SubscriptionView: View {
                         VStack {
                             HStack {
                                 Text(membership[index].rawValue)
+                                    .font(.system(size: 15, weight: .bold))
                                 Label("arrow", systemImage: "chevron.right.circle")
                                     .labelStyle(.iconOnly)
+                                    .font(.system(size: 15, weight: .bold))
                                     .rotationEffect(selectedMembership == index || currentMembership == index ? .degrees(90) : .degrees(0))
                                     .animation(.easeInOut(duration: 0.2), value: selectedMembership == index)
                             }
@@ -34,8 +36,12 @@ struct SubscriptionView: View {
                                 VStack {
                                     ForEach(0..<membershipDesc[3].split(separator: ",").count, id: \.self) { description in
                                         Text("- \(membershipDesc[3].split(separator: ",")[description])")
-                                            .strikethrough(description > membershipDesc[index].split(separator: ",").count - 1, color: .gray)
-                                            
+                                            .strikethrough(description > membershipDesc[index].split(separator: ",").count - 1, color: .black)
+                                            .font(.system(size: 13, weight: .semibold))
+                                            .foregroundStyle(description > membershipDesc[index].split(separator: ",").count - 1 ? .gray : .black)
+                                    }
+                                    Button(action: {}) {
+                                        Text("Changer de plan")
                                     }
                                 }
                                 //.padding(.top, 50)
@@ -50,13 +56,13 @@ struct SubscriptionView: View {
                                 100},
                         height: selectedMembership == index || currentMembership == index ? 300 : 40,
                         color: Color.white,
-                        hoveringColor: Color.white.opacity(0.8),
+                        hoveringColor: getMemberShipColor(membershipGrade: membership[index]).opacity(0.2),
+                        borderColor: getMemberShipColor(membershipGrade: membership[index]),
+                        borderWidth: 5,
                         action: {
                             selectedMembership = index
                         }
                     ))
-                    .border(getMemberShipColor(membershipGrade: membership[index]), width: 2)
-                    .cornerRadius(15)
                 }
             }
         }
