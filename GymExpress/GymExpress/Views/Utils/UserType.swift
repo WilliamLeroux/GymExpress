@@ -10,3 +10,10 @@ enum UserType: Int {
     case trainer = 1
     case admin = 2
 }
+
+enum MembershipGrade: String, CaseIterable{
+    case platinum = "Platine"
+    case gold = "Or"
+    case silver = "Argent"
+    case bronze = "Bronze"
+}
