@@ -10,42 +10,17 @@ import SwiftUI
 struct SubscriptionView: View {
     var body: some View {
         GroupBox {
-            Grid(verticalSpacing: 10) {
-                GridRow {
-                    mediumBox(title: "abonnement", view:
-                                Text("")
-                    )
-                    
-                    mediumBox(title: "abonnement", view:
-                                Text("")
-                    )
-                    
-                    Button(action: {}) {
-                        Text("Ripple")
+            HStack {
+                Button(action: { }) {
+                    HStack {
+                        Text("Bronze")
+                        Label("arrow", systemImage: "chevron.right.circle")
+                            .labelStyle(.iconOnly)
                     }
-                    .buttonStyle(RoundedButtonStyle(
-                        width: 50,
-                        height: 50,
-                        action: {
-                            
-                        }
-                    ))
-                }
-                
-                GridRow {
-                    mediumBox(title: "abonnement", view:
-                                Text("")
-                    )
-                   
-                    mediumBox(title: "abonnement", view:
-                                Text("")
-                    )
-                    
                 }
             }
         }
-        .frame(width: 500)
-        .groupBoxStyle(WorkoutBoxStyle())
+        //.groupBoxStyle(WorkoutBoxStyle())
         //.background(Color.white)
         .cornerRadius(15)
         .padding()
