@@ -178,14 +178,14 @@ struct DayColumn: View {
                                 Text("Sauvegarder")
                                     .font(.headline)
                             }
-                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75, padding: 2 , action: {showExercisePlan.toggle()}))
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 50, padding: 2 , action: {showExercisePlan.toggle()}))
                             .padding()
                             
                             Button(action: {}) {
                                 Text("Annuler")
                                     .font(.headline)
                             }
-                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75,color: .red.opacity(0.8), hoveringColor: .red ,padding: 2 , action: {showExercisePlan.toggle()}))
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 50,color: .red.opacity(0.8), hoveringColor: .red ,padding: 2 , action: {showExercisePlan.toggle()}))
                             .padding()
                         }
                     }

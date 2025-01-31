@@ -6,179 +6,244 @@
 //
 
 import SwiftUI
+
 struct ExercisePlanCreationView: View {
-    @State private var selectedType: String = ""
+    @State private var selectedType: String = "Musculation"
     @State private var selectedExercise: String? = nil
     @State private var series: String = ""
     @State private var reps: String = ""
     @State private var charge: String = ""
     @State private var repos: String = ""
-    @State private var addedExercises: Set<String> = []
+    @State private var addedExercises: [Exercise] = []
     
     let day: String
-    
     let exerciseTypes = ["Musculation", "Cardio", "Étirement", "Corps-poids"]
     
     let exercisesByType: [String: [String]] = [
         "Musculation": [
-            "Développé couché", "Squat", "Soulevé de terre", "Tirage vertical",
-            "Extension des triceps", "Curl biceps", "Crunch", "Extension lombaire",
-            "Élévation latérale", "Développé épaules", "Rowing buste penché",
-            "Extension des mollets", "Presse à cuisses", "Hip thrust", "Dips", "Traction"
+            "Développé couché",
+            "Squat",
+            "Soulevé de terre",
+            "Tirage vertical",
+            "Développé militaire",
+            "Curl biceps",
+            "Extension triceps",
+            "Fentes",
+            "Rowing barre"
         ],
         "Cardio": [
-            "Course à pied", "Vélo", "Rameur", "Natation", "Saut à la corde"
+            "Course à pied",
+            "Vélo",
+            "Rameur",
+            "Natation",
+            "Corde à sauter",
+            "Sprints",
+            "Montées de genoux",
+            "Escalier",
+            "Marche rapide"
         ],
         "Étirement": [
-            "Étirement des ischio-jambiers", "Étirement du quadriceps", "Étirement des mollets",
-            "Étirement des épaules", "Étirement du dos"
+            "Étirement des ischio-jambiers",
+            "Étirement du quadriceps",
+            "Étirement des mollets",
+            "Étirement des pectoraux",
+            "Étirement du dos",
+            "Rotation du tronc",
+            "Étirement des épaules",
+            "Étirement du cou",
+            "Étirement des hanches"
         ],
         "Corps-poids": [
-            "Pompes", "Squats sautés", "Planche", "Burpees", "Mountain climbers"
+            "Pompes",
+            "Squats sautés",
+            "Planche",
+            "Burpees",
+            "Dips entre bancs",
+            "Mountain climbers",
+            "Lunges",
+            "Gainage latéral",
+            "Crunchs"
         ]
     ]
-    
+
     var body: some View {
         GeometryReader { geometry in
-            ScrollView(.vertical, showsIndicators: false) {
-                
-                VStack{
-                    Text("Plan d'exercice pour \(day)")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding(.top, 20)
-                        .padding(.horizontal, 20)
-                    
-                    HStack(spacing: 20) {
-                        VStack(alignment: .leading, spacing: 20) {
-                            GroupBox {
-                                VStack(alignment: .leading, spacing: 15) {
-                                    Picker("Type d'exercice", selection: $selectedType) {
-                                        ForEach(exerciseTypes, id: \.self) { type in
-                                            Text(type).tag(type as String?)
-                                        }
+            VStack {
+                Text("Plan d'exercice pour \(day)")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.top, 20)
+
+                HStack(spacing: 20) {
+                    GroupBox {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Picker("", selection: $selectedType) {
+                                    ForEach(exerciseTypes, id: \.self) { type in
+                                        Text(type).tag(type as String?)
                                     }
-                                    .pickerStyle(MenuPickerStyle())
-                                    .frame(maxWidth: .infinity)
-                                    
-                                    ScrollView {
-                                        VStack(alignment: .leading, spacing: 8) {
-                                            ForEach(exercisesByType[selectedType] ?? [], id: \.self) { exercise in
+                                }
+                                .pickerStyle(SegmentedPickerStyle())
+                                .frame(maxWidth: .infinity)
+
+                                ScrollView {
+                                    VStack(alignment: .leading) {
+                                        ForEach(exercisesByType[selectedType] ?? [], id: \.self) { exercise in
+                                            Button(action: {
+                                                selectedExercise = exercise
+                                            }) {
                                                 HStack {
-                                                    Button(action: {
-                                                        selectedExercise = exercise
-                                                    }) {
-                                                        HStack {
-                                                            Image(systemName: selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
-                                                                .foregroundColor(selectedExercise == exercise ? Color.main : .gray)
-                                                            Text(exercise)
-                                                                .foregroundColor(.primary)
-                                                        }
-                                                    }
-                                                    Spacer()
+                                                    Image(systemName: selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
+                                                        .foregroundColor(selectedExercise == exercise ? .main : .gray)
+                                                    Text(exercise)
                                                 }
-                                                .padding(.vertical, 4)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
                                             }
                                         }
                                     }
-                                    .frame(minHeight: 100, maxHeight: geometry.size.height / 2)
-                                }
+                                }.frame(maxHeight: 500)
                             }
-                            
-                            GroupBox(label: Text("Paramètres")) {
-                                VStack(spacing: 15) {
-                                    ParameterField(title: "Nombre de séries", text: $series)
-                                    ParameterField(title: "Nombre de répétitions", text: $reps)
-                                    ParameterField(title: "Charge", text: $charge)
-                                    ParameterField(title: "Temps de repos", text: $repos)
-                                }
-                                .padding()
-                            }
-                            .frame(maxWidth: .infinity)
-                            
-                            Button(action: {
-                                addExercise()
-                            }) {
-                                Text("Ajouter")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .foregroundColor(.black)
-                                    .font(.headline)
-                            }
-                            .buttonStyle(RoundedButtonStyle(width: 350, height: 75, color: Color.main, hoveringColor: Color.green, padding: 2, action: {}))
+                            .frame(minWidth: 300, maxWidth: 300)
                             .padding()
 
+                            Divider()
+
+                            VStack(alignment: .leading, spacing: 30) {
+                                ParameterField(title: "Nombre de séries", text: $series)
+                                ParameterField(title: "Nombre de répétitions", text: $reps)
+                                ParameterField(title: "Charge", text: $charge)
+                                ParameterField(title: "Temps de repos", text: $repos)
+                                
+                                Button(action: {}) {
+                                    Text("Ajouter")
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .foregroundColor(.black)
+                                        .font(.headline)
+                                }
+                                .buttonStyle(RoundedButtonStyle(width: 125, height: 50, color: Color.main, hoveringColor: Color.green, padding: 2, action: { addExercise()
+                                }))
+                            }
+                            .padding()
+                            .frame(minWidth: 150, maxWidth: 150)
                         }
                         
-                        GroupBox() {
-                            ScrollView {
-                                VStack {
-                                    Text("Exercices ajoutés :")
-                                        .font(.headline)
-                                        .padding(.bottom, 10)
-                                    
-                                    ForEach(addedExercises.sorted(), id: \.self) { exercise in
+                    }
+
+                    // Deuxième groupe (exercices ajoutés)
+                    GroupBox {
+                        ScrollView{
+                            VStack {
+                                Text("Exercices ajoutés :")
+                                    .font(.headline)
+                                    .padding(.bottom, 10)
+                                
+                                if addedExercises.isEmpty {
+                                    Text("Aucun exercice ajouté")
+                                        .foregroundColor(.gray)
+                                } else {
+                                    ForEach(addedExercises) { exercise in
                                         VStack {
-                                            Text(exercise)
-                                                .font(.headline)
-                                                .frame(maxWidth: .infinity, alignment: .center)
-                                            
-                                            VStack {
-                                                Text("Séries: \(series)")
-                                                Text("Répétitions: \(reps)")
-                                                Text("Charge: \(charge)")
-                                                Text("Repos: \(repos)")
+                                            HStack {
+                                                VStack(alignment: .leading) {
+                                                    Text(exercise.name)
+                                                        .font(.headline)
+                                                    Text("Séries: \(exercise.series), Répétitions: \(exercise.reps)")
+                                                        .foregroundColor(.black)
+                                                    Text("Charge: \(exercise.charge), Repos: \(exercise.repos)")
+                                                        .foregroundColor(.black)
+                                                }
+                                                Spacer()
+                                                Button(action: {}) {
+                                                    Image(systemName: "trash")
+                                                        .foregroundColor(.black)
+                                                }
+                                                .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red, action: { removeExercise(exercise) }))
                                             }
-                                            .foregroundColor(.gray)
-                                            .frame(maxWidth: .infinity, alignment: .center)
+                                            .padding()
+                                            .background(Color.gray.opacity(0.2))
+                                            .cornerRadius(8)
                                         }
-                                        .padding()
                                         .background(Color.main)
-                                        .cornerRadius(8)
-                                        .padding(10)
-                                        .frame(maxWidth: .infinity)
-                                        .onTapGesture {
-                                            () //Vas devoir supprimer de la list
-                                        }
+                                        .padding(.horizontal)
                                     }
                                 }
                             }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .cornerRadius(8)
+                            .frame(maxWidth: .infinity)
+                            .padding()
                         }
-                        .frame(maxWidth: geometry.size.width / 2)
                     }
-                    .frame(maxHeight: .infinity)
-                    .padding(10)
                 }
+                .frame(maxWidth: .infinity)
             }
         }
+        .padding()
     }
+
     
     private func addExercise() {
-        if let exercise = selectedExercise {
-            addedExercises.insert(exercise)
-            selectedExercise = nil
+        guard let exerciseName = selectedExercise, !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
+            return
         }
+        
+        let newExercise = Exercise(
+            name: exerciseName,
+            series: series,
+            reps: reps,
+            charge: charge,
+            repos: repos
+        )
+        
+        addedExercises.append(newExercise)
+        resetFields()
     }
+    
+    private func removeExercise(_ exercise: Exercise) {
+        addedExercises.removeAll { $0.id == exercise.id }
+    }
+    
+    private func resetFields() {
+        selectedExercise = nil
+        series = ""
+        reps = ""
+        charge = ""
+        repos = ""
+    }
+}
+
+struct Exercise: Identifiable {
+    let id = UUID()
+    let name: String
+    let series: String
+    let reps: String
+    let charge: String
+    let repos: String
 }
 
 struct ParameterField: View {
     var title: String
     @Binding var text: String
+    @FocusState private var isTyping: Bool
+    
+    let exerciseTypes = ["5", "12", "25 lbs", "120 (s)"]
+    let index: Int
+    
+    init(title: String, text: Binding<String>, index: Int = 0) {
+        self.title = title
+        self._text = text
+        self.index = index
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
             Text(title)
                 .font(.headline)
             
-            TextField(title, text: $text)
-                .textFieldStyle(PlainTextFieldStyle())
-                .padding(8)
-                .background(Color.white)
-                .cornerRadius(5)
-                .overlay(RoundedRectangle(cornerRadius: 5)
-                    .stroke(Color.main.opacity(0.5), lineWidth: 2))
+            TextFieldStyle(
+                title: index < exerciseTypes.count ? exerciseTypes[index] : "",
+                text: $text,
+                isTyping: $isTyping
+            )
         }
     }
 }
