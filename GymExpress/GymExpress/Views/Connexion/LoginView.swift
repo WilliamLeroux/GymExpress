@@ -41,7 +41,7 @@ struct LoginView: View {
                                     .shadow(radius: 5)
                                 Divider()
                                 VStack(alignment: .center, spacing: 20) {
-                                    TextFieldStyle(title: "Adresse courriel", text: $email, colorStroke: Color.main, isTyping: $isTypingEmail)
+                                    TextFieldStyle(title: "Adresse courriel", text: $email, isTyping: $isTypingEmail)
                                         
                                     SecureField("Mot de passe", text: $password)
                                         .padding()
