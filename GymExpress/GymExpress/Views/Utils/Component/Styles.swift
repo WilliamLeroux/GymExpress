@@ -72,3 +72,35 @@ struct WorkoutBoxStyle: GroupBoxStyle {
         Spacer()
     }
 }
+
+struct TextFieldStyle: View {
+    var title: String
+    var text: Binding<String>
+    var width: CGFloat
+    var colorBackground: Color
+    var colorStroke: Color
+    var isTyping: FocusState<Bool>.Binding
+    
+    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: FocusState<Bool>.Binding) {
+        self.title = title
+        self.text = text
+        self.width = width
+        self.colorBackground = colorBackground
+        self.colorStroke = colorStroke
+        self.isTyping = isTyping
+    }
+    
+    var body: some View {
+        TextField("\(title)", text: text)
+            .padding()
+            .frame(maxWidth: width)
+            .background(colorBackground)
+            .textFieldStyle(PlainTextFieldStyle())
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(colorStroke, lineWidth: isTyping.wrappedValue ? 4 : 1)
+            )
+            .focused(isTyping)
+    }
+    
+}
