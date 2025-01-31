@@ -16,3 +16,9 @@ struct EmployesView: View {
 #Preview {
     EmployesView()
 }
+
+struct Employes {
+    var name: String
+    var lastName: String
+    var salary: CGFloat
+}
