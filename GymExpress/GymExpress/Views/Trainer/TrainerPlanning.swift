@@ -103,11 +103,12 @@ struct TrainingPlaningView: View {
                                 HStack(alignment: .top, spacing: 10) {
                                     ForEach(weekDays, id: \.self) { day in
                                         DayColumn(day: day)
-                                            .frame(width: 80)
                                     }
                                 }
+                                .frame(alignment: .center)
                                 .padding()
                             }
+                            .frame(maxHeight: .infinity, alignment: .center)
                         }
                     }
                 }
@@ -167,7 +168,7 @@ struct DayColumn: View {
                         .foregroundColor(.black)
                         .imageScale(.large)
                 }
-                .buttonStyle(RoundedButtonStyle(width: 30, height: 30, action: {
+                .buttonStyle(RoundedButtonStyle(width: 30, height: 30, padding: 0, action: {
                     showExercisePlan.toggle()
                 }))
                 .sheet(isPresented: $showExercisePlan) {
@@ -179,14 +180,14 @@ struct DayColumn: View {
                                 Text("Sauvegarder")
                                     .font(.headline)
                             }
-                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75, action: {showExercisePlan.toggle()}))
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75, padding: 2 , action: {showExercisePlan.toggle()}))
                             .padding()
                             
                             Button(action: {}) {
                                 Text("Annuler")
                                     .font(.headline)
                             }
-                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75,color: .red.opacity(0.8), hoveringColor: .red ,action: {showExercisePlan.toggle()}))
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 75,color: .red.opacity(0.8), hoveringColor: .red ,padding: 2 , action: {showExercisePlan.toggle()}))
                             .padding()
                         }
                     }
@@ -203,7 +204,7 @@ struct DayColumn: View {
                         .foregroundColor(.black)
                         .imageScale(.large)
                 }
-                .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red , action: {
+                .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red, padding: 0, action: {
                     isDeleteMode.toggle()
                     if isDeleteMode {
                         deleteDay()

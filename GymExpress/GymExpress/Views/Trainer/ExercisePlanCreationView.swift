@@ -105,9 +105,9 @@ struct ExercisePlanCreationView: View {
                                     .foregroundColor(.black)
                                     .font(.headline)
                             }
-                            .buttonStyle(.borderedProminent)
-                            .tint(Color.main)
-                            .cornerRadius(8)
+                            .buttonStyle(RoundedButtonStyle(width: 350, height: 75, color: Color.main, hoveringColor: Color.green, padding: 2, action: {}))
+                            .padding()
+
                         }
                         
                         GroupBox() {
