@@ -95,6 +95,7 @@ struct TextFieldStyle: View {
             .padding()
             .frame(maxWidth: width)
             .background(colorBackground)
+            .cornerRadius(12)
             .textFieldStyle(PlainTextFieldStyle())
             .overlay(
                 RoundedRectangle(cornerRadius: 12)

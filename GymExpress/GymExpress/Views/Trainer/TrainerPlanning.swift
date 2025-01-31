@@ -12,6 +12,8 @@ struct TrainingPlaningView: View {
     @State private var firstName: String = ""
     @State private var selectedClients: [String] = []
     @State private var selectedClient: String? = nil
+    @FocusState private var isTypingLastName: Bool
+    @FocusState private var isTypingFirstName: Bool
     
     let allClients = [
         "John Doe",
@@ -33,16 +35,12 @@ struct TrainingPlaningView: View {
                     VStack(alignment: .leading, spacing: 15) {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Nom :")
-                                .foregroundColor(.secondary)
-                            TextField("Entrez le nom", text: $lastName)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextFieldStyle(title: "Entrez le nom", text: $lastName, isTyping: $isTypingLastName)
                         }
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Prénom :")
-                                .foregroundColor(.secondary)
-                            TextField("Entrez le prénom", text: $firstName)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextFieldStyle(title: "Entrez le prénom", text: $firstName, isTyping: $isTypingFirstName)
                         }
                         
                         Button(action: {
