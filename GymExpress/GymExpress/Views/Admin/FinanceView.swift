@@ -31,32 +31,34 @@ struct FinanceView: View {
                 .padding(.bottom, 10)
             HStack {
                 VStack {
-                    ForEach(membershipData) { data in
-                        Circle()
-                            .frame(width:15, height: 15)
-                            .foregroundStyle(getMemberShipColor(membershipGrade: data.grade))
-                    }
-                }
-                ZStack {
-                    Chart(membershipData) { membership in
-                        SectorMark(
-                            angle: .value("Abonnements", membership.count),
-                            innerRadius: .ratio(0.5), // Ajoute un trou pour un "donut chart"
-                            outerRadius: .ratio(1.0)
-                        )
-                        .foregroundStyle(getMemberShipColor(membershipGrade: membership.grade))
-                        .annotation(position: .overlay) {
-                            Text("\(membership.grade.rawValue)\n\(Int((Double(membership.count) / Double(totalAbonnements)) * 100))%")
-                                .font(.caption)
-                                .foregroundColor(.black)
-                                .bold()
-                                .multilineTextAlignment(.center)
-                        }
-                    }
-                    .frame(width: 400, height: 300) // Ajuste la hauteur du graphique
-                    .padding()
                     Text("Total d'abonné : \(totalAbonnements)")
+                    ForEach(membershipData) { data in
+                        HStack {
+                            Circle()
+                                .frame(width:15, height: 15)
+                                .foregroundStyle(getMemberShipColor(membershipGrade: data.grade))
+                            Text("\(data.count)")
+                        }
+                        
+                    }
                 }
+                Chart(membershipData) { membership in
+                    SectorMark(
+                        angle: .value("Abonnements", membership.count),
+                        innerRadius: .ratio(0.5),
+                        outerRadius: .ratio(1.0)
+                    )
+                    .foregroundStyle(getMemberShipColor(membershipGrade: membership.grade))
+                    .annotation(position: .overlay) {
+                        Text("\(membership.grade.rawValue)\n\(Int((Double(membership.count) / Double(totalAbonnements)) * 100))%")
+                            .font(.caption)
+                            .foregroundColor(.black)
+                            .bold()
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                .frame(width: 400, height: 300)
+                .padding()
             }
         }
     }
