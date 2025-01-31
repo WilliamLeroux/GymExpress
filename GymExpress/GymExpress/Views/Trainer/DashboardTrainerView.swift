@@ -17,30 +17,54 @@ import SwiftUI
 
 struct DashboardTrainerView: View {
     var body: some View {
-        Grid {
-            GridRow {
-                VStack{
-                    HStack{
-                        smallBox(title: "DASHBOARD", view: Text("Allo"))
-                        smallBox(view: Text("Allo"))
+        NavigationStack {
+            Grid {
+                GridRow() {
+                    VStack{
+                        HStack{
+                            smallBox(title: "Planning Edit", view:
+                                        Image(.planning)
+                                .resizable()
+                                .scaledToFit()
+                                .scaleEffect(0.60),
+                                      action: {
+                            } // CRUD du plan d'entraînement du client
+                            )
+                            smallBox(title: "Espace client", view:
+                                        Image(.client)
+                                .resizable()
+                                .scaledToFit()
+                                .scaleEffect(0.60)
+                            )
+                        }
+                        .frame(width: 200)
+                        // Consulter les informations du client, Listes des clients
+                        
+                        HStack(){
+                            smallBox(title: "Horraire", view:
+                                        Image(.appointment)
+                                .resizable()
+                                .scaledToFit()
+                                .scaleEffect(0.60)
+                            ) // Modifier sa plage horaire
+                            
+                            smallBox(title: "CRUD Appointement", view:
+                                        Image(.clientAppointment)
+                                .resizable()
+                                .scaledToFit()
+                                .scaleEffect(0.60)
+                            ) // CRUD Appointment Client
+                        }
+                        .frame(width: 205, alignment: .leading)
                     }
-                    HStack{
-                        smallBox(view: Text("Allo"))
-                        smallBox(view: Text("Allo"))
-                    }
-                    
-                    
+                    mediumBox(title: "Liste client du jour", view: Text("Liste client du jour, liste a point avec heure de depart"))
                 }
-                
-                mediumBox(view: Text("Allo"))
+                GridRow {
+                    longBox(title: "Horraire de la semaine", view: Text("Jour par jours, bloc d'heure."))
+                }
+                .gridCellColumns(3)
             }
-            GridRow {
-                //smallBox(view: Text("Allo"))
-                longBox(view: Text("allo"))
-            }
-            .gridCellColumns(3)
         }
-        
     }
 }
 #Preview {

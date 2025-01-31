@@ -191,7 +191,7 @@ struct DayColumn: View {
                             .padding()
                         }
                     }
-                    .frame(minWidth: 800, minHeight: 700)
+                    .frame(minWidth: 900, minHeight: 700)
                 }
 
                 Button(action: {
