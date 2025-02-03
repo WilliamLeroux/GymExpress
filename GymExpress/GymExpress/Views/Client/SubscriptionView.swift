@@ -19,18 +19,27 @@ struct SubscriptionView: View {
                 ForEach(0..<membership.count, id: \.self) {index in
                     Button(action: { }) {
                         VStack {
-                            HStack {
-                                Text(membership[index].rawValue)
-                                    .font(.system(size: 15, weight: .bold))
-                                Label("arrow", systemImage: "chevron.right.circle")
-                                    .labelStyle(.iconOnly)
-                                    .font(.system(size: 15, weight: .bold))
-                                    .rotationEffect(selectedMembership == index || currentMembership == index ? .degrees(90) : .degrees(0))
-                                    .animation(.easeInOut(duration: 0.2), value: selectedMembership == index)
+                            VStack {
+                                HStack {
+                                    Text(membership[index].rawValue)
+                                        .font(.system(size: 15, weight: .bold))
+                                    Label("arrow", systemImage: "chevron.right.circle")
+                                        .labelStyle(.iconOnly)
+                                        .font(.system(size: 15, weight: .bold))
+                                        .rotationEffect(selectedMembership == index || currentMembership == index ? .degrees(90) : .degrees(0))
+                                        .animation(.easeInOut(duration: 0.2), value: selectedMembership == index)
+                                }
+                                .padding(.top, 10)
+                                
+                                if currentMembership == index {
+                                    Text("Votre abonnement")
+                                        .font(.system(size: 13, weight: .semibold))
+                                }
                             }
-                            .padding(.top, 10)
+                            
                             
                             Spacer()
+                            
                             
                             if (selectedMembership == index || currentMembership == index) {
                                 VStack {
@@ -40,11 +49,26 @@ struct SubscriptionView: View {
                                             .font(.system(size: 13, weight: .semibold))
                                             .foregroundStyle(description > membershipDesc[index].split(separator: ",").count - 1 ? .gray : .black)
                                     }
+                                    
+                                    Spacer()
+                                    
                                     Button(action: {}) {
-                                        Text("Changer de plan")
+                                        VStack {
+                                            Text("Changer de plan")
+                                                .font(.system(size: 13, weight: .semibold))
+                                            Text("\(Utils.shared.getMembershipPrice(membership: membership[index]).formatted(.number.precision(.fractionLength(2))))$")
+                                                .font(.system(size: 10, weight: .regular))
+                                        }
+                                        
                                     }
+                                    .buttonStyle(RoundedButtonStyle(
+                                        width: 150,
+                                        height: 30,
+                                        color: currentMembership == index ? .gray.opacity(0.8) : .main
+                                    ))
+                                    .disabled(currentMembership == index)
                                 }
-                                //.padding(.top, 50)
+                                .padding(.top, 50)
                             }
                             Spacer()
                         }
