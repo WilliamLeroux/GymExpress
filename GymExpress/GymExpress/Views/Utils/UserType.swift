@@ -17,3 +17,11 @@ enum MembershipGrade: String, CaseIterable{
     case silver = "Argent"
     case bronze = "Bronze"
 }
+
+enum EmployesType: String, CaseIterable {
+    case receptionist = "Réceptionniste"
+    case trainer = "Entraîneur"
+    case janitor = "Concierge"
+    case machineRepairer = "Réparateur de machine"
+    case cuisinier = "Cuisinier"
+}
