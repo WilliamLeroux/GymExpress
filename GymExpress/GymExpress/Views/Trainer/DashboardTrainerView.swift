@@ -1,13 +1,5 @@
 //
-//  DashboardClientView.swift
-//  GymExpress
-//
-//  Created by Samuel Oliveira Martel on 2025-01-28.
-//
-
-
-//
-//  DashboardClientView.swift
+//  DashboardTrainerView.swift
 //  GymExpress
 //
 //  Created by Samuel Oliveira Martel on 2025-01-28.

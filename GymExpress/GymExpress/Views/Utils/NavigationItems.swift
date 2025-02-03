@@ -14,6 +14,10 @@ enum NavigationItemAdmin: String, CaseIterable {
 enum NavigationItemTrainer: String, CaseIterable {
     case dashboard = "Accueil"
     case planTrainingPlan = "Créer un entraînement"
+    case clientConsultation = "Espace client"
+    case crudAppointments = "Rendez-vous client"
+    case scheduleTrainer = "Horaires"
+    
 }
 
 enum NavigationItemClient: String, CaseIterable {

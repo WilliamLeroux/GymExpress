@@ -109,3 +109,39 @@ struct TextFieldStyle: View {
     }
     
 }
+
+struct TextFieldNumberStyle: View {
+    var title: String /// Le texte affiché en tant que placeholder du champ de texte.
+    @Binding var text: String /// Texte lié au champ de saisie.
+    var width: CGFloat /// Largeur maximale du champ de texte.
+    var colorBackground: Color /// Couleur de fond du champ de texte.
+    var colorStroke: Color /// Couleur de la bordure du champ de texte.
+    var isTyping: FocusState<Bool>.Binding /// Indique si le champ est actuellement en édition.
+
+    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: FocusState<Bool>.Binding) {
+        self.title = title
+        self._text = text
+        self.width = width
+        self.colorBackground = colorBackground
+        self.colorStroke = colorStroke
+        self.isTyping = isTyping
+    }
+    
+    var body: some View {
+        TextField(title, text: $text)
+            .padding()
+            .frame(maxWidth: width)
+            .background(colorBackground)
+            .cornerRadius(12)
+            .textFieldStyle(PlainTextFieldStyle())
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(colorStroke, lineWidth: isTyping.wrappedValue ? 4 : 1)
+            )
+            .focused(isTyping)
+            .onChange(of: text) {
+                text = text.filter { $0.isNumber }
+            }
+    }
+}
+

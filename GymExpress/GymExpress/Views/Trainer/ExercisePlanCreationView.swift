@@ -17,7 +17,7 @@ struct ExercisePlanCreationView: View {
     @State private var addedExercises: [Exercise] = []
     
     let day: String
-    let exerciseTypes = ["Musculation", "Cardio", "Étirement", "Corps-poids"]
+    let exerciseLegends = ["Musculation", "Cardio", "Étirement", "Corps-poids"]
     
     let exercisesByType: [String: [String]] = [
         "Musculation": [
@@ -79,7 +79,7 @@ struct ExercisePlanCreationView: View {
                         HStack {
                             VStack(alignment: .leading) {
                                 Picker("", selection: $selectedType) {
-                                    ForEach(exerciseTypes, id: \.self) { type in
+                                    ForEach(exerciseLegends, id: \.self) { type in
                                         Text(type).tag(type as String?)
                                     }
                                 }
@@ -96,8 +96,9 @@ struct ExercisePlanCreationView: View {
                                                     Image(systemName: selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
                                                         .foregroundColor(selectedExercise == exercise ? .main : .gray)
                                                     Text(exercise)
+                                                        .font(.title2)
                                                 }
-                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .frame(minWidth: 30,maxWidth: .infinity, alignment: .leading)
                                             }
                                         }
                                     }
@@ -109,10 +110,10 @@ struct ExercisePlanCreationView: View {
                             Divider()
 
                             VStack(alignment: .leading, spacing: 30) {
-                                ParameterField(title: "Nombre de séries", text: $series)
-                                ParameterField(title: "Nombre de répétitions", text: $reps)
-                                ParameterField(title: "Charge", text: $charge)
-                                ParameterField(title: "Temps de repos", text: $repos)
+                                ParameterField(title: "Nombre de séries", exerciseLegends: "3" , text: $series)
+                                ParameterField(title: "Nombre de répétitions", exerciseLegends: "12", text: $reps)
+                                ParameterField(title: "Charge", exerciseLegends: "45 lbs", text: $charge)
+                                ParameterField(title: "Temps de repos", exerciseLegends: "120 (sec)", text: $repos)
                                 
                                 Button(action: {}) {
                                     Text("Ajouter")
@@ -161,10 +162,9 @@ struct ExercisePlanCreationView: View {
                                                 .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red, action: { removeExercise(exercise) }))
                                             }
                                             .padding()
-                                            .background(Color.gray.opacity(0.2))
-                                            .cornerRadius(8)
                                         }
                                         .background(Color.main)
+                                        .cornerRadius(16)
                                         .padding(.horizontal)
                                     }
                                 }
@@ -222,28 +222,27 @@ struct Exercise: Identifiable {
 
 struct ParameterField: View {
     var title: String
+    var exerciseLegends : String
     @Binding var text: String
     @FocusState private var isTyping: Bool
-    
-    let exerciseTypes = ["5", "12", "25 lbs", "120 (s)"]
-    let index: Int
-    
-    init(title: String, text: Binding<String>, index: Int = 0) {
+        
+    init(title: String, exerciseLegends: String ,text: Binding<String>) {
         self.title = title
+        self.exerciseLegends = exerciseLegends
         self._text = text
-        self.index = index
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .center) {
             Text(title)
                 .font(.headline)
             
-            TextFieldStyle(
-                title: index < exerciseTypes.count ? exerciseTypes[index] : "",
+            TextFieldNumberStyle(
+                title: exerciseLegends,
                 text: $text,
                 isTyping: $isTyping
             )
+            .frame(width: 125)
         }
     }
 }

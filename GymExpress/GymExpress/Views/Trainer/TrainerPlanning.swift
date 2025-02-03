@@ -33,23 +33,23 @@ struct TrainingPlaningView: View {
                 // Section de recherche
                 GroupBox {
                     VStack(alignment: .leading, spacing: 15) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Nom :")
-                            TextFieldStyle(title: "Entrez le nom", text: $lastName, isTyping: $isTypingLastName)
+                        Spacer()
+                        HStack(spacing: 16) {
+                            VStack(alignment: .center, spacing: 8) {
+                                TextFieldStyle(title: "Entrez le nom", text: $lastName, isTyping: $isTypingLastName)
+                            }
+
+                            VStack(alignment: .center, spacing: 8) {
+                                TextFieldStyle(title: "Entrez le prénom", text: $firstName, isTyping: $isTypingFirstName)
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .center)
                         
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Prénom :")
-                            TextFieldStyle(title: "Entrez le prénom", text: $firstName, isTyping: $isTypingFirstName)
-                        }
-                        
-                        Button(action: {
-                            searchClients()
-                        }) {
+                        Button(action: {}) {
                             Text("Recherche")
                                 .font(.headline)
                         }
-                        .buttonStyle(RoundedButtonStyle(width: 350, height: 75, action: {
+                        .buttonStyle(RoundedButtonStyle(width: 200, height: 50, action: {
                             searchClients()
                         }))
                         .frame(maxWidth: .infinity)
@@ -62,7 +62,7 @@ struct TrainingPlaningView: View {
                             if selectedClients.isEmpty {
                                 Text("Aucun client trouvé")
                                     .foregroundColor(.secondary)
-                                    .frame(maxWidth: .infinity, minHeight: 100)
+                                    .frame(maxWidth: .infinity, minHeight: 400)
                                     .border(Color.gray.opacity(0.2))
                             } else {
                                 ScrollView {
@@ -79,9 +79,9 @@ struct TrainingPlaningView: View {
                                                 }
                                         }
                                     }
-                                    .frame(maxWidth: .infinity)
+                                    .frame(maxWidth: .infinity, minHeight: 400)
                                 }
-                                .frame(maxHeight: 200)
+                                .frame(maxHeight: selectedClient == nil ? 400 : 100)
                                 .border(Color.gray.opacity(0.2))
                             }
                         }
@@ -97,16 +97,13 @@ struct TrainingPlaningView: View {
                                 .font(.headline)
                                 .padding(.bottom, 10)
                             
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(alignment: .top, spacing: 10) {
-                                    ForEach(weekDays, id: \.self) { day in
-                                        DayColumn(day: day)
-                                    }
+                            HStack(alignment: .top, spacing: 10) {
+                                ForEach(weekDays, id: \.self) { day in
+                                    DayColumn(day: day)
                                 }
-                                .frame(alignment: .center)
-                                .padding()
                             }
-                            .frame(maxHeight: .infinity, alignment: .center)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding()
                         }
                     }
                 }
@@ -145,23 +142,11 @@ struct DayColumn: View {
             
             RoundedRectangle(cornerRadius: 8)
                 .stroke(isDeleteMode ? Color.red : Color.green, lineWidth: 4)
-                .frame(height: 120)
-                .overlay(
-                    ScrollView {
-                        VStack(spacing: 4) {
-                            ForEach(0..<0) { _ in
-                                Text("")
-                            }
-                        }
-                        .padding(4)
-                    }
-                )
+                .frame(width: 105, height: 170)
                 .animation(.easeInOut, value: isDeleteMode)
             
             HStack(spacing: 15) {
-                Button(action: {
-                    showExercisePlan.toggle()
-                }) {
+                Button(action: {}) {
                     Image(systemName: "pencil")
                         .foregroundColor(.black)
                         .imageScale(.large)
@@ -192,12 +177,7 @@ struct DayColumn: View {
                     .frame(minWidth: 900, minHeight: 700)
                 }
 
-                Button(action: {
-                    isDeleteMode.toggle()
-                    if isDeleteMode {
-                        deleteDay()
-                    }
-                }) {
+                Button(action: {}) {
                     Image(systemName: "trash")
                         .foregroundColor(.black)
                         .imageScale(.large)
@@ -211,6 +191,7 @@ struct DayColumn: View {
             }
             .padding(.top, 5)
         }
+        .frame(maxWidth: .infinity)
     }
     
     private func editDay() {
