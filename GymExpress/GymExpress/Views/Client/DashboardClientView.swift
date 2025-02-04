@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DashboardClientView: View {
+    private var navController = NavigationController.shared
     var body: some View {
         NavigationStack {
             Grid {
@@ -20,7 +21,8 @@ struct DashboardClientView: View {
                                 .scaledToFit()
                                 .scaleEffect(0.60),
                                      action: {
-                            }
+                                self.navController.selectedIndex = NavigationItemClient.progress.rawValue
+                                    }
                             )
                             smallBox(title: "Gérer mon abonnement", view:
                                         Image(.subscription)
