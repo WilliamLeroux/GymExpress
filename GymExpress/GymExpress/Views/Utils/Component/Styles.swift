@@ -144,3 +144,53 @@ struct TextFieldNumberStyle: View {
             }
     }
 }
+
+struct ConfirmationSheet: View {
+    var title: String /// Titre de la sheet
+    var message: String /// Message
+    var cancelAction: Action /// Action lors du retour en arrière
+    var confirmAction: Action /// Action lors de la confirmation
+    
+    /// - Parameters:
+    ///   - title: Titre de la sheet
+    ///   - message: Message
+    ///   - cancelAction: Action lors du retour en arrière
+    ///   - confirmAction: Action lors de la confirmation
+    init(title: String, message: String, cancelAction: @escaping Action, confirmAction: @escaping Action) {
+        self.title = title
+        self.message = message
+        self.cancelAction = cancelAction
+        self.confirmAction = confirmAction
+    }
+    
+    var body: some View {
+        VStack {
+            Text(title)
+                .font(.title)
+            
+            Text(message)
+            HStack {
+                Button(action: {}){
+                    Text("Retour")
+                }
+                .buttonStyle(RoundedButtonStyle(width: 75, height: 40, color: Color.main, hoveringColor: Color.green, action: {
+                    cancelAction()
+                }))
+                
+                Button(action: {}){
+                    Text("Confirmer")
+                }
+                .buttonStyle(RoundedButtonStyle(
+                    width: 75,
+                    height: 40,
+                    color: Color.red,
+                    hoveringColor: Color.red.opacity(0.8),
+                    action: {
+                        confirmAction()
+                    })
+                )
+            }
+        }
+        .padding(20)
+    }
+}
