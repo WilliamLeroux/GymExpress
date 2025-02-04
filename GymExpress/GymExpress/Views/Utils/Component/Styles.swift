@@ -12,14 +12,14 @@ struct RoundedButtonStyle: ButtonStyle {
     var height: CGFloat /// Height du bouton
     var color: Color /// Couleur de fond du bouton
     var hoveringColor: Color /// Couleur de fond du bouton lorsqu'il est survolé
-    var action: () -> Void /// Action lors d'un clique
+    var action: Action /// Action lors d'un clique
     var padding: CGFloat /// Padding du bouton
     var borderColor: Color /// Couleur de la bordure
     var borderWidth: CGFloat /// Largeur de la bordure
     @State var isPressed: Bool = false /// Booléen siginfiant que le bouton est cliqué
     @State private var isHovered: Bool = false /// Booléen signifiant que le bouton est survolé
     
-    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .green , padding: CGFloat = 5, borderColor: Color = .clear, borderWidth: CGFloat = 0, action: @escaping () -> Void = {}) {
+    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .green , padding: CGFloat = 5, borderColor: Color = .clear, borderWidth: CGFloat = 0, action: @escaping Action = {}) {
         self.action = action
         self.width = width
         self.height = height
@@ -83,9 +83,9 @@ struct TextFieldStyle: View {
     var width: CGFloat
     var colorBackground: Color
     var colorStroke: Color
-    var isTyping: FocusState<Bool>.Binding
+    var isTyping: Focus
     
-    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: FocusState<Bool>.Binding) {
+    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: Focus) {
         self.title = title
         self.text = text
         self.width = width
@@ -116,9 +116,9 @@ struct TextFieldNumberStyle: View {
     var width: CGFloat /// Largeur maximale du champ de texte.
     var colorBackground: Color /// Couleur de fond du champ de texte.
     var colorStroke: Color /// Couleur de la bordure du champ de texte.
-    var isTyping: FocusState<Bool>.Binding /// Indique si le champ est actuellement en édition.
+    var isTyping: Focus /// Indique si le champ est actuellement en édition.
 
-    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: FocusState<Bool>.Binding) {
+    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: Focus) {
         self.title = title
         self._text = text
         self.width = width
