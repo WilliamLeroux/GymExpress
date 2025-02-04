@@ -12,14 +12,14 @@ struct RoundedButtonStyle: ButtonStyle {
     var height: CGFloat /// Height du bouton
     var color: Color /// Couleur de fond du bouton
     var hoveringColor: Color /// Couleur de fond du bouton lorsqu'il est survolé
-    var action: () -> Void /// Action lors d'un clique
+    var action: Action /// Action lors d'un clique
     var padding: CGFloat /// Padding du bouton
     var borderColor: Color /// Couleur de la bordure
     var borderWidth: CGFloat /// Largeur de la bordure
     @State var isPressed: Bool = false /// Booléen siginfiant que le bouton est cliqué
     @State private var isHovered: Bool = false /// Booléen signifiant que le bouton est survolé
     
-    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .green , padding: CGFloat = 5, borderColor: Color = .clear, borderWidth: CGFloat = 0, action: @escaping () -> Void = {}) {
+    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .green , padding: CGFloat = 5, borderColor: Color = .clear, borderWidth: CGFloat = 0, action: @escaping Action = {}) {
         self.action = action
         self.width = width
         self.height = height
@@ -167,22 +167,29 @@ struct TextFieldNumberStyle: View {
 
 struct ConfirmationSheet: View {
     var title: String
-    var target: String
-    var 
+    var message: String
+    var cancelAction: Action
+    var confirmAction: Action
+    
+    init(title: String, message: String, cancelAction: @escaping Action, confirmAction: @escaping Action) {
+        self.title = title
+        self.message = message
+        self.cancelAction = cancelAction
+        self.confirmAction = confirmAction
+    }
     
     var body: some View {
         VStack {
-            Text("Annulation")
+            Text(title)
                 .font(.title)
             
-            Text("Voulez-vous vraiment annuler \(appointmentList[selectedIndex]) ?")
+            Text(message)
             HStack {
                 Button(action: {}){
                     Text("Retour")
                 }
                 .buttonStyle(RoundedButtonStyle(width: 75, height: 40, color: Color.main, hoveringColor: Color.green, action: {
-                    selectedIndex = -1
-                    deleteAlert = false
+                    cancelAction()
                 }))
                 
                 Button(action: {}){
@@ -194,9 +201,7 @@ struct ConfirmationSheet: View {
                     color: Color.red,
                     hoveringColor: Color.red.opacity(0.8),
                     action: {
-                        selectedIndex = -1
-                        deleteAlert = false
-                        // Ajouter la suppression
+                        confirmAction()
                     })
                 )
             }
