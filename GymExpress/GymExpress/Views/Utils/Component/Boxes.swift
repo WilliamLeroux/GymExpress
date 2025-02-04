@@ -39,7 +39,7 @@ extension View {
     func mediumBox(title: String = " ", view: some View, action: @escaping Action = {}) -> some View {
         return GroupBox(label: Text(title)) {
             view
-                .frame(width: 216, height: 216)
+                .frame(width: 416, height: 416)
         }
         .groupBoxStyle(ClearMediumBoxStyle())
         .modifier(HoverState())
