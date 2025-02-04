@@ -78,6 +78,9 @@ struct RootNavigation: View {
                     case "Employés":
                         EmployesView()
                             .frame(minWidth: 800, maxWidth: 900)
+                    case "Gérer abonnements":
+                        SubscriptionEditView()
+                            .frame(minWidth: 800, maxWidth: 900)
                     case "Rendez-vous":
                         AppointmentView()
                             .frame(minWidth: 800, maxWidth: 900)
