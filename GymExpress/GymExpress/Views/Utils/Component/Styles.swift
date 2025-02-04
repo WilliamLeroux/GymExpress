@@ -12,14 +12,14 @@ struct RoundedButtonStyle: ButtonStyle {
     var height: CGFloat /// Height du bouton
     var color: Color /// Couleur de fond du bouton
     var hoveringColor: Color /// Couleur de fond du bouton lorsqu'il est survolé
-    var action: () -> Void /// Action lors d'un clique
+    var action: Action /// Action lors d'un clique
     var padding: CGFloat /// Padding du bouton
     var borderColor: Color /// Couleur de la bordure
     var borderWidth: CGFloat /// Largeur de la bordure
     @State var isPressed: Bool = false /// Booléen siginfiant que le bouton est cliqué
     @State private var isHovered: Bool = false /// Booléen signifiant que le bouton est survolé
     
-    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .green , padding: CGFloat = 5, borderColor: Color = .clear, borderWidth: CGFloat = 0, action: @escaping () -> Void = {}) {
+    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .green , padding: CGFloat = 5, borderColor: Color = .clear, borderWidth: CGFloat = 0, action: @escaping Action = {}) {
         self.action = action
         self.width = width
         self.height = height
@@ -83,9 +83,9 @@ struct TextFieldStyle: View {
     var width: CGFloat
     var colorBackground: Color
     var colorStroke: Color
-    var isTyping: FocusState<Bool>.Binding
+    var isTyping: Focus
     
-    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: FocusState<Bool>.Binding) {
+    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: Focus) {
         self.title = title
         self.text = text
         self.width = width
@@ -116,9 +116,9 @@ struct TextFieldNumberStyle: View {
     var width: CGFloat /// Largeur maximale du champ de texte.
     var colorBackground: Color /// Couleur de fond du champ de texte.
     var colorStroke: Color /// Couleur de la bordure du champ de texte.
-    var isTyping: FocusState<Bool>.Binding /// Indique si le champ est actuellement en édition.
+    var isTyping: Focus /// Indique si le champ est actuellement en édition.
 
-    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: FocusState<Bool>.Binding) {
+    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: Focus) {
         self.title = title
         self._text = text
         self.width = width
@@ -142,5 +142,55 @@ struct TextFieldNumberStyle: View {
             .onChange(of: text) {
                 text = text.filter { $0.isNumber }
             }
+    }
+}
+
+struct ConfirmationSheet: View {
+    var title: String /// Titre de la sheet
+    var message: String /// Message
+    var cancelAction: Action /// Action lors du retour en arrière
+    var confirmAction: Action /// Action lors de la confirmation
+    
+    /// - Parameters:
+    ///   - title: Titre de la sheet
+    ///   - message: Message
+    ///   - cancelAction: Action lors du retour en arrière
+    ///   - confirmAction: Action lors de la confirmation
+    init(title: String, message: String, cancelAction: @escaping Action, confirmAction: @escaping Action) {
+        self.title = title
+        self.message = message
+        self.cancelAction = cancelAction
+        self.confirmAction = confirmAction
+    }
+    
+    var body: some View {
+        VStack {
+            Text(title)
+                .font(.title)
+            
+            Text(message)
+            HStack {
+                Button(action: {}){
+                    Text("Retour")
+                }
+                .buttonStyle(RoundedButtonStyle(width: 75, height: 40, color: Color.main, hoveringColor: Color.green, action: {
+                    cancelAction()
+                }))
+                
+                Button(action: {}){
+                    Text("Confirmer")
+                }
+                .buttonStyle(RoundedButtonStyle(
+                    width: 75,
+                    height: 40,
+                    color: Color.red,
+                    hoveringColor: Color.red.opacity(0.8),
+                    action: {
+                        confirmAction()
+                    })
+                )
+            }
+        }
+        .padding(20)
     }
 }
