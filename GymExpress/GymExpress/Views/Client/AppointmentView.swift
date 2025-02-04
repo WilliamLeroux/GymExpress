@@ -65,37 +65,19 @@ struct AppointmentView: View {
                 }
             }
             .sheet(isPresented: $deleteAlert) { // Sheet confirmation pour annuler un rendez-vous
-                VStack {
-                    Text("Annulation")
-                        .font(.title)
-                    
-                    Text("Voulez-vous vraiment annuler \(appointmentList[selectedIndex]) ?")
-                    HStack {
-                        Button(action: {}){
-                            Text("Retour")
-                        }
-                        .buttonStyle(RoundedButtonStyle(width: 75, height: 40, color: Color.main, hoveringColor: Color.green, action: {
-                            selectedIndex = -1
-                            deleteAlert = false
-                        }))
-                        
-                        Button(action: {}){
-                            Text("Confirmer")
-                        }
-                        .buttonStyle(RoundedButtonStyle(
-                            width: 75,
-                            height: 40,
-                            color: Color.red,
-                            hoveringColor: Color.red.opacity(0.8),
-                            action: {
-                                selectedIndex = -1
-                                deleteAlert = false
-                                // Ajouter la suppression
-                            })
-                        )
+                ConfirmationSheet(
+                    title: "Annulation",
+                    message: "Voulez-vous vraiment annuler \(appointmentList[selectedIndex]) ?",
+                    cancelAction: {
+                        selectedIndex = -1
+                        deleteAlert = false}
+                    ,
+                    confirmAction: {
+                        selectedIndex = -1
+                        deleteAlert = false
+                        // Ajouter suppresion
                     }
-                }
-                .padding(20)
+                )
             }
             .sheet(isPresented: $editAlert) { // Sheet pour la modification de rendez-vous
                 VStack {
