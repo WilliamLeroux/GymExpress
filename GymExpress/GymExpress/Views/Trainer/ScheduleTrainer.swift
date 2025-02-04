@@ -16,7 +16,8 @@ struct Event: Identifiable {
 struct ScheduleTrainer: View {
     
     @State private var startOfWeek: Date = Date()
-        
+    @State private var keyboardMonitor: Any?
+
     let events: [Event] = [
         Event(startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement"),
         Event(startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion")
@@ -111,8 +112,8 @@ struct ScheduleTrainer: View {
     }
     
     func changeWeek(by value: Int) {
-            startOfWeek = Calendar.current.date(byAdding: .weekOfYear, value: value, to: startOfWeek) ?? startOfWeek
-        }
+        startOfWeek = Calendar.current.date(byAdding: .weekOfYear, value: value, to: startOfWeek) ?? startOfWeek
+    }
     
     func calendarDate(for index: Int) -> Date {
         let calendar = Calendar.current
@@ -159,7 +160,7 @@ struct ScheduleTrainer: View {
     }
     
     func addKeyboardListener() {
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+        keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             switch event.keyCode {
             case 123: // Flèche gauche
                 changeWeek(by: -1)
@@ -173,7 +174,10 @@ struct ScheduleTrainer: View {
     }
     
     func removeKeyboardListener() {
-        NSEvent.removeMonitor(self)
+        if let monitor = keyboardMonitor {
+            NSEvent.removeMonitor(monitor)
+            keyboardMonitor = nil
+        }
     }
 }
 
