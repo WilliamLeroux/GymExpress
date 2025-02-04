@@ -144,4 +144,3 @@ struct TextFieldNumberStyle: View {
             }
     }
 }
-
