@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct RootNavigation: View {
-    @State private var selectedItem : String? = "Accueil" // item sélectionné
-    @State private var hoveredItem: String? = nil
+    @State private var hoveredItem: String? = nil /// Item survolé
+    @ObservedObject private var controller = NavigationController.shared /// Controlleur de navigation
     
-    private var userType: UserType // Type d'utilisateur
-    private var navOption: [String] = [] // Liste des options
+    private var userType: UserType /// Type d'utilisateur
+    private var navOption: [String] = [] /// Liste des options
     
     init (userType: UserType = .trainer) {
         self.userType = userType
@@ -41,12 +41,12 @@ struct RootNavigation: View {
                                 .padding(.vertical, 30)
                                 .background(hoveredItem == item ? Color.gray.opacity(0.3) : Color.clear)
                                 .onTapGesture {
-                                    selectedItem = item
+                                    controller.selectedIndex = item
                                 }
                                 .onHover { hovering in
                                     hoveredItem = hovering ? item : nil
                                 }
-                                .paletteSelectionEffect(item == selectedItem)
+                                .paletteSelectionEffect(item == controller.selectedIndex)
                         }
                     }
                     .listStyle(.sidebar)
@@ -60,7 +60,7 @@ struct RootNavigation: View {
             
             }
             detail: {
-                if let selectedItem = selectedItem {
+                if let selectedItem = controller.selectedIndex {
                     switch selectedItem {
                     case "Finances":
                         FinanceView()
