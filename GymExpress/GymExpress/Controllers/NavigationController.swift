@@ -7,9 +7,10 @@
 
 import SwiftUI
 
+/// Controlleur de la navigation
 class NavigationController: ObservableObject {
-    static let shared = NavigationController()
-    @Published var selectedIndex: String? = "Accueil"
+    static let shared = NavigationController() /// Singleton
+    @Published var selectedIndex: String? = "Accueil" /// Index sélectionné
     
     private init(){}
 }

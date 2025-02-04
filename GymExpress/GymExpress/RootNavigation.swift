@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct RootNavigation: View {
-    @State private var hoveredItem: String? = nil
-    @ObservedObject private var controller = NavigationController.shared
+    @State private var hoveredItem: String? = nil /// Item survolé
+    @ObservedObject private var controller = NavigationController.shared /// Controlleur de navigation
     
-    private var userType: UserType // Type d'utilisateur
-    private var navOption: [String] = [] // Liste des options
+    private var userType: UserType /// Type d'utilisateur
+    private var navOption: [String] = [] /// Liste des options
     
-    init (userType: UserType = .client) {
+    /// - Parameter userType: Type d'utilisateur
+    init (userType: UserType = .admin) {
         self.userType = userType
         self.navOption = Utils.shared.getNavOptions(userType: userType)
     }
