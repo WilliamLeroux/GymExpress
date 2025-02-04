@@ -16,11 +16,20 @@ struct ProgressView: View {
                                            Objective(objective: "objectif 3", initValue: 2, valueList: [ObjectiveData(value: 10, year: 2025, month: 2, day: 20), ObjectiveData(value: 20, year: 2025, month: 3, day: 10), ObjectiveData(value: 30, year: 2025, month: 3, day: 20)], maxValue: 100, yearStart: 2025, monthStart: 1, dayStart: 1, yearEnd: 2026, monthEnd: 1, dayEnd: 1)
     ]
     @State private var isShowingSheet: Bool = false
+    @State private var isShowingSheetData: Bool = false
     @State private var newObjective: String = ""
     @State private var selectedStartDate: Date = Date()
     @State private var selectedEndDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+    @State private var initialValue: String = ""
+    @State private var maxValue: String = ""
+    @State private var newValue: String = ""
+    @State private var dateValue: Date = Date()
+    
     
     @FocusState private var isFocused: Bool
+    @FocusState private var isFocusedInitial: Bool
+    @FocusState private var isFocusedMax: Bool
+    @FocusState private var isFocusedNewData: Bool
     
     var body: some View {
         GroupBox {
@@ -59,7 +68,20 @@ struct ProgressView: View {
                                             displayedComponents: [.date]
                                         )
                                         .datePickerStyle(.stepperField)
+                                        TextFieldStyle(title: "Valeur de base", text: $initialValue, isTyping: $isFocusedInitial)
                                         
+                                        TextFieldStyle(title: "Objectif", text: $maxValue, isTyping: $isFocusedMax)
+                                        
+                                        Button(action: {}) {
+                                            Text("Créer")
+                                        }
+                                        .buttonStyle(RoundedButtonStyle(
+                                            width: 75,
+                                            height: 30,
+                                            action: {
+                                                isShowingSheet.toggle()
+                                            }
+                                        ))
                                     }
                                 }
                             }
@@ -69,8 +91,54 @@ struct ProgressView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                                     
                 ForEach(objectives, id: \.self) {index in
-                    Text(index.objective)
-                        .font(.system(size: 12, weight: .semibold))
+                    HStack {
+                        Text(index.objective)
+                            .font(.system(size: 12, weight: .semibold))
+                        Spacer()
+                        HStack {
+                            Button(action: {}) {
+                                Image(systemName: "plus")
+                            }
+                            .buttonStyle(RoundedButtonStyle(width: 30, height: 30, action: {
+                                isShowingSheetData.toggle()
+                            }))
+                            .sheet(isPresented: $isShowingSheetData) {
+                                VStack {
+                                    Text("Ajout de donnée")
+                                        .font(.title)
+                                    TextFieldStyle(title: "Donnée (ex. 10)", text: $newValue, isTyping: $isFocusedNewData)
+                                    DatePicker(
+                                        "Date",
+                                        selection: $dateValue,
+                                        in: DateUtils.shared.getDateRange(),
+                                        displayedComponents: [.date]
+                                    )
+                                    .datePickerStyle(.stepperField)
+                                    
+                                    Button(action: {}) {
+                                        Text("Ajouter")
+                                    }
+                                    .buttonStyle(RoundedButtonStyle(
+                                        width: 75,
+                                        height: 30,
+                                        action: {
+                                            isShowingSheetData.toggle() // Ajouter ajout
+                                        }
+                                    ))
+                                }
+                            }
+                            
+                            Button(action: {}) {
+                                Image(systemName: "trash")
+                            }
+                            .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: Color.red, hoveringColor: Color.red.opacity(0.8), action: {
+                                isShowingSheetData.toggle()
+                            }))
+                        }
+                        
+                    }
+                    
+                    
                     Chart(index.valueList) {
                         LineMark(
                             x: .value("Date", $0.date),

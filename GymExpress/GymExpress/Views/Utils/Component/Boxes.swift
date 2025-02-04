@@ -20,7 +20,7 @@ extension View {
     func smallBox(title: String = " ", view: some View, action: @escaping Action = {}) -> some View {
         return GroupBox(label: Text(title)) {
             view
-                .frame(width: 100, height: 100)
+                .frame(width: 200, height: 200)
         }
         .groupBoxStyle(ClearSmallBoxStyle())
         .modifier(HoverState())
@@ -39,7 +39,7 @@ extension View {
     func mediumBox(title: String = " ", view: some View, action: @escaping Action = {}) -> some View {
         return GroupBox(label: Text(title)) {
             view
-                .frame(width: 208, height: 208)
+                .frame(width: 416, height: 416)
         }
         .groupBoxStyle(ClearMediumBoxStyle())
         .modifier(HoverState())
@@ -59,7 +59,7 @@ extension View {
     func longBox(title: String = " ", view: some View, action: @escaping Action = {}) -> some View {
         return GroupBox(label: Text(title)) {
             view
-                .frame(width: 420, height: 100)
+                .frame(width: 835, height: 200)
         }
         .groupBoxStyle(ClearLongBoxStyle())
         .modifier(HoverState())
@@ -84,8 +84,8 @@ struct ClearSmallBoxStyle: GroupBoxStyle {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 5)
-                .frame(width: 100, alignment: .leading) // Même taille que la boite
-                .frame(height: 100, alignment: .top) // Même taille que la boite
+                .frame(width: 200, alignment: .leading) // Même taille que la boite
+                .frame(height: 200, alignment: .top) // Même taille que la boite
         }
     }
 }
@@ -104,8 +104,8 @@ struct ClearMediumBoxStyle: GroupBoxStyle {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 5)
-                .frame(width: 208, alignment: .leading) // Même taille que la boite
-                .frame(height: 208, alignment: .top) // Même taille que la boite
+                .frame(width: 416, alignment: .leading) // Même taille que la boite
+                .frame(height: 416, alignment: .top) // Même taille que la boite
         }
     }
 }
@@ -124,8 +124,8 @@ struct ClearLongBoxStyle: GroupBoxStyle {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 5)
-                .frame(width: 420, alignment: .leading) // Même taille que la boite
-                .frame(height: 100, alignment: .top) // Même taille que la boite
+                .frame(width: 835, alignment: .leading) // Même taille que la boite
+                .frame(height: 200, alignment: .top) // Même taille que la boite
         }
     }
 }

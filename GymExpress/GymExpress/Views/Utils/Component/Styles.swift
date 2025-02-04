@@ -77,6 +77,26 @@ struct WorkoutBoxStyle: GroupBoxStyle {
     }
 }
 
+struct DashboardCalendarBoxStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Spacer()
+        VStack(alignment: .leading) {
+            configuration.label
+                .padding(.top, 5)
+                .padding(.leading, 10)
+                .font(.system(size: 15, weight: .bold))
+            configuration.content
+                .background(.clear)
+                .padding(.vertical, 5)
+                .padding(.horizontal, 10)
+                .cornerRadius(15)
+            Spacer()
+        }
+        .background(.clear)
+        Spacer()
+    }
+}
+
 struct TextFieldStyle: View {
     var title: String
     var text: Binding<String>
@@ -142,5 +162,45 @@ struct TextFieldNumberStyle: View {
             .onChange(of: text) {
                 text = text.filter { $0.isNumber }
             }
+    }
+}
+
+struct ConfirmationSheet: View {
+    var title: String
+    var target: String
+    var 
+    
+    var body: some View {
+        VStack {
+            Text("Annulation")
+                .font(.title)
+            
+            Text("Voulez-vous vraiment annuler \(appointmentList[selectedIndex]) ?")
+            HStack {
+                Button(action: {}){
+                    Text("Retour")
+                }
+                .buttonStyle(RoundedButtonStyle(width: 75, height: 40, color: Color.main, hoveringColor: Color.green, action: {
+                    selectedIndex = -1
+                    deleteAlert = false
+                }))
+                
+                Button(action: {}){
+                    Text("Confirmer")
+                }
+                .buttonStyle(RoundedButtonStyle(
+                    width: 75,
+                    height: 40,
+                    color: Color.red,
+                    hoveringColor: Color.red.opacity(0.8),
+                    action: {
+                        selectedIndex = -1
+                        deleteAlert = false
+                        // Ajouter la suppression
+                    })
+                )
+            }
+        }
+        .padding(20)
     }
 }
