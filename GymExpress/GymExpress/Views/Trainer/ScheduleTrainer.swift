@@ -17,7 +17,8 @@ struct ScheduleTrainer: View {
     
     @State private var startOfWeek: Date = Date()
     @State private var keyboardMonitor: Any?
-
+    @State private var showAddEventSheet = false
+    
     let events: [Event] = [
         Event(startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement"),
         Event(startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion")
@@ -65,6 +66,15 @@ struct ScheduleTrainer: View {
                             .foregroundStyle(Calendar.current.isDate(day, inSameDayAs: Date()) ? .red : .black)
                             .background(Calendar.current.isDate(day, inSameDayAs: Date()) ? .red.opacity(0.1) : .clear)
                             .cornerRadius(16)
+                            .onTapGesture {
+                                showAddEventSheet = true
+                            }
+                            
+                            .sheet(isPresented: $showAddEventSheet) {
+                                AddEventSheetView(isPresented: $showAddEventSheet)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            }
+                            
                             ZStack(alignment: .topLeading) {
                                 VStack(alignment: .center, spacing: 0) {
                                     ForEach(6..<23) { hour in
