@@ -15,6 +15,7 @@ struct EmployesView: View {
     @State private var selectedEmployeType: EmployesType = .trainer
     
     @State private var isShowEditSheet: Bool = false
+    @State private var isShowAddSheet: Bool = false
     @State private var selectedEmploye: Employes? = nil
     
     @State var allEmployes = [ Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
@@ -36,7 +37,9 @@ struct EmployesView: View {
             HStack{
                 Button("Ajouter un employé") {
                 }
-                .buttonStyle(RoundedButtonStyle(width: 150))
+                .buttonStyle(RoundedButtonStyle(width: 150, action: {
+                    isShowAddSheet.toggle()
+                }))
                 TextFieldStyle(title: "Rechercher un employé", text: $search, isTyping: $isTypingSearch)
                     .padding(.vertical, 25)
                 Picker("", selection: $selectedEmployeType) {
@@ -77,6 +80,9 @@ struct EmployesView: View {
                         allEmployes[index] = updatedEmploye
                     }
                 })
+        }
+        .sheet(isPresented: $isShowAddSheet) {
+            AddEmployeSheet()
         }
     }
 }
