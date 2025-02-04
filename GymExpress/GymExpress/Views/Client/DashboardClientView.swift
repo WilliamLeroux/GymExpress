@@ -10,6 +10,8 @@ import SwiftUI
 struct DashboardClientView: View {
     private var navController = NavigationController.shared
     @State var freqList: [Bool] = [false, true, true, false, false, true, false]
+    @State var hasWorkout: Bool = true
+    @State var workout: [String] = ["a", "b", "c", "d", "e", "f", "g"]
     
     var body: some View {
         NavigationStack {
@@ -55,7 +57,7 @@ struct DashboardClientView: View {
                     }
                     mediumBox(
                         title: "Plan d'entraînement",
-                        view: Text("Allo"),
+                        view: workoutPreview(),
                         action: {
                             self.navController.selectedIndex = NavigationItemClient.training.rawValue
                         }
@@ -109,7 +111,37 @@ extension DashboardClientView {
                 }
             }
             .frame(width: geometry.frame(in: .local).width, height: geometry.frame(in: .local).height)
-            
+        }
+    }
+    
+    func workoutPreview() -> some View {
+        GeometryReader { geometry in
+            VStack {
+                if !hasWorkout {
+                    Label("Aucun entraînment aujourd'hui", systemImage: "checkmark")
+                        .labelStyle(.titleOnly)
+                } else {
+                        ForEach(0..<workout.count, id: \.self) { index in
+                            HStack {
+                                Label(workout[index], systemImage: "")
+                                    .labelStyle(.titleOnly)
+                                    .font(.caption)
+                                    .fontWeight(.semibold)
+                                Spacer()
+                                    .frame(width: geometry.frame(in: .local).width * 0.2)
+                                Label("45 kg", systemImage: "")
+                                    .labelStyle(.titleOnly)
+                                    .font(.caption)
+                            }
+                            
+                            if index != workout.count - 1 {
+                                Divider()
+                            }
+                        }
+                }
+                
+            }
+            .frame(width: geometry.frame(in: .local).width, height: geometry.frame(in: .local).height, alignment: .center)
         }
     }
 }

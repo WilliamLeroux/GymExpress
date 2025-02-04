@@ -17,6 +17,7 @@ struct ProgressView: View {
     ]
     @State private var isShowingSheet: Bool = false
     @State private var isShowingSheetData: Bool = false
+    @State private var isShowingSheetConfirmation: Bool = false
     @State private var newObjective: String = ""
     @State private var selectedStartDate: Date = Date()
     @State private var selectedEndDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
@@ -49,10 +50,11 @@ struct ProgressView: View {
                         VStack {
                             Text("Ajouter un objectif")
                                 .font(.system(size: 18, weight: .semibold))
+                                .padding()
                             GroupBox{
                                 VStack {
-                                    TextFieldStyle(title: "Objectif", text: $newObjective, isTyping: $isFocused)
-                                    HStack {
+                                    TextFieldStyle(title: "Nom de l'objectif", text: $newObjective, isTyping: $isFocused)
+                                    VStack {
                                         DatePicker(
                                             "Date de début",
                                             selection: $selectedStartDate,
@@ -68,22 +70,24 @@ struct ProgressView: View {
                                             displayedComponents: [.date]
                                         )
                                         .datePickerStyle(.stepperField)
-                                        TextFieldStyle(title: "Valeur de base", text: $initialValue, isTyping: $isFocusedInitial)
-                                        
-                                        TextFieldStyle(title: "Objectif", text: $maxValue, isTyping: $isFocusedMax)
-                                        
-                                        Button(action: {}) {
-                                            Text("Créer")
+                                        HStack {
+                                            TextFieldStyle(title: "Valeur de base", text: $initialValue, isTyping: $isFocusedInitial)
+                                            
+                                            TextFieldStyle(title: "Objectif", text: $maxValue, isTyping: $isFocusedMax)
                                         }
-                                        .buttonStyle(RoundedButtonStyle(
-                                            width: 75,
-                                            height: 30,
-                                            action: {
-                                                isShowingSheet.toggle()
-                                            }
-                                        ))
                                     }
+                                    Button(action: {}) {
+                                        Text("Créer")
+                                    }
+                                    .buttonStyle(RoundedButtonStyle(
+                                        width: 75,
+                                        height: 30,
+                                        action: {
+                                            isShowingSheet.toggle()
+                                        }
+                                    ))
                                 }
+                                .padding()
                             }
                         }
                     }
@@ -132,8 +136,20 @@ struct ProgressView: View {
                                 Image(systemName: "trash")
                             }
                             .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: Color.red, hoveringColor: Color.red.opacity(0.8), action: {
-                                isShowingSheetData.toggle()
+                                isShowingSheetConfirmation.toggle()
                             }))
+                            .sheet(isPresented: $isShowingSheetConfirmation) {
+                                ConfirmationSheet(
+                                    title: "Suppression",
+                                    message: "Êtes-vous sûr de vouloir supprimer l'objectif \(index.objective) ?",
+                                    cancelAction: {
+                                        isShowingSheetConfirmation.toggle()
+                                    },
+                                    confirmAction: {
+                                        isShowingSheetConfirmation.toggle()
+                                        // Ajouter la suppression
+                                    })
+                            }
                         }
                         
                     }
