@@ -53,7 +53,7 @@ struct EditClientSheet: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle(width: 150, height: 40, action: {
-                let updatedClient = Client(id: client.id, firstName: firstName, lastName: lastName, email: email, subscription: subscription, paymentMethod: paymentMethod)
+                let updatedClient = Client(id: client.id, firstName: firstName, lastName: lastName, email: email, subscription: subscription, paymentMethod: paymentMethod, appointments: [])
                 onSave(updatedClient)
                 dismiss()
             }))

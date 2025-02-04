@@ -42,7 +42,7 @@ struct AddClientSheet: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(RoundedButtonStyle(width: 150, height: 40, action: {
-                let newClient = Client(id: UUID(), firstName: firstName, lastName: lastName, email: email, subscription: subscription, paymentMethod: paymentMethod)
+                let newClient = Client(id: UUID(), firstName: firstName, lastName: lastName, email: email, subscription: subscription, paymentMethod: paymentMethod, appointments: [])
                 allClients.append(newClient)
                 dismiss()  
             }))
