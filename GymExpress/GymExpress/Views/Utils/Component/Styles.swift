@@ -166,11 +166,16 @@ struct TextFieldNumberStyle: View {
 }
 
 struct ConfirmationSheet: View {
-    var title: String
-    var message: String
-    var cancelAction: Action
-    var confirmAction: Action
+    var title: String /// Titre de la sheet
+    var message: String /// Message
+    var cancelAction: Action /// Action lors du retour en arrière
+    var confirmAction: Action /// Action lors de la confirmation
     
+    /// - Parameters:
+    ///   - title: Titre de la sheet
+    ///   - message: Message
+    ///   - cancelAction: Action lors du retour en arrière
+    ///   - confirmAction: Action lors de la confirmation
     init(title: String, message: String, cancelAction: @escaping Action, confirmAction: @escaping Action) {
         self.title = title
         self.message = message
