@@ -11,11 +11,12 @@ enum UserType: Int {
     case admin = 2
 }
 
-enum MembershipGrade: String, CaseIterable{
+enum MembershipGrade: String, CaseIterable, Identifiable{
     case platinum = "Platine"
     case gold = "Or"
     case silver = "Argent"
     case bronze = "Bronze"
+    var id: String { self.rawValue }
 }
 
 enum EmployesType: String, CaseIterable {
