@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct SubscriptionView: View {
-    @State private var membership: [MembershipGrade] = MembershipGrade.allCases.reversed()
-    @State private var membershipDesc: [String] = ["allo1,allo2", "allo1,allo2,allo3", "allo1,allo2,allo3,allo4", "allo1,allo2,allo3,allo4,allo5"]
-    @State private var currentMembership: Int? = 2
-    @State private var selectedMembership: Int?
+    @State private var membership: [MembershipGrade] = MembershipGrade.allCases.reversed() /// Liste des abonnements
+    @State private var membershipDesc: [String] = ["allo1,allo2", "allo1,allo2,allo3", "allo1,allo2,allo3,allo4", "allo1,allo2,allo3,allo4,allo5"] /// À changer, description des abonnements
+    @State private var currentMembership: Int? = 2 /// À changer, abonnement actuel
+    @State private var selectedMembership: Int? /// Abonnement sélectionné
     
     var body: some View {
         GroupBox {

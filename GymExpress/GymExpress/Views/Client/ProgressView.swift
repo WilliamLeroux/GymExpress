@@ -15,22 +15,21 @@ struct ProgressView: View {
                                            Objective(objective: "objectif 2", initValue: 2, valueList: [ObjectiveData(value: 10, year: 2025, month: 2, day: 10), ObjectiveData(value: 20, year: 2025, month: 2, day: 11)], maxValue: 20, yearStart: 2025, monthStart: 1, dayStart: 1, yearEnd: 2025, monthEnd: 4, dayEnd: 10),
                                            Objective(objective: "objectif 3", initValue: 2, valueList: [ObjectiveData(value: 10, year: 2025, month: 2, day: 20), ObjectiveData(value: 20, year: 2025, month: 3, day: 10), ObjectiveData(value: 30, year: 2025, month: 3, day: 20)], maxValue: 100, yearStart: 2025, monthStart: 1, dayStart: 1, yearEnd: 2026, monthEnd: 1, dayEnd: 1)
     ]
-    @State private var isShowingSheet: Bool = false
-    @State private var isShowingSheetData: Bool = false
-    @State private var isShowingSheetConfirmation: Bool = false
-    @State private var newObjective: String = ""
-    @State private var selectedStartDate: Date = Date()
-    @State private var selectedEndDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
-    @State private var initialValue: String = ""
-    @State private var maxValue: String = ""
-    @State private var newValue: String = ""
-    @State private var dateValue: Date = Date()
+    @State private var isShowingSheet: Bool = false /// Signifie si la sheet pour l'ajout d'un objectif est affiché
+    @State private var isShowingSheetData: Bool = false /// Signifie si la sheet pour l'ajout de donnée à un objectif est affiché
+    @State private var isShowingSheetConfirmation: Bool = false /// Signifie si la sheet de confirmation pour la suppression est affiché
+    @State private var newObjective: String = "" /// Nom pour un nouvel objectif
+    @State private var selectedStartDate: Date = Date() /// Date de début pour l'objectif
+    @State private var selectedEndDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date())! //// Date de fin pour l'objectif
+    @State private var initialValue: String = "" /// Valeur initiale du nouvel objectif
+    @State private var maxValue: String = "" /// Valeur maximal du nouvel objectif
+    @State private var newValue: String = "" /// Nouvelle donnée pour l'objectif sélectionné
+    @State private var dateValue: Date = Date() /// Date de la nouvelle donnée
     
-    
-    @FocusState private var isFocused: Bool
-    @FocusState private var isFocusedInitial: Bool
-    @FocusState private var isFocusedMax: Bool
-    @FocusState private var isFocusedNewData: Bool
+    @FocusState private var isFocused: Bool /// Signifie que le Textfield pour créer un objectif a le focus
+    @FocusState private var isFocusedInitial: Bool /// Signifie que le Textfield pour la valeur initial a le focus
+    @FocusState private var isFocusedMax: Bool /// Signifie que le Textfield pour la valeur max a le focus
+    @FocusState private var isFocusedNewData: Bool /// Signifie que le Textfield pour la nouvelle valeur a le focus
     
     var body: some View {
         GroupBox {

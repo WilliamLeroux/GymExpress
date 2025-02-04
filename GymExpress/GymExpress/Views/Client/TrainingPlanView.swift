@@ -10,8 +10,8 @@ import SwiftUI
 struct TrainingPlanView: View {
     @State private var workoutList: [String] = ["1", "2", "3"] // Changer pour la vraie liste
     @State private var exerciceList: [String] = ["4", "5", "6"] // Changer pour la vraie liste
-    @State private var isShowingSheet: Bool = false
-    @State private var selectedWorkout: String?
+    @State private var isShowingSheet: Bool = false /// Signifie que la sheet d'un entraînement est affiché
+    @State private var selectedWorkout: String? /// Entraînement sélectionné
     
     var body: some View {
         GroupBox() {
