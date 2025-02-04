@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-typealias Action = () -> Void // alias pour une méthode
-
 extension View {
     
     /// Crée une petite boite

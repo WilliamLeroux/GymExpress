@@ -103,9 +103,9 @@ struct TextFieldStyle: View {
     var width: CGFloat
     var colorBackground: Color
     var colorStroke: Color
-    var isTyping: FocusState<Bool>.Binding
+    var isTyping: Focus
     
-    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: FocusState<Bool>.Binding) {
+    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: Focus) {
         self.title = title
         self.text = text
         self.width = width
@@ -136,9 +136,9 @@ struct TextFieldNumberStyle: View {
     var width: CGFloat /// Largeur maximale du champ de texte.
     var colorBackground: Color /// Couleur de fond du champ de texte.
     var colorStroke: Color /// Couleur de la bordure du champ de texte.
-    var isTyping: FocusState<Bool>.Binding /// Indique si le champ est actuellement en édition.
+    var isTyping: Focus /// Indique si le champ est actuellement en édition.
 
-    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: FocusState<Bool>.Binding) {
+    init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: Focus) {
         self.title = title
         self._text = text
         self.width = width
