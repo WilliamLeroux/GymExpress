@@ -77,6 +77,26 @@ struct WorkoutBoxStyle: GroupBoxStyle {
     }
 }
 
+struct DashboardCalendarBoxStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Spacer()
+        VStack(alignment: .leading) {
+            configuration.label
+                .padding(.top, 5)
+                .padding(.leading, 10)
+                .font(.system(size: 15, weight: .bold))
+            configuration.content
+                .background(.clear)
+                .padding(.vertical, 5)
+                .padding(.horizontal, 10)
+                .cornerRadius(15)
+            Spacer()
+        }
+        .background(.clear)
+        Spacer()
+    }
+}
+
 struct TextFieldStyle: View {
     var title: String
     var text: Binding<String>
