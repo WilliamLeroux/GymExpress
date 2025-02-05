@@ -90,8 +90,6 @@ struct SubscriptionView: View {
                 }
             }
         }
-        //.groupBoxStyle(WorkoutBoxStyle())
-        //.background(Color.white)
         .cornerRadius(15)
         .padding()
     }
