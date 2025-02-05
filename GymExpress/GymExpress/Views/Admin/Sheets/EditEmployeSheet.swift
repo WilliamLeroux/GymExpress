@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct EditEmployeSheet: View {
-    @Environment(\.dismiss) var dismiss
-    @State var employe: Employes
-    var onSave: (Employes) -> Void
+    @Environment(\.dismiss) var dismiss ///< Pour revenir à la vue parente
+    @State var employe: Employes ///< L'employé à modifier
+    var onSave: (Employes) -> Void ///< Méthode à exécuter lors de la sauvegarde
     
     @FocusState private var isTypingSalary : Bool
     
@@ -43,6 +43,7 @@ struct EditEmployeSheet: View {
     }
 }
 
+/// Strucuture temporaire 
 struct Employes: Identifiable {
     let id: UUID
     var name: String

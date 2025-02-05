@@ -11,13 +11,14 @@ struct EmployesView: View {
     
     @State private var search: String = "" ///< Texte recherché dans la barre de recherche
     @FocusState private var isTypingSearch: Bool ///< Bool si l'utilisateur est dans le textfield recherché
-    @State private var selections : Set<Employes.ID> = []
-    @State private var selectedEmployeType: EmployesType = .trainer
+    @State private var selections : Set<Employes.ID> = [] ///< Temporaire
+    @State private var selectedEmployeType: EmployesType = .trainer ///< Temporaire
     
-    @State private var isShowEditSheet: Bool = false 
-    @State private var isShowAddSheet: Bool = false
-    @State private var selectedEmploye: Employes? = nil
+    @State private var isShowEditSheet: Bool = false ///< Bool pour afficher la sheet modifier employé
+    @State private var isShowAddSheet: Bool = false ///< Bool pour afficher la sheet ajouter employé
+    @State private var selectedEmploye: Employes? = nil ///< Employé selectionné dans la liste
     
+    ///< Données temporaires
     @State var allEmployes = [ Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
                         Employes(id: UUID(), name: "Martel", lastName: "Pascal", salary: "58000"),
                         Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
