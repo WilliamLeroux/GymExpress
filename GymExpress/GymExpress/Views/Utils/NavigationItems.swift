@@ -9,6 +9,7 @@ enum NavigationItemAdmin: String, CaseIterable {
     case dashboard = "Accueil"
     case finances = "Finances"
     case employes = "Employés"
+    case subscription = "Gérer abonnements"
 }
 
 enum NavigationItemTrainer: String, CaseIterable {

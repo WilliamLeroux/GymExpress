@@ -74,9 +74,11 @@ struct RootNavigation: View {
                             DashboardAdminView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         }
-                        
                     case "Employés":
                         EmployesView()
+                            .frame(minWidth: 800, maxWidth: 900)
+                    case "Gérer abonnements":
+                        SubscriptionEditView()
                             .frame(minWidth: 800, maxWidth: 900)
                     case "Rendez-vous":
                         AppointmentView()

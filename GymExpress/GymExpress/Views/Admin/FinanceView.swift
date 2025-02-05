@@ -10,15 +10,17 @@ import Charts
 
 struct FinanceView: View {
     
-    @State private var isShowingPopover = false
-    @State private var hoveredGrade: MembershipGrade? = nil
+    @State private var isShowingPopover = false ///< Bool pour afficher ou non la sheet
     
+    /// Données temporaires
     let membershipData: [MembershipDataManager] = [
         MembershipDataManager(grade: .bronze, count: 50),
         MembershipDataManager(grade: .silver, count: 90),
         MembershipDataManager(grade: .gold, count: 122),
         MembershipDataManager(grade: .platinum, count: 45),
     ]
+    
+    /// Données temporaires
     var totalAbonnements: Int {
         membershipData.map { $0.count }.reduce(0, +)
     }
@@ -64,12 +66,14 @@ struct FinanceView: View {
     }
 }
 
+/// Données temporaires
 struct MembershipDataManager: Identifiable, Equatable {
     let grade: MembershipGrade
     let count: Int
     var id: MembershipGrade { grade }
 }
 
+/// Données temporaires
 func getMemberShipColor(membershipGrade: MembershipGrade) -> Color{
     switch membershipGrade {
     case .bronze:
