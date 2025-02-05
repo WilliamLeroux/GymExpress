@@ -12,7 +12,6 @@ struct EditEmployeSheet: View {
     @State var employe: Employes
     var onSave: (Employes) -> Void
     
-
     @FocusState private var isTypingSalary : Bool
     
     var body: some View {

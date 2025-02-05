@@ -9,12 +9,12 @@ import SwiftUI
 
 struct EmployesView: View {
     
-    @State private var search: String = ""
-    @FocusState private var isTypingSearch: Bool
+    @State private var search: String = "" ///< Texte recherché dans la barre de recherche
+    @FocusState private var isTypingSearch: Bool ///< Bool si l'utilisateur est dans le textfield recherché
     @State private var selections : Set<Employes.ID> = []
     @State private var selectedEmployeType: EmployesType = .trainer
     
-    @State private var isShowEditSheet: Bool = false
+    @State private var isShowEditSheet: Bool = false 
     @State private var isShowAddSheet: Bool = false
     @State private var selectedEmploye: Employes? = nil
     

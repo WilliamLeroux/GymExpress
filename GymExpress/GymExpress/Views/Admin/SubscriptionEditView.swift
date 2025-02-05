@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SubscriptionEditView: View {
+    @State private var selectedMembership: MembershipGrade?
+    
     var body: some View {
         HStack {
             ForEach(MembershipGrade.allCases) { membership in
@@ -18,9 +20,13 @@ struct SubscriptionEditView: View {
                         
                         Spacer()
                         
-                        Image(systemName: "pencil")
-                            .foregroundColor(getMemberShipColor(membershipGrade: membership))
-                            .font(.system(size: 24, weight: .bold)) 
+                        Button(action: {
+                            selectedMembership = membership
+                        }) {
+                            Image(systemName: "pencil")
+                                .foregroundColor(getMemberShipColor(membershipGrade: membership))
+                                .font(.system(size: 24, weight: .bold)) 
+                        }
                     }
                     .padding(.horizontal)
                     .padding(.top)
@@ -45,9 +51,33 @@ struct SubscriptionEditView: View {
                 .padding(30)
             }
         }
+        .sheet(item: $selectedMembership) { membership in
+            MembershipEditView(membership: membership)
+        }
     }
 }
 
+struct MembershipEditView: View {
+    @Environment(\.dismiss) var dismiss
+    let membership: MembershipGrade
+
+    var body: some View {
+        VStack {
+            Text("Modifier l'abonnement : \(membership.rawValue)")
+                .font(.title)
+                .padding()
+
+            Button("Fermer") {
+                dismiss()
+            }
+        }
+        .frame(width: 300, height: 200)
+    }
+}
+
+#Preview {
+    SubscriptionEditView()
+}
 #Preview {
     SubscriptionEditView()
 }
