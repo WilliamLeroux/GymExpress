@@ -102,9 +102,6 @@ struct RootNavigation: View {
                     case "Espace client":
                         ClientConsultation()
                             .frame(minWidth: 800, maxWidth: 900)
-                    case "Rendez-vous client":
-                        CRUDAppointement()
-                            .frame(minWidth: 800, maxWidth: 900)
                     case "Horaires":
                         ScheduleTrainer()
                             .frame(minWidth: 800, maxWidth: 900)
