@@ -10,7 +10,7 @@ import Charts
 
 struct WorkoutFrequenceView: View {
     @State private var selectedIndex: Int? = nil /// Index jour sélectionné
-    @State private var isShowingSheet: Bool = false
+    @State private var isShowingSheet: Bool = false /// Signifie que la sheet d'enregistrement de présence est affiché
     @State private var weekList : [String] = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"] // Changer pour le model
     let data = [Week(day: "Lundi", count: 3),
                 Week(day: "Mardi", count: 1),
@@ -148,11 +148,12 @@ struct WorkoutFrequenceView: View {
     }
 }
 
+/// Structure d'une semaine
 struct Week: Identifiable, Equatable {
-    let day: String
-    let count: Int
+    let day: String /// Jour
+    let count: Int /// Nombre de présence
 
-    var id: String { return day }
+    var id: String { return day } /// Identifiant
 }
 
 #Preview {
