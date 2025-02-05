@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct TrainingPlaningView: View {
-    @State private var lastName: String = ""
-    @State private var firstName: String = ""
-    @State private var selectedClients: [String] = []
-    @State private var selectedClient: String? = nil
-    @FocusState private var isTypingLastName: Bool
-    @FocusState private var isTypingFirstName: Bool
     
+    @State private var lastName: String = "" /// Nom de famille saisi pour la recherche
+    @State private var firstName: String = "" /// Prénom saisi pour la recherche
+    @State private var selectedClients: [String] = [] /// Liste des clients correspondant à la recherche
+    @State private var selectedClient: String? = nil /// Client sélectionné pour la planification
+    @FocusState private var isTypingLastName: Bool /// Indique si l'utilisateur est en train de taper le nom de famille
+    @FocusState private var isTypingFirstName: Bool /// Indique si l'utilisateur est en train de taper le prénom
+    
+    /// Liste de tous les clients disponibles
     let allClients = [
         "John Doe",
         "Jane Smith",
@@ -25,8 +27,8 @@ struct TrainingPlaningView: View {
         "Nicolas Morin"
     ]
     
-    let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
-    
+    let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"] /// Jours de la semaine pour la planification
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -112,6 +114,7 @@ struct TrainingPlaningView: View {
         }
     }
     
+    /// Fonction de recherche des clients en fonction du prénom et du nom saisis
     private func searchClients() {
         let lowercasedFirstName = firstName.lowercased()
         let lowercasedLastName = lastName.lowercased()
@@ -130,9 +133,10 @@ struct TrainingPlaningView: View {
 }
 
 struct DayColumn: View {
-    let day: String
-    @State private var isDeleteMode: Bool = false
-    @State private var showExercisePlan: Bool = false
+    
+    let day: String /// Nom du jour de la semaine
+    @State private var isDeleteMode: Bool = false /// Indique si le mode suppression est activé
+    @State private var showExercisePlan: Bool = false /// Indique si la feuille de création de plan d'exercice est affichée
     
     var body: some View {
         VStack {
@@ -194,10 +198,12 @@ struct DayColumn: View {
         .frame(maxWidth: .infinity)
     }
     
+    /// Fonction pour éditer la journée sélectionnée
     private func editDay() {
         // Implémenter la logique d'édition
     }
-    
+
+    /// Fonction pour supprimer la journée sélectionnée
     private func deleteDay() {
         // Implémenter la logique de suppression
     }

@@ -8,17 +8,22 @@
 import SwiftUI
 
 struct EditClientSheet: View {
-    var client: Client
-    var onSave: (Client) -> Void
     
-    @State private var firstName: String
-    @State private var lastName: String
-    @State private var email: String
-    @State private var subscription: String
-    @State private var paymentMethod: String
+    var client: Client /// Client à éditer
+    var onSave: (Client) -> Void /// Action à exécuter lors de la sauvegarde des modifications
     
-    @Environment(\.dismiss) var dismiss  // <-- Pour fermer la feuille
+    @State private var firstName: String /// Prénom du client
+    @State private var lastName: String /// Nom du client
+    @State private var email: String /// Email du client
+    @State private var subscription: String /// Type d'abonnement du client
+    @State private var paymentMethod: String /// Méthode de paiement du client
     
+    @Environment(\.dismiss) var dismiss /// Environnement pour fermer la vue
+    
+    /// Initialise la vue avec les informations du client
+    /// - Parameters:
+    ///   - client: Le client à éditer
+    ///   - onSave: Action à exécuter lors de la sauvegarde des modifications
     init(client: Client, onSave: @escaping (Client) -> Void) {
         _firstName = State(initialValue: client.firstName)
         _lastName = State(initialValue: client.lastName)

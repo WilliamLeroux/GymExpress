@@ -7,27 +7,28 @@
 import SwiftUI
 
 struct Event: Identifiable {
-    let id = UUID()
-    var startDate: Date
-    var endDate: Date
-    var title: String
+    let id = UUID() /// Identifiant unique de l'événement
+    var startDate: Date /// Date et heure de début de l'événement
+    var endDate: Date /// Date et heure de fin de l'événement
+    var title: String /// Titre ou description de l'événement
 }
 
 struct ScheduleTrainer: View {
     
-    @State private var startOfWeek: Date = Date()
-    @State private var keyboardMonitor: Any?
-    @State private var showAddEventSheet = false
+    @State private var startOfWeek: Date = Date() /// Date représentant le début de la semaine affichée
+    @State private var keyboardMonitor: Any? /// Stocke le moniteur d'événements clavier
+    @State private var showAddEventSheet = false /// Indique si la feuille d'ajout d'événement est affichée
     
+    /// Liste d'exemples d'événements affichés dans l'horaire
     let events: [Event] = [
         Event(startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement"),
         Event(startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion")
     ]
     
-    let hourHeight = 50.0
-    let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
-    let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
-    
+    let hourHeight = 50.0 /// Hauteur d'une heure affichée dans la grille horaire
+    let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"] /// Jours de la semaine
+    let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] /// Noms des mois
+ 
     var body: some View {
         
         HStack {
@@ -121,6 +122,7 @@ struct ScheduleTrainer: View {
         }
     }
     
+    /// Modifie la semaine affichée
     func changeWeek(by value: Int) {
         startOfWeek = Calendar.current.date(byAdding: .weekOfYear, value: value, to: startOfWeek) ?? startOfWeek
     }
@@ -130,11 +132,13 @@ struct ScheduleTrainer: View {
         return calendar.date(byAdding: .day, value: index, to: startOfWeek) ?? Date()
     }
     
+    /// Vérifie si un événement est programmé pour un jour donné
     func isEventOnDay(_ event: Event, _ day: Date) -> Bool {
         let calendar = Calendar.current
         return calendar.isDate(event.startDate, inSameDayAs: day)
     }
     
+    /// Affiche un événement sous forme de carte dans l'horaire
     func eventCell(_ event: Event) -> some View {
         
         let duration = event.endDate.timeIntervalSince(event.startDate)
@@ -169,6 +173,7 @@ struct ScheduleTrainer: View {
         return calendar.component(.weekday, from: date)
     }
     
+    /// Ajoute un moniteur pour écouter les touches fléchées
     func addKeyboardListener() {
         keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             switch event.keyCode {
@@ -183,6 +188,7 @@ struct ScheduleTrainer: View {
         }
     }
     
+    /// Supprime le moniteur clavier
     func removeKeyboardListener() {
         if let monitor = keyboardMonitor {
             NSEvent.removeMonitor(monitor)

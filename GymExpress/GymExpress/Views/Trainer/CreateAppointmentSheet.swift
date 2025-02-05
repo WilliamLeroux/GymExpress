@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct CreateAppointmentSheet: View {
-    var client: Client
-    @Binding var appointmentDate: Date
-    @Binding var selectedTimeSlot: String
-    @Binding var appointmentComment: String
-    var availableTimeSlots: [String]
-    var onCreate: () -> Void
-    @Binding var isPresented: Bool
+    
+    var client: Client /// Client pour lequel le rendez-vous est créé
+    @Binding var appointmentDate: Date /// Date sélectionnée pour le rendez-vous
+    @Binding var selectedTimeSlot: String /// Plage horaire sélectionnée
+    @Binding var appointmentComment: String /// Commentaire du rendez-vous
+    var availableTimeSlots: [String] /// Liste des plages horaires disponibles
+    var onCreate: () -> Void /// Action à exécuter lors de la création du rendez-vous
+    @Binding var isPresented: Bool /// État de présentation de la vue
 
     var body: some View {
         VStack {

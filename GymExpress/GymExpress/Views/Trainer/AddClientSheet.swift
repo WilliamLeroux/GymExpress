@@ -8,30 +8,31 @@
 import SwiftUI
 
 struct AddClientSheet: View {
-    @State private var firstName: String = ""
-    @State private var lastName: String = ""
-    @State private var email: String = ""
-    @State private var subscription: String = "Bronze"
-    @State private var paymentMethod: String = ""
     
-    @Environment(\.dismiss) var dismiss
+    @State private var firstName: String = "" /// Prénom du client
+    @State private var lastName: String = "" /// Nom de famille du client
+    @State private var email: String = "" /// Adresse email du client
+    @State private var subscription: String = "Bronze" /// Type d'abonnement du client
+    @State private var paymentMethod: String = "" /// Méthode de paiement du client
     
-    @Binding var allClients: [Client]
+    @Environment(\.dismiss) var dismiss /// Action pour fermer la vue
     
-    var body: some View {
-        VStack {
-            Form {
-                TextField("Prénom", text: $firstName)
-                TextField("Nom", text: $lastName)
-                TextField("Email", text: $email)
+    @Binding var allClients: [Client] /// Liste des clients disponible
+    
+    var body: some View{
+            VStack {
+                Form {
+                    TextField("Prénom", text: $firstName)
+                    TextField("Nom", text: $lastName)
+                    TextField("Email", text: $email)
 
-                Picker("Abonnement", selection: $subscription) {
-                    Text("Platine").tag("Platine")
-                    Text("Or").tag("Or")
-                    Text("Argent").tag("Argent")
-                    Text("Bronze").tag("Bronze")
-                }
-                .pickerStyle(MenuPickerStyle())
+                    Picker("Abonnement", selection: $subscription) {
+                        Text("Platine").tag("Platine")
+                        Text("Or").tag("Or")
+                        Text("Argent").tag("Argent")
+                        Text("Bronze").tag("Bronze")
+                    }
+                    .pickerStyle(MenuPickerStyle())
                 
                 TextField("Méthode de paiement", text: $paymentMethod)
             }

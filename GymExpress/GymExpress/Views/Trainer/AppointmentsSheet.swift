@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct AppointmentsSheet: View {
-    var client: Client
-    @Binding var selectedClientForAppointments: Client?
+    
+    var client: Client /// Client dont on affiche les rendez-vous
+    @Binding var selectedClientForAppointments: Client? /// Client sélectionné pour l'affichage des rendez-vous
     
     var body: some View {
         VStack {

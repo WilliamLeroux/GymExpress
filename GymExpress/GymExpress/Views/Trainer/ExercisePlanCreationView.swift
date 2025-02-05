@@ -8,17 +8,19 @@
 import SwiftUI
 
 struct ExercisePlanCreationView: View {
-    @State private var selectedType: String = "Musculation"
-    @State private var selectedExercise: String? = nil
-    @State private var series: String = ""
-    @State private var reps: String = ""
-    @State private var charge: String = ""
-    @State private var repos: String = ""
-    @State private var addedExercises: [Exercise] = []
     
-    let day: String
-    let exerciseLegends = ["Musculation", "Cardio", "Étirement", "Corps-poids"]
-    
+    @State private var selectedType: String = "Musculation" /// Type d'exercice sélectionné
+    @State private var selectedExercise: String? = nil /// Exercice actuellement sélectionné
+    @State private var series: String = "" /// Nombre de séries de l'exercice
+    @State private var reps: String = "" /// Nombre de répétitions de l'exercice
+    @State private var charge: String = "" /// Charge utilisée pour l'exercice (en kg ou lbs)
+    @State private var repos: String = "" /// Temps de repos entre les séries (en secondes)
+    @State private var addedExercises: [Exercise] = [] /// Liste des exercices ajoutés au plan
+
+    let day: String /// Jour d'entraînement correspondant au plan
+    let exerciseLegends = ["Musculation", "Cardio", "Étirement", "Corps-poids"] /// Catégories d'exercices disponibles
+
+    /// Liste des exercices classés par type
     let exercisesByType: [String: [String]] = [
         "Musculation": [
             "Développé couché",
@@ -181,6 +183,7 @@ struct ExercisePlanCreationView: View {
     }
 
     
+    /// Ajoute un nouvel exercice à la liste des exercices du plan
     private func addExercise() {
         guard let exerciseName = selectedExercise, !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
             return
@@ -198,10 +201,13 @@ struct ExercisePlanCreationView: View {
         resetFields()
     }
     
+    /// Supprime un exercice de la liste
+    /// - Parameter exercise: L'exercice à supprimer
     private func removeExercise(_ exercise: Exercise) {
         addedExercises.removeAll { $0.id == exercise.id }
     }
     
+    /// Réinitialise les champs du formulaire après l'ajout d'un exercice
     private func resetFields() {
         selectedExercise = nil
         series = ""

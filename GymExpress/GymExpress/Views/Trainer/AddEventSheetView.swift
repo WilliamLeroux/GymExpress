@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct AddEventSheetView: View {
-    @Binding var isPresented: Bool
-    @State private var startTime = Date()
-    @State private var endTime = Date()
-    @State private var isRecurring = false
-    @State private var recurrenceType = "Toutes les semaines"
-
-    let recurrenceOptions = ["Tous les jours", "Toutes les semaines", "Tous les mois"]
-
+    
+    @Binding var isPresented: Bool /// État de présentation de la vue
+    @State private var startTime = Date() /// Heure de début de l'événement
+    @State private var endTime = Date() /// Heure de fin de l'événement
+    @State private var isRecurring = false /// Indique si l'événement est récurrent
+    @State private var recurrenceType = "Toutes les semaines" /// Type de récurrence de l'événement
+    
+    let recurrenceOptions = ["Tous les jours", "Toutes les semaines", "Tous les mois"] /// Options de récurrence disponibles
+    
     var body: some View {
         NavigationView {
             VStack {

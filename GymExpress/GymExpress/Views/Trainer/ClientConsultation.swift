@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct Client: Equatable, Identifiable, Hashable {
-    var id: UUID
-    var firstName: String
-    var lastName: String
-    var email: String
-    var subscription: String
-    var paymentMethod: String
-    var appointments: [Appointment]
+    
+    var id: UUID /// Identifiant unique du client
+    var firstName: String /// Prénom du client
+    var lastName: String /// Nom de famille du client
+    var email: String /// Adresse email du client
+    var subscription: String /// Type d'abonnement du client
+    var paymentMethod: String /// Méthode de paiement du client
+    var appointments: [Appointment] /// Liste des rendez-vous du client
     
     static func == (lhs: Client, rhs: Client) -> Bool {
         return lhs.id == rhs.id
@@ -26,32 +27,32 @@ struct Client: Equatable, Identifiable, Hashable {
 }
 
 struct Appointment: Identifiable {
-    var id: UUID
-    var date: Date
-    var reason: String
+    var id: UUID /// Identifiant unique du rendez-vous
+    var date: Date /// Date du rendez-vous
+    var reason: String /// Raison du rendez-vous
 }
 
 struct ClientConsultation: View {
     
-    @State private var search: String = ""
-    @FocusState private var isTypingSearch: Bool
+    @State private var search: String = "" /// Texte de recherche
+    @FocusState private var isTypingSearch: Bool /// État du focus de la barre de recherche
     
-    @State private var selectedTimeSlot: String = ""
-    @State private var appointmentComment: String = ""
+    @State private var selectedTimeSlot: String = "" /// Créneau horaire sélectionné
+    @State private var appointmentComment: String = "" /// Commentaire du rendez-vous
     
-    @State private var isShowAddSheet: Bool = false
-    @State private var selectedClientForEditing: Client? = nil
-    @State private var selectedClientForAppointment: Client? = nil
-    @State private var selectedClientForAppointments: Client? = nil
-    @State private var appointmentDate: Date = Date()
-    @State private var appointmentReason: String = ""
-    @State private var isShowAppointmentsSheet: Bool = false
+    @State private var isShowAddSheet: Bool = false /// État d'affichage de la feuille d'ajout
+    @State private var selectedClientForEditing: Client? = nil /// Client sélectionné pour modification
+    @State private var selectedClientForAppointment: Client? = nil /// Client sélectionné pour un rendez-vous
+    @State private var selectedClientForAppointments: Client? = nil /// Client sélectionné pour voir ses rendez-vous
+    @State private var appointmentDate: Date = Date() /// Date du rendez-vous
+    @State private var appointmentReason: String = "" /// Raison du rendez-vous
+    @State private var isShowAppointmentsSheet: Bool = false /// État d'affichage de la feuille des rendez-vous
     
     @State var allClients = [
         Client(id: UUID(), firstName: "Samuel", lastName: "Oliveira", email: "samuel@example.com", subscription: "Bronze", paymentMethod: "Carte bancaire", appointments: []),
         Client(id: UUID(), firstName: "Marie", lastName: "Dubois", email: "marie@example.com", subscription: "Bronze", paymentMethod: "PayPal", appointments: []),
         Client(id: UUID(), firstName: "Paul", lastName: "Martin", email: "paul@example.com", subscription: "Bronze", paymentMethod: "Carte bancaire", appointments: [])
-    ]
+    ] /// Liste de tous les clients
     
     var filteredClients: [Client] {
         if search.isEmpty {
@@ -63,7 +64,7 @@ struct ClientConsultation: View {
                 client.email.localizedCaseInsensitiveContains(search)
             }
         }
-    }
+    } /// Liste des clients filtrés selon la recherche
     
     var body: some View {
         VStack {
@@ -154,7 +155,7 @@ struct ClientConsultation: View {
 extension Client {
     var appointmentsCount: String {
         return "\(appointments.count)"
-    }
+    } /// Nombre de rendez-vous du client formaté en texte
 }
 
 struct ClientConsultation_Previews: PreviewProvider {
