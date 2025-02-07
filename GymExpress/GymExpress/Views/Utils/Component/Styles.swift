@@ -19,7 +19,7 @@ struct RoundedButtonStyle: ButtonStyle {
     @State var isPressed: Bool = false /// Booléen siginfiant que le bouton est cliqué
     @State private var isHovered: Bool = false /// Booléen signifiant que le bouton est survolé
     
-    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .green , padding: CGFloat = 5, borderColor: Color = .clear, borderWidth: CGFloat = 0, action: @escaping Action = {}) {
+    init(width: CGFloat = 50, height: CGFloat = 50, color: Color = .main, hoveringColor: Color = .mainHover  , padding: CGFloat = 5, borderColor: Color = .clear, borderWidth: CGFloat = 0, action: @escaping Action = {}) {
         self.action = action
         self.width = width
         self.height = height
