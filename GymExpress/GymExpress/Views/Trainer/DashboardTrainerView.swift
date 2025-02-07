@@ -29,7 +29,7 @@ struct DashboardTrainerView: View {
                                 .scaleEffect(0.60)
                             )
                         }
-                        .frame(width: 200)
+                        .frame(width: 400)
                         // Consulter les informations du client, Listes des clients
                         
                         HStack(){
@@ -47,7 +47,7 @@ struct DashboardTrainerView: View {
                                 .scaleEffect(0.60)
                             ) // CRUD Appointment Client
                         }
-                        .frame(width: 205, alignment: .leading)
+                        .frame(width: 410, alignment: .leading)
                     }
                     mediumBox(title: "Liste client du jour", view: Text("Liste client du jour, liste a point avec heure de depart"))
                 }
