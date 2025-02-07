@@ -148,14 +148,6 @@ struct WorkoutFrequenceView: View {
     }
 }
 
-/// Structure d'une semaine
-struct Week: Identifiable, Equatable {
-    let day: String /// Jour
-    let count: Int /// Nombre de présence
-
-    var id: String { return day } /// Identifiant
-}
-
 #Preview {
     RootNavigation()
 }
