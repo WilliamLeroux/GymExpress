@@ -6,11 +6,15 @@
 
 import SwiftUI
 
-struct Event: Identifiable {
-    let id = UUID() /// Identifiant unique de l'événement
-    var startDate: Date /// Date et heure de début de l'événement
-    var endDate: Date /// Date et heure de fin de l'événement
-    var title: String /// Titre ou description de l'événement
+/// Wrapper to make CalendarEvent conform to Identifiable
+struct IdentifiableCalendarEvent: Identifiable {
+    let id: Int
+    let event: CalendarEvent
+    
+    init(_ event: CalendarEvent) {
+        self.id = event.getId()
+        self.event = event
+    }
 }
 
 struct ScheduleTrainer: View {
@@ -20,9 +24,9 @@ struct ScheduleTrainer: View {
     @State private var showAddEventSheet = false /// Indique si la feuille d'ajout d'événement est affichée
     
     /// Liste d'exemples d'événements affichés dans l'horaire
-    let events: [Event] = [
-        Event(startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement"),
-        Event(startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion")
+    let events: [IdentifiableCalendarEvent] = [
+        IdentifiableCalendarEvent(CalendarEvent(id: 1, startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement", recurrenceType: "aucune")),
+        IdentifiableCalendarEvent(CalendarEvent(id: 2, startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion", recurrenceType: "aucune"))
     ]
     
     let hourHeight = 50.0 /// Hauteur d'une heure affichée dans la grille horaire
@@ -91,8 +95,8 @@ struct ScheduleTrainer: View {
                                     }
                                 }
                                 
-                                ForEach(events.filter { isEventOnDay($0, day) }) { event in
-                                    eventCell(event)
+                                ForEach(events.filter { isEventOnDay($0.event, day) }) { identifiableEvent in
+                                    eventCell(identifiableEvent.event)
                                 }
                             }
                         }
@@ -127,7 +131,6 @@ struct ScheduleTrainer: View {
         if startOfWeek < DateUtils.shared.getDateRange().upperBound && startOfWeek > DateUtils.shared.getDateRange().lowerBound {
             startOfWeek = Calendar.current.date(byAdding: .weekOfYear, value: value, to: startOfWeek) ?? startOfWeek
         }
-        
     }
     
     func calendarDate(for index: Int) -> Date {
@@ -136,13 +139,13 @@ struct ScheduleTrainer: View {
     }
     
     /// Vérifie si un événement est programmé pour un jour donné
-    func isEventOnDay(_ event: Event, _ day: Date) -> Bool {
+    func isEventOnDay(_ event: CalendarEvent, _ day: Date) -> Bool {
         let calendar = Calendar.current
         return calendar.isDate(event.startDate, inSameDayAs: day)
     }
     
     /// Affiche un événement sous forme de carte dans l'horaire
-    func eventCell(_ event: Event) -> some View {
+    func eventCell(_ event: CalendarEvent) -> some View {
         
         let duration = event.endDate.timeIntervalSince(event.startDate)
         let height = duration / 60 / 60 * hourHeight
@@ -155,6 +158,9 @@ struct ScheduleTrainer: View {
         return VStack(alignment: .leading) {
             Text("\(hour):\(minute < 10 ? "0\(minute)" : "\(minute)")")
             Text(event.title).bold()
+            Text(event.recurrenceType)
+                .font(.caption)
+                .foregroundColor(.secondary)
         }
         .font(.caption)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -167,7 +173,7 @@ struct ScheduleTrainer: View {
         .padding(.trailing, 40)
         .offset(x: 30, y: offset + 24)
         .onTapGesture {
-            print("CLICK")
+            print("Event ID: \(event.getId())")
         }
     }
 
