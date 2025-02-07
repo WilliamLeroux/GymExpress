@@ -124,7 +124,10 @@ struct ScheduleTrainer: View {
     
     /// Modifie la semaine affichée
     func changeWeek(by value: Int) {
-        startOfWeek = Calendar.current.date(byAdding: .weekOfYear, value: value, to: startOfWeek) ?? startOfWeek
+        if startOfWeek < DateUtils.shared.getDateRange().upperBound && startOfWeek > DateUtils.shared.getDateRange().lowerBound {
+            startOfWeek = Calendar.current.date(byAdding: .weekOfYear, value: value, to: startOfWeek) ?? startOfWeek
+        }
+        
     }
     
     func calendarDate(for index: Int) -> Date {

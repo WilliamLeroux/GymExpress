@@ -15,7 +15,7 @@ struct RootNavigation: View {
     private var navOption: [String] = [] /// Liste des options
     
     /// - Parameter userType: Type d'utilisateur
-    init (userType: UserType = .client) {
+    init (userType: UserType = .trainer) {
         self.userType = userType
         self.navOption = Utils.shared.getNavOptions(userType: userType)
     }

@@ -185,38 +185,6 @@ struct ProgressView: View {
         .padding()
     }
 }
-struct Objective: Identifiable, Equatable, Hashable {
-    let objective: String
-    let initValue: Int
-    let valueList: [ObjectiveData]
-    let maxValue: Int
-    let startDate: Date
-    let endDate: Date
-
-    init(objective: String, initValue: Int, valueList: [ObjectiveData], maxValue: Int, yearStart: Int, monthStart: Int, dayStart: Int, yearEnd: Int, monthEnd: Int, dayEnd: Int) {
-        let calendar = Calendar.autoupdatingCurrent
-        self.startDate = calendar.date(from: DateComponents(year: yearStart, month: monthStart, day: dayStart))!
-        self.endDate = calendar.date(from: DateComponents(year: yearEnd, month: monthEnd, day: dayEnd))!
-        self.objective = objective
-        self.initValue = initValue
-        self.valueList = valueList
-        self.maxValue = maxValue
-    }
-    
-    var id: String { return objective }
-}
-
-struct ObjectiveData: Identifiable, Equatable, Hashable {
-    let id: UUID = UUID()
-    var value: Int
-    var date: Date
-    
-    init(value: Int, year: Int, month: Int, day: Int) {
-        let calendar = Calendar.autoupdatingCurrent
-        self.date = calendar.date(from: DateComponents(year: year, month: month, day: day))!
-        self.value = value
-    }
-}
 
 #Preview {
     RootNavigation()
