@@ -70,6 +70,10 @@ struct RootNavigation: View {
                         if userType == .client {
                             DashboardClientView()
                                 .frame(minWidth: 800, maxWidth: 900)
+                        }
+                        if userType == .trainer {
+                            DashboardTrainerView()
+                                .frame(minWidth: 800, maxWidth: 900)
                         } else {
                             DashboardAdminView()
                                 .frame(minWidth: 800, maxWidth: 900)
@@ -95,6 +99,16 @@ struct RootNavigation: View {
                     case "Fréquence":
                         WorkoutFrequenceView()
                             .frame(minWidth: 800, maxWidth: 900)
+                    case "Créer un entraînement":
+                        TrainingPlaningView()
+                            .frame(minWidth: 800, maxWidth: 900)
+                    case "Espace client":
+                        ClientConsultation()
+                            .frame(minWidth: 800, maxWidth: 900)
+                    case "Horaires":
+                        ScheduleTrainer()
+                            .frame(minWidth: 800, maxWidth: 900)
+
                     default:
                         DashboardClientView()
                             .frame(minWidth: 800, maxWidth: 900)
