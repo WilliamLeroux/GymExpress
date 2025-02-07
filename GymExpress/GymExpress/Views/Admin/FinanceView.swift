@@ -13,16 +13,16 @@ struct FinanceView: View {
     @State private var isShowingPopover = false ///< Bool pour afficher ou non la sheet
     
     /// Données temporaires
-    let membershipData: [MembershipDataManager] = [
-        MembershipDataManager(grade: .bronze, count: 50),
-        MembershipDataManager(grade: .silver, count: 90),
-        MembershipDataManager(grade: .gold, count: 122),
-        MembershipDataManager(grade: .platinum, count: 45),
+    let membershipData: [MembershipData] = [
+        MembershipData(grade: .bronze, count: 50),
+        MembershipData(grade: .silver, count: 90),
+        MembershipData(grade: .gold, count: 122),
+        MembershipData(grade: .platinum, count: 45),
     ]
     
     /// Données temporaires
     var totalAbonnements: Int {
-        membershipData.map { $0.count }.reduce(0, +)
+        membershipData.map { $0.count ?? 0 }.reduce(0, +)
     }
     
     var body: some View {
@@ -39,20 +39,20 @@ struct FinanceView: View {
                             Circle()
                                 .frame(width:15, height: 15)
                                 .foregroundStyle(getMemberShipColor(membershipGrade: data.grade))
-                            Text("\(data.count)")
+                            Text("\(data.count ?? 0)")
                         }
                         
                     }
                 }
                 Chart(membershipData) { membership in
                     SectorMark(
-                        angle: .value("Abonnements", membership.count),
+                        angle: .value("Abonnements", membership.count ?? 0),
                         innerRadius: .ratio(0.5),
                         outerRadius: .ratio(1.0)
                     )
                     .foregroundStyle(getMemberShipColor(membershipGrade: membership.grade))
                     .annotation(position: .overlay) {
-                        Text("\(membership.grade.rawValue)\n\(Int((Double(membership.count) / Double(totalAbonnements)) * 100))%")
+                        Text("\(membership.grade.rawValue)\n\(Int((Double(membership.count ?? 0) / Double(totalAbonnements)) * 100))%")
                             .font(.caption)
                             .foregroundColor(.black)
                             .bold()
@@ -67,11 +67,7 @@ struct FinanceView: View {
 }
 
 /// Données temporaires
-struct MembershipDataManager: Identifiable, Equatable {
-    let grade: MembershipGrade
-    let count: Int
-    var id: MembershipGrade { grade }
-}
+
 
 /// Données temporaires
 func getMemberShipColor(membershipGrade: MembershipGrade) -> Color{
