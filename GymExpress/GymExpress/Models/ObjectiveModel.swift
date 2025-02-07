@@ -9,6 +9,7 @@ import Foundation
 
 /// Structure des objectifs
 struct Objective: Identifiable, Equatable, Hashable {
+    let id: Int = 0
     let objective: String /// Nom de l'objectif
     let initValue: Int /// Valeur initial
     let valueList: [ObjectiveData] /// Liste des données
@@ -25,6 +26,4 @@ struct Objective: Identifiable, Equatable, Hashable {
         self.valueList = valueList
         self.maxValue = maxValue
     }
-    
-    var id: String { return objective }
 }
