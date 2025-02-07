@@ -26,11 +26,3 @@ enum EmployesType: String, CaseIterable {
     case machineRepairer = "Réparateur de machine"
     case cuisinier = "Cuisinier"
 }
-
-enum EmployesType: String, CaseIterable {
-    case receptionist = "Réceptionniste"
-    case trainer = "Entraîneur"
-    case janitor = "Concierge"
-    case machineRepairer = "Réparateur de machine"
-    case cuisinier = "Cuisinier"
-}
