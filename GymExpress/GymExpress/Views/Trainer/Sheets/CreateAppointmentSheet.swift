@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct CreateAppointmentSheet: View {
-    
-    var client: Client /// Client pour lequel le rendez-vous est créé
-    @Binding var appointmentDate: Date /// Date sélectionnée pour le rendez-vous
-    @Binding var selectedTimeSlot: String /// Plage horaire sélectionnée
-    @Binding var appointmentComment: String /// Commentaire du rendez-vous
-    var availableTimeSlots: [String] /// Liste des plages horaires disponibles
-    var onCreate: () -> Void /// Action à exécuter lors de la création du rendez-vous
-    @Binding var isPresented: Bool /// État de présentation de la vue
+    @ObservedObject var controller: ClientConsultationController
+    var client: UserModel
+    @Binding var appointmentDate: Date
+    @Binding var selectedTimeSlot: String
+    @Binding var appointmentComment: String
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         VStack {
@@ -27,12 +25,18 @@ struct CreateAppointmentSheet: View {
                         .frame(maxWidth: .infinity)
                 
                     Picker("Plage horaire", selection: $selectedTimeSlot) {
-                        ForEach(availableTimeSlots, id: \.self) { slot in
-                            Text(slot)
+                        ForEach(controller.getAvailableTimeSlots(for: appointmentDate), id: \.self) { slot in
+                            Text(slot).tag(slot)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
                     .frame(maxWidth: .infinity)
+                    .onAppear {
+                        let availableSlots = controller.getAvailableTimeSlots(for: appointmentDate)
+                        if selectedTimeSlot.isEmpty, let firstSlot = availableSlots.first {
+                            selectedTimeSlot = firstSlot
+                        }
+                    }
                 
                     TextField("Commentaire", text: $appointmentComment, axis: .vertical)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -42,11 +46,20 @@ struct CreateAppointmentSheet: View {
             }
             
             Button("Créer Rendez-vous") {}
-            .buttonStyle(RoundedButtonStyle(width: 180, height: 45, action: {
-                onCreate()
-                isPresented = false
-            }))
-            .padding()
+                .buttonStyle(RoundedButtonStyle(width: 180, height: 45, action: {
+                    controller.createAppointment(
+                        clientId: client.id,
+                        trainerId: 1,
+                        name: selectedTimeSlot,
+                        description: appointmentComment,
+                        date: appointmentDate
+                    )
+                    appointmentDate = Date()
+                    selectedTimeSlot = ""
+                    appointmentComment = ""
+                    dismiss()
+                }))
+                .padding()
             
             Spacer()
         }

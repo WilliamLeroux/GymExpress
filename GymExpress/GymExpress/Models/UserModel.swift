@@ -8,7 +8,7 @@
 import Foundation
 
 /// Strucutre d'un utilisateur
-struct UserModel {
+struct UserModel: Identifiable {
     let id: Int /// Identifiant
     var name: String /// Prénom
     var lastName: String /// Nom

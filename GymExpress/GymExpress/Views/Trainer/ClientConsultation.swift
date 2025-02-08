@@ -7,32 +7,8 @@
 
 import SwiftUI
 
-struct Client: Equatable, Identifiable, Hashable {
-    
-    var id: UUID /// Identifiant unique du client
-    var firstName: String /// Prénom du client
-    var lastName: String /// Nom de famille du client
-    var email: String /// Adresse email du client
-    var subscription: String /// Type d'abonnement du client
-    var paymentMethod: String /// Méthode de paiement du client
-    var appointments: [Appointment] /// Liste des rendez-vous du client
-    
-    static func == (lhs: Client, rhs: Client) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-}
-
-struct Appointment: Identifiable {
-    var id: UUID /// Identifiant unique du rendez-vous
-    var date: Date /// Date du rendez-vous
-    var reason: String /// Raison du rendez-vous
-}
-
 struct ClientConsultation: View {
+    @ObservedObject var controller = ClientConsultationController.shared
     
     @State private var search: String = "" /// Texte de recherche
     @FocusState private var isTypingSearch: Bool /// État du focus de la barre de recherche
@@ -41,30 +17,12 @@ struct ClientConsultation: View {
     @State private var appointmentComment: String = "" /// Commentaire du rendez-vous
     
     @State private var isShowAddSheet: Bool = false /// État d'affichage de la feuille d'ajout
-    @State private var selectedClientForEditing: Client? = nil /// Client sélectionné pour modification
-    @State private var selectedClientForAppointment: Client? = nil /// Client sélectionné pour un rendez-vous
-    @State private var selectedClientForAppointments: Client? = nil /// Client sélectionné pour voir ses rendez-vous
+    @State private var selectedUserForEditing: UserModel? = nil /// Utilisateur sélectionné pour modification
+    @State private var selectedUserForAppointment: UserModel? = nil /// Utilisateur sélectionné pour un rendez-vous
+    @State private var selectedUserForAppointments: UserModel? = nil /// Utilisateur sélectionné pour voir ses rendez-vous
     @State private var appointmentDate: Date = Date() /// Date du rendez-vous
     @State private var appointmentReason: String = "" /// Raison du rendez-vous
-    @State private var isShowAppointmentsSheet: Bool = false /// État d'affichage de la feuille des rendez-vous
-    
-    @State var allClients = [
-        Client(id: UUID(), firstName: "Samuel", lastName: "Oliveira", email: "samuel@example.com", subscription: "Bronze", paymentMethod: "Carte bancaire", appointments: []),
-        Client(id: UUID(), firstName: "Marie", lastName: "Dubois", email: "marie@example.com", subscription: "Bronze", paymentMethod: "PayPal", appointments: []),
-        Client(id: UUID(), firstName: "Paul", lastName: "Martin", email: "paul@example.com", subscription: "Bronze", paymentMethod: "Carte bancaire", appointments: [])
-    ] /// Liste de tous les clients
-    
-    var filteredClients: [Client] {
-        if search.isEmpty {
-            return allClients
-        } else {
-            return allClients.filter { client in
-                client.firstName.localizedCaseInsensitiveContains(search) ||
-                client.lastName.localizedCaseInsensitiveContains(search) ||
-                client.email.localizedCaseInsensitiveContains(search)
-            }
-        }
-    } /// Liste des clients filtrés selon la recherche
+    @State private var isShowAppointmentSheet: Bool = false /// État d'affichage de la feuille des rendez-vous
     
     var body: some View {
         VStack {
@@ -74,31 +32,33 @@ struct ClientConsultation: View {
                         isShowAddSheet.toggle()
                     }))
                 
-                TextFieldStyle(title: "Rechercher un client", text: $search, isTyping: $isTypingSearch)
+                TextFieldStyle(title: "Rechercher un client", text: $controller.search, isTyping: $isTypingSearch)
                     .padding(.vertical, 25)
             }
-            HStack{
-                Table(of: Client.self) {
-                    TableColumn("Prénom", value: \.firstName)
+            HStack {
+                Table(of: UserModel.self) {
+                    TableColumn("Prénom", value: \.name)
                     TableColumn("Nom", value: \.lastName)
                     TableColumn("Email", value: \.email)
-                    TableColumn("Abonnement", value: \.subscription)
+                    TableColumn("Abonnement") { user in
+                        Text(user.membership?.grade.rawValue ?? "Aucun")
+                    }
                 } rows: {
-                    ForEach(filteredClients) { client in
-                        TableRow(client)
+                    ForEach(controller.filteredUsers) { user in
+                        TableRow(user)
                             .contextMenu {
                                 Button("Créer un rendez-vous") {
-                                    selectedClientForAppointment = client
+                                    selectedUserForAppointment = user
                                 }
                                 Button("Voir les rendez-vous") {
-                                    selectedClientForAppointments = client
+                                    selectedUserForAppointments = user
                                 }
                                 Divider()
                                 Button("Modifier") {
-                                    selectedClientForEditing = client
+                                    selectedUserForEditing = user
                                 }
                                 Button("Supprimer", role: .destructive) {
-                                    deleteClient(client)
+                                    controller.deleteUser(user)
                                 }
                             }
                     }
@@ -106,56 +66,37 @@ struct ClientConsultation: View {
                 .cornerRadius(8)
             }.padding(.bottom, 50)
         }
-        .sheet(item: $selectedClientForEditing) { client in
+        .sheet(item: $selectedUserForEditing) { user in
             EditClientSheet(
-                client: client,
-                onSave: { updatedClient in
-                    if let index = allClients.firstIndex(where: { $0.id == updatedClient.id }) {
-                        allClients[index] = updatedClient
-                    }
-                    selectedClientForEditing = nil
-                })
-                .frame(minWidth: 500, minHeight: 300)
-                .padding(.all, 20)
+                controller: controller,
+                user: user
+            )
+            .frame(minWidth: 500, minHeight: 300)
+            .padding(.all, 20)
         }
-        .sheet(item: $selectedClientForAppointment) { client in
+        .sheet(item: $selectedUserForAppointment) { user in
             CreateAppointmentSheet(
-                client: client,
+                controller: controller,
+                client: user,
                 appointmentDate: $appointmentDate,
                 selectedTimeSlot: $selectedTimeSlot,
-                appointmentComment: $appointmentComment,
-                availableTimeSlots: ["08:00 - 09:00", "09:30 - 10:30", "11:00 - 12:00"],
-                onCreate: {
-                    let newAppointment = Appointment(id: UUID(), date: appointmentDate, reason: selectedTimeSlot)
-                    if let index = allClients.firstIndex(where: { $0.id == client.id }) {
-                        allClients[index].appointments.append(newAppointment)
-                    }
-                    selectedClientForAppointment = nil
-                    isShowAppointmentsSheet = false
-                },
-                isPresented: $isShowAppointmentsSheet
+                appointmentComment: $appointmentComment
             )
         }
         .sheet(isPresented: $isShowAddSheet) {
-            AddClientSheet(allClients: $allClients)
+            AddClientSheet(controller: controller, selectedMembershipGrade: MembershipGrade.bronze)
                 .frame(minWidth: 500, minHeight: 300)
                 .padding(.all, 20)
         }
-        .sheet(item: $selectedClientForAppointments) { client in
-            AppointmentsSheet(client: client, selectedClientForAppointments: $selectedClientForAppointments)
+        .sheet(item: $selectedUserForAppointments) { user in
+            AppointmentsSheet(
+                controller: controller,
+                user: user
+            )
+            .frame(minWidth: 500, minHeight: 300)
+            .padding(.all, 20)
         }
     }
-    
-    /// Supprime un client de la liste
-    private func deleteClient(_ client: Client) {
-        allClients.removeAll { $0.id == client.id }
-    }
-}
-
-extension Client {
-    var appointmentsCount: String {
-        return "\(appointments.count)"
-    } /// Nombre de rendez-vous du client formaté en texte
 }
 
 struct ClientConsultation_Previews: PreviewProvider {
