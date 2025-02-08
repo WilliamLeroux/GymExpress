@@ -54,9 +54,17 @@ struct CreateAppointmentSheet: View {
                         description: appointmentComment,
                         date: appointmentDate
                     )
+                    
                     appointmentDate = Date()
-                    selectedTimeSlot = ""
                     appointmentComment = ""
+                    
+                    let availableSlots = controller.getAvailableTimeSlots(for: appointmentDate)
+                    if let firstSlot = availableSlots.first {
+                        selectedTimeSlot = firstSlot
+                    } else {
+                        selectedTimeSlot = ""
+                    }
+
                     dismiss()
                 }))
                 .padding()
