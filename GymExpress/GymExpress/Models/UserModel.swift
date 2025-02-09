@@ -45,6 +45,7 @@ struct UserModel: SQLConvertable, InitializableFromSQLITE {
         var columnIndex: Int32 = 0
         for i in 0..<columnCount {
             columnIndex = Int32(DatabaseManager.shared.tableMaps[0].firstIndex(of: String(cString: sqlite3_column_name(pointer, i)!)) ?? 0)
+            
             switch columnIndex {
             case 1:
                 self.id = Int(sqlite3_column_int(pointer, i))
@@ -63,7 +64,9 @@ struct UserModel: SQLConvertable, InitializableFromSQLITE {
             case 8:
                 self.salary = Double(sqlite3_column_double(pointer, i))
             default:
-                print("Unknown column, \(columnIndex)")
+                #if DEBUG
+                    print("Unknown column, \(columnIndex)")
+                #endif
             }
         }
         

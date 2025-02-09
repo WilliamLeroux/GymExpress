@@ -34,7 +34,7 @@ struct DashboardClientView: View {
                                             .scaledToFit()
                                             .scaleEffect(0.60),
                                      action: {
-                                let user : UserModel? = DatabaseManager.shared.fetchData(request: Request.selectAllUsers, params: [])
+                                let user : AppointmentModel? = DatabaseManager.shared.fetchData(request: Request.select(table: DbTable.appointments, columns: ["id", "user_id", "trainer_id", "name", "description", "date"]), params: [])
                                 print(user!)
                                         self.navController.selectedIndex = NavigationItemClient.subscription.rawValue
                                     }
@@ -49,8 +49,7 @@ struct DashboardClientView: View {
                                             .scaledToFit()
                                             .scaleEffect(0.60),
                                      action: {
-                                print(DatabaseManager.shared.insertData(request: Request.createUser, params: UserModel(name: "test", lastName: "test", email: "test@test.com", password: "test", type: UserType.client, membership: MembershipData.init(grade: MembershipGrade.bronze), salary: nil)))
-                                
+                                print(DatabaseManager.shared.insertData(request: Request.createAppointment, params: AppointmentModel(trainerId: 2, clientId: 1, name: "test", description: "test", date: Date())))
                                         self.navController.selectedIndex = NavigationItemClient.appointment.rawValue
                                     }
                             )

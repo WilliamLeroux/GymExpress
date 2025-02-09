@@ -25,6 +25,14 @@ class DatabaseUtils {
             sqlite3_bind_int(pointer, Int32(i), Int32(param ? 1 : 0))
         case let param as UserType: // UserType
             sqlite3_bind_int(pointer, Int32(i), Int32(param.rawValue))
+        case let param as Optional<Date>: // Date?
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            var tempDate : NSString = dateFormatter.string(from: Date()) as NSString
+            if let param = param {
+                tempDate = dateFormatter.string(from: param) as NSString
+            }
+            sqlite3_bind_text(pointer, Int32(i), tempDate.utf8String, -1, nil)
         case let param as Optional<Double>: // Double?
             if let param = param {
                 sqlite3_bind_double(pointer, Int32(i), Double(param))
