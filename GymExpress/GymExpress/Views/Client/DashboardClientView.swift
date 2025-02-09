@@ -47,6 +47,8 @@ struct DashboardClientView: View {
                                             .scaledToFit()
                                             .scaleEffect(0.60),
                                      action: {
+                                print(DatabaseManager.shared.insertData(request: Request.createUser, params: UserModel(name: "test", lastName: "test", email: "test@test.com", password: "test", type: UserType.client, membership: MembershipData.init(grade: MembershipGrade.bronze, count: nil), salary: nil)))
+                                
                                         self.navController.selectedIndex = NavigationItemClient.appointment.rawValue
                                     }
                             )

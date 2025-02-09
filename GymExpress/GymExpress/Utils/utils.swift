@@ -32,6 +32,19 @@ class Utils {
         }
     }
     
+    func getMembershipGradeId(membership: MembershipGrade) -> Int {
+        switch membership {
+        case .bronze:
+            return 1
+        case .silver:
+            return 2
+        case .gold:
+            return 3
+        case .platinum:
+            return 4
+        }
+    }
+    
     func getMembershipPrice(membership: MembershipGrade) -> Double {
         switch membership {
         case .bronze:
