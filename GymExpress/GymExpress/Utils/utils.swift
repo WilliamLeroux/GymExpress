@@ -45,6 +45,21 @@ class Utils {
         }
     }
     
+    func getMembershipById(id: Int) -> MembershipGrade {
+        switch id {
+        case 1:
+            return .bronze
+        case 2:
+            return .silver
+        case 3:
+            return .gold
+        case 4:
+            return .platinum
+        default:
+            fatalError("Invalid membership id")
+        }
+    }
+    
     func getMembershipPrice(membership: MembershipGrade) -> Double {
         switch membership {
         case .bronze:

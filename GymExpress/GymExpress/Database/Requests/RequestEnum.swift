@@ -5,7 +5,7 @@
 //  Created by William Leroux on 2025-02-09.
 //
 
-enum DbTable: String {
+enum DbTable: String, CaseIterable {
     case users = "users"
     case frequence = "frequence"
     case objectives = "objectives"

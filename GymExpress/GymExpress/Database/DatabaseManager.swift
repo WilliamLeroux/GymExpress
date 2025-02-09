@@ -10,10 +10,13 @@ import Foundation
 
 class DatabaseManager : ObservableObject{
     static let shared = DatabaseManager()
+    var tableMaps: [[String]] = []
+    
     private var db: OpaquePointer?
     
     private init() {
         databaseSetup()
+        mapDatabase()
     }
     
     /// Initialisation de la base de donnée
@@ -30,9 +33,39 @@ class DatabaseManager : ObservableObject{
             }
         }
     }
-    /*
-    func fetchData<T> (request: String, params: [Any]) -> T{
+    
+    private func mapDatabase() {
+        var currentTable = ""
+        var req = ""
+        var pointer : OpaquePointer?
+        var currentColumns : [String] = []
+        
+        for table in DbTable.allCases {
+            
+            currentTable = table.rawValue
+            req = "PRAGMA table_info(\(currentTable));"
+            
+            guard sqlite3_prepare_v2(db, req.description, -1, &pointer, nil) == SQLITE_OK else {
+                if let errorMessage = sqlite3_errmsg(pointer) {
+                    print("Error while mapping \(currentTable): \(String(cString: errorMessage))")
+                }
+                return
+            }
+            while sqlite3_step(pointer) == SQLITE_ROW {
+                if let columnName = sqlite3_column_text(pointer, 1) {
+                    currentColumns.append(String(cString: columnName))
+                }
+            }
+            tableMaps.append([currentTable] + currentColumns)
+            currentColumns.removeAll()
+            sqlite3_finalize(pointer)
+        }
+        print(tableMaps)
+    }
+    
+    func fetchData<T> (request: String, params: [Any]) -> T? {
         var pointer: OpaquePointer?
+        var result: Any? = nil
         
         if sqlite3_prepare_v2(db, request, -1, &pointer, nil) == SQLITE_OK {
             for i in 0..<params.count {
@@ -51,8 +84,14 @@ class DatabaseManager : ObservableObject{
                 }
             }
         }
-        
-    }*/
+        if sqlite3_step(pointer) == SQLITE_ROW {
+            if let objectType = T.self as? InitializableFromSQLITE.Type {
+                result = objectType.init(from: pointer!)
+            }
+        }
+        sqlite3_finalize(pointer)
+        return result as? T
+    }
     
     func insertData<T: SQLConvertable>(request: String, params: T) -> Bool {
         var pointer: OpaquePointer?
