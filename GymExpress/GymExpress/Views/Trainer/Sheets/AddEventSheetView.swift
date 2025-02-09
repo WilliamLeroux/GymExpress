@@ -8,36 +8,42 @@
 import SwiftUI
 
 struct AddEventSheetView: View {
-    
     @Binding var isPresented: Bool /// État de présentation de la vue
     @State private var startTime = Date() /// Heure de début de l'événement
     @State private var endTime = Date() /// Heure de fin de l'événement
     @State private var isRecurring = false /// Indique si l'événement est récurrent
     @State private var recurrenceType = "Toutes les semaines" /// Type de récurrence de l'événement
+    @State private var eventTitle = "" /// Titre de l'événement
+    
+    let minTime = Calendar.current.date(bySettingHour: 6, minute: 0, second: 0, of: Date())!
+    let maxTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
     
     let recurrenceOptions = ["Tous les jours", "Toutes les semaines", "Tous les mois"] /// Options de récurrence disponibles
+    
+    let recurrenceMapping: [String: RecurrenceType] = [
+        "Tous les jours": .daily,
+        "Toutes les semaines": .weekly,
+        "Tous les mois": .monthly
+    ]
     
     var body: some View {
         NavigationView {
             VStack {
                 Form {
-                    VStack{
-                        Section(header: Text("Heure de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
-                            DatePicker("Début", selection: $startTime, displayedComponents: .hourAndMinute)
-                                .frame(maxWidth: .infinity)
-                                .font(.title2)
-                                .padding(.top, 2)
-                            DatePicker("Fin", selection: $endTime, displayedComponents: .hourAndMinute)
-                                .frame(maxWidth: .infinity)
-                                .font(.title2)
+                    VStack {
+                        Section(header: Text("Titre de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
+                            TextField("", text: $eventTitle)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .padding(.top, 2)
                         }
-                        .font(.title)
                         
-                        Section(header: Text("").frame(maxWidth: .infinity, alignment: .center)) {
+                        Section(header: Text("Heure de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
+                            DatePicker("Début", selection: $startTime, in: minTime...maxTime, displayedComponents: .hourAndMinute)
+                            DatePicker("Fin", selection: $endTime, in: minTime...maxTime, displayedComponents: .hourAndMinute)
+                        }
+                        
+                        Section(header: Text("Récurrence").frame(maxWidth: .infinity, alignment: .center)) {
                             Toggle("Récurrent", isOn: $isRecurring)
-                                .frame(maxWidth: .infinity)
-                                .font(.title2)
                             if isRecurring {
                                 Picker("", selection: $recurrenceType) {
                                     ForEach(recurrenceOptions, id: \.self) { option in
@@ -45,53 +51,53 @@ struct AddEventSheetView: View {
                                     }
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
-                                .frame(maxWidth: .infinity)
-                                .font(.headline)
                             }
                         }
-                        .padding(.top, 2)
-                    }.frame(maxWidth: .infinity, alignment: .center)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.clear)
-
-                HStack {
-                    Spacer()
-                    
-                    Button(action: { isPresented = false }) {
-                        Text("Annuler")
-                            .font(.headline)
+                        
+                        HStack {
+                            Spacer()
+                            
+                            Button("Annuler") {}
+                                .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
+                                    isPresented = false
+                                }))
+                            
+                            Spacer()
+                            
+                            Button("Ajouter") {}
+                                .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
+                                    let recurrenceEnum = isRecurring ? (recurrenceMapping[recurrenceType] ?? .none) : .none
+                                    let newEvent = CalendarEvent(
+                                        id: UUID().hashValue,
+                                        title: eventTitle,
+                                        startDate: startTime,
+                                        endDate: endTime,
+                                        recurrenceType: recurrenceEnum
+                                    )
+                                    ScheduleTrainerController.shared.addEvent(event: newEvent)
+                                    isPresented = false
+                                }))
+                            
+                            Spacer()
+                        }
+                        .frame(alignment: .center)
+                        .padding(.top, 75)
+                        .padding()
+                        .background(Color.clear)
                     }
-                    .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
-                        isPresented = false
-                    }))
-
-                    Spacer()
-
-                    Button(action: {
-                        // Logique d'ajout de l'événement
-                        isPresented = false
-                    }) {
-                        Text("Ajouter")
-                            .font(.headline)
-                    }
-                    .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
-                        isPresented = false
-                    }))
-                    
-                    Spacer()
-
+                    .frame(alignment: .center)
+                    .background(Color.clear)
                 }
-                .frame(alignment: .center)
-                .padding()
-                .background(Color.clear)
+                .navigationTitle("Nouvel événement")
+                .frame(height: 350)
+                .background(Color.white)
             }
-            .navigationTitle("Nouvel événement")
-            .presentationDetents([.medium, .large])
             .padding(.all, 20)
+            .frame(height: 400)
+            .presentationDetents([.height(400)])
+            .interactiveDismissDisabled(true)
             .background(Color.white)
         }
-        .frame(maxWidth: .infinity, minHeight: 350)
     }
 }
 
