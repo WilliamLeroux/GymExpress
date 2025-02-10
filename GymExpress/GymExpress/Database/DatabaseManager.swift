@@ -93,11 +93,11 @@ class DatabaseManager : ObservableObject{
         if sqlite3_step(pointer) == SQLITE_ROW {
             if let objectType = T.self as? InitializableFromSQLITE.Type {
                 result = objectType.init(from: pointer!)
-            } else if let objectType = T.self as? Int.Type{
+            } else if T.self is Int.Type{
                 result = sqlite3_column_int(pointer, 1)
-            } else if let objectType = T.self as? String.Type {
+            } else if T.self is String.Type {
                 result = String(cString: sqlite3_column_text(pointer, 1)!)
-            } else if let objectType = T.self as? Double.Type {
+            } else if T.self is Double.Type {
                 result = sqlite3_column_double(pointer, 1)
             }
         }
