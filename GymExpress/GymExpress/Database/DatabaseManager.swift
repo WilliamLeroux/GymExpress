@@ -61,7 +61,6 @@ class DatabaseManager : ObservableObject{
             currentColumns.removeAll()
             sqlite3_finalize(pointer)
         }
-        print(tableMaps)
     }
     
     /// Exécute les requête SELECT
