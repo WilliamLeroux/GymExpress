@@ -127,7 +127,6 @@ struct TextFieldStyle: View {
             )
             .focused(isTyping)
     }
-    
 }
 
 struct TextFieldNumberStyle: View {
