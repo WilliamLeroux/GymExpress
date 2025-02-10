@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DashboardAdminView: View {
-    
     var body: some View {
         Text("Accueil")
     }
