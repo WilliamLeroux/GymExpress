@@ -30,7 +30,19 @@ struct CalendarEvent: Identifiable, Codable {
         
         let endRecurrenceDate = recurrenceEndDate ?? calendar.date(byAdding: .month, value: 1, to: startDate)!
         
-        var currentDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate) ?? startDate
+        var currentDate: Date
+        
+        switch recurrenceType {
+        case .daily:
+            currentDate = calendar.date(byAdding: .day, value: 1, to: startDate) ?? startDate
+        case .weekly:
+            currentDate = calendar.date(byAdding: .weekOfYear, value: 1, to: startDate) ?? startDate
+        case .monthly:
+            currentDate = calendar.date(byAdding: .month, value: 1, to: startDate) ?? startDate
+        case .none:
+            return []
+        }
+        
         while currentDate <= endRecurrenceDate {
             let newEvent = CalendarEvent(
                 id: UUID().hashValue,

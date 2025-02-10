@@ -9,8 +9,9 @@ import SwiftUI
 
 struct AddEventSheetView: View {
     @Binding var isPresented: Bool /// État de présentation de la vue
-    @State private var startTime = Date() /// Heure de début de l'événement
-    @State private var endTime = Date() /// Heure de fin de l'événement
+    var dateDay: Date /// Jour de début
+    @State private var startTime = Date()
+    @State private var endTime = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
     @State private var isRecurring = false /// Indique si l'événement est récurrent
     @State private var recurrenceType = "Toutes les semaines" /// Type de récurrence de l'événement
     @State private var eventTitle = "" /// Titre de l'événement
@@ -18,6 +19,9 @@ struct AddEventSheetView: View {
     let minTime = Calendar.current.date(bySettingHour: 6, minute: 0, second: 0, of: Date())!
     let maxTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
     
+    var minTimeEnd: Date {
+        return Calendar.current.date(byAdding: .minute, value: 30, to: startTime) ?? startTime
+    }
     let recurrenceOptions = ["Tous les jours", "Toutes les semaines", "Tous les mois"] /// Options de récurrence disponibles
     
     let recurrenceMapping: [String: RecurrenceType] = [
@@ -39,7 +43,12 @@ struct AddEventSheetView: View {
                         
                         Section(header: Text("Heure de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
                             DatePicker("Début", selection: $startTime, in: minTime...maxTime, displayedComponents: .hourAndMinute)
-                            DatePicker("Fin", selection: $endTime, in: minTime...maxTime, displayedComponents: .hourAndMinute)
+                                .onChange(of: startTime) { oldStartTime, newStartTime in
+                                    if endTime < newStartTime {
+                                        endTime = Calendar.current.date(byAdding: .minute, value: 30, to: newStartTime)!
+                                    }
+                                }
+                            DatePicker("Fin", selection: $endTime, in: minTimeEnd...maxTime, displayedComponents: .hourAndMinute)
                         }
                         
                         Section(header: Text("Récurrence").frame(maxWidth: .infinity, alignment: .center)) {
@@ -74,7 +83,7 @@ struct AddEventSheetView: View {
                                         endDate: endTime,
                                         recurrenceType: recurrenceEnum
                                     )
-                                    ScheduleTrainerController.shared.addEvent(event: newEvent)
+                                    ScheduleTrainerController.shared.addEvent(event: newEvent, startDate: dateDay)
                                     isPresented = false
                                 }))
                             
@@ -98,11 +107,9 @@ struct AddEventSheetView: View {
             .interactiveDismissDisabled(true)
             .background(Color.white)
         }
-    }
-}
-
-struct AddEventSheetView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddEventSheetView(isPresented: Binding.constant(true))
+        .onAppear {
+            startTime = dateDay
+            print(startTime.debugDescription)
+        }
     }
 }

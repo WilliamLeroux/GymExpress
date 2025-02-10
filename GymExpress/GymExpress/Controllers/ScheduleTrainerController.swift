@@ -20,7 +20,7 @@ class ScheduleTrainerController: ObservableObject {
     
     private init() {}
     
-    func addEvent(event: CalendarEvent) {
+    func addEvent(event: CalendarEvent, startDate: Date) {
         var newEvents = events
         newEvents.append(event)
         

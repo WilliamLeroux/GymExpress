@@ -69,7 +69,7 @@ struct ScheduleTrainer: View {
                                 hoveredDay = hovering ? day : nil
                             }
                             .sheet(isPresented: $showAddEventSheet) {
-                                AddEventSheetView(isPresented: $showAddEventSheet)
+                                AddEventSheetView(isPresented: $showAddEventSheet, dateDay: day)
                                     .frame(height: 400)
                                     .presentationDetents([.height(400)])
                                     .interactiveDismissDisabled(true)
