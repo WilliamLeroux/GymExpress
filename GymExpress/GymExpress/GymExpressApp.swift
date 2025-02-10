@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct GymExpressApp: App {
+    var dbManager: DatabaseManager = DatabaseManager.shared
     var body: some Scene {
         WindowGroup {
             LoginView(viewModel: LoginController())

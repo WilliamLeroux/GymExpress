@@ -25,8 +25,8 @@ struct ScheduleTrainer: View {
     
     /// Liste d'exemples d'événements affichés dans l'horaire
     let events: [IdentifiableCalendarEvent] = [
-        IdentifiableCalendarEvent(CalendarEvent(id: 1, startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement", recurrenceType: "aucune")),
-        IdentifiableCalendarEvent(CalendarEvent(id: 2, startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion", recurrenceType: "aucune"))
+        IdentifiableCalendarEvent(CalendarEvent(id: 1, startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement", recurrenceType: .none)),
+        IdentifiableCalendarEvent(CalendarEvent(id: 2, startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion", recurrenceType: .none))
     ]
     
     let hourHeight = 50.0 /// Hauteur d'une heure affichée dans la grille horaire
@@ -96,7 +96,7 @@ struct ScheduleTrainer: View {
                                 }
                                 
                                 ForEach(events.filter { isEventOnDay($0.event, day) }) { identifiableEvent in
-                                    eventCell(identifiableEvent.event)
+                                    AnyView(eventCell(identifiableEvent.event))
                                 }
                             }
                         }
@@ -141,24 +141,28 @@ struct ScheduleTrainer: View {
     /// Vérifie si un événement est programmé pour un jour donné
     func isEventOnDay(_ event: CalendarEvent, _ day: Date) -> Bool {
         let calendar = Calendar.current
-        return calendar.isDate(event.startDate, inSameDayAs: day)
+        return calendar.isDate(event.startDate!, inSameDayAs: day)
     }
     
     /// Affiche un événement sous forme de carte dans l'horaire
-    func eventCell(_ event: CalendarEvent) -> some View {
+    func eventCell(_ event: CalendarEvent) -> any View {
         
-        let duration = event.endDate.timeIntervalSince(event.startDate)
+        guard let endDate = event.endDate, let startDate = event.startDate else {
+            return EmptyView()
+        }
+        
+        let duration = endDate.timeIntervalSince(startDate)
         let height = duration / 60 / 60 * hourHeight
         
         let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startDate)
-        let minute = calendar.component(.minute, from: event.startDate)
+        let hour = calendar.component(.hour, from: startDate)
+        let minute = calendar.component(.minute, from: startDate)
         let offset = Double(hour - 7) * (hourHeight)
         
         return VStack(alignment: .leading) {
             Text("\(hour):\(minute < 10 ? "0\(minute)" : "\(minute)")")
             Text(event.title).bold()
-            Text(event.recurrenceType)
+            Text(event.recurrenceType.rawValue)
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
