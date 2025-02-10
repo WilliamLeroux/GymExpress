@@ -29,7 +29,7 @@ struct SetupRequests {
     private static let APPOINTMENTS = "CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, trainer_id INTEGER NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL, date DATE NOT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY (trainer_id) REFERENCES users(id));"
     
     /// Table events
-    private static let EVENTS = "CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, title TEXT NOT NULL, recurrence INTEGER NOT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id));"
+    private static let EVENTS = "CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, title TEXT NOT NULL, recurrence INTEGER NOT NULL, recurrence_end_date DATE DEFAULT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id));"
     
     static let setupRequest : [String] = [USERS, FREQUENCE, OBJECTIVES, OBJECTIVES_DATA, WORKOUTS, EXERCICES, APPOINTMENTS, EVENTS] /// Tableau comprennant toute les requêtes
 }

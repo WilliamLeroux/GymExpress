@@ -6,6 +6,8 @@
 //
 
 enum RecurrenceType: String, CaseIterable {
+    case none = "Aucune"
     case daily = "Quotidien"
     case weekly = "Hebdomadaire"
+    case monthly = "Mensuel"
 }

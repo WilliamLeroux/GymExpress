@@ -56,6 +56,12 @@ class DatabaseUtils {
             } else {
                 sqlite3_bind_null(pointer, Int32(i))
             }
+        case let param as Optional<RecurrenceType>:
+            if let param = param {
+                sqlite3_bind_int(pointer, Int32(i), Int32(Utils.shared.getRecurrenceTypeId(recurrence: param)))
+            } else {
+                sqlite3_bind_null(pointer, Int32(i))
+            }
         default:
             break
         }

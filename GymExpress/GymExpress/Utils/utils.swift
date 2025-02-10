@@ -34,19 +34,27 @@ class Utils {
     
     func getRecurrenceTypeId(recurrence: RecurrenceType) -> Int {
         switch recurrence {
+        case .none:
+            return 0
         case .daily:
             return 1
         case .weekly:
             return 2
+        case .monthly:
+            return 3
         }
     }
     
     func getRecurrenceTypeById(id: Int) -> RecurrenceType {
         switch id {
+        case 0:
+            return .none
         case 1:
             return .daily
         case 2:
             return .weekly
+        case 3:
+            return .monthly
         default:
             fatalError("Invalid recurrence id")
         }

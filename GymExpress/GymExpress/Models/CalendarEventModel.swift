@@ -14,10 +14,11 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
     var startDate: Date? = nil /// Date de début de l'événement
     var endDate: Date? = nil /// Date de fin de l'événement
     var title: String = "" /// Titre de l'événement
-    var recurrenceType: String = "" /// Type de récurrence (ex: "quotidien", "hebdomadaire")
+    var recurrenceType: RecurrenceType = .none /// Type de récurrence (ex: "quotidien", "hebdomadaire")
+    var recurrenceEndDate: Date? = nil /// Date de fin de récurrence
     
     // Initialisateur
-    init(id: Int, startDate: Date, endDate: Date, title: String, recurrenceType: String) {
+    init(id: Int, startDate: Date, endDate: Date, title: String, recurrenceType: RecurrenceType) {
         self.id = id
         self.startDate = startDate
         self.endDate = endDate
@@ -27,11 +28,6 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
     
     init(from pointer: OpaquePointer?) {
         guard let pointer = pointer else {
-            self.id = -1
-            self.startDate = nil
-            self.endDate = nil
-            self.title = ""
-            self.recurrenceType = ""
             return
         }
         
@@ -64,7 +60,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
             case 5:
                 self.title = String(cString: sqlite3_column_text(pointer, i)!)
             case 6:
-                self.recurrenceType = Utils.shared.getRecurrenceTypeById(id: Int(sqlite3_column_int(pointer, i))).rawValue
+                self.recurrenceType = Utils.shared.getRecurrenceTypeById(id: Int(sqlite3_column_int(pointer, i)))
             default:
                 #if DEBUG
                 print("Unknown column, \(columnIndex)")
@@ -74,7 +70,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
     }
     
     var params: [Any] {
-        return [id, startDate as Any, endDate as Any, title, recurrenceType]
+        return [id, startDate as Any, endDate as Any, title, recurrenceType, recurrenceEndDate as Any]
     }
     
     // Obtenir l'ID d'un CalendarEvent

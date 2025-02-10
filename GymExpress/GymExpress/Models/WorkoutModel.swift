@@ -13,12 +13,12 @@ struct WorkoutModel: Identifiable, SQLConvertable, InitializableFromSQLITE{
     var id: Int = -1/// Identifiant du programme
     var name: String = "" /// Nom de l'entrainement
     var exerciseList: [ExerciseModel] = [] /// Liste d'exercises
-    var day: Int = 0
+    var day: Int = 0 /// Jour de la semaine en Int
     
-    init(id: Int, name: String, exerciceList: [ExerciseModel]) {
-        self.id = id
+    init(name: String, exerciceList: [ExerciseModel], day: Int) {
         self.name = name
         self.exerciseList = exerciceList
+        self.day = day
     }
     
     init(from pointer: OpaquePointer?) {
@@ -45,6 +45,6 @@ struct WorkoutModel: Identifiable, SQLConvertable, InitializableFromSQLITE{
     }
     
     var params: [Any] {
-        return [name]
+        return [name, day]
     }
 }
