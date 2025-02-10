@@ -87,7 +87,7 @@ struct ScheduleTrainer: View {
                                 }
 
                                 ForEach(controller.events.filter { Calendar.current.isDate($0.startDate, inSameDayAs: day) }) { event in
-                                    eventCell(event)
+                                    AnyView(eventCell(identifiableEvent.event))
                                 }
                             }
                         }
@@ -115,12 +115,16 @@ struct ScheduleTrainer: View {
 
     /// Gère l'affichage d'un événement dans le calendrier
     func eventCell(_ event: CalendarEvent) -> some View {
-        let duration = event.endDate.timeIntervalSince(event.startDate)
+        guard let endDate = event.endDate, let startDate = event.startDate else {
+            return EmptyView()
+        }
+
+        let duration = endDate.timeIntervalSince(startDate)
         let height = duration / 60 / 60 * hourHeight
 
         let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startDate)
-        let minute = calendar.component(.minute, from: event.startDate)
+        let hour = calendar.component(.hour, from: startDate)
+        let minute = calendar.component(.minute, from: startDate)
         let offset = Double(hour - 7) * hourHeight
         let recurrenceText = event.recurrenceType.rawValue
 

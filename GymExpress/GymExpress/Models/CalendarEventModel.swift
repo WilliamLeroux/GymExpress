@@ -6,19 +6,78 @@
 //
 
 import Foundation
+import SQLite3
 
-enum RecurrenceType: String, Codable {
-    case none, daily, weekly, monthly
-}
-
-struct CalendarEvent: Identifiable, Codable {
-    var id: Int
-    var title: String
-    var startDate: Date
-    var endDate: Date
-    var recurrenceType: RecurrenceType = .none
-    var recurrenceEndDate: Date?
+// Structure d'un événement dans le calendrier d'un entraîneur.
+struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
+    private var id: Int = -1 /// Identifiant unique (privé)
+    var startDate: Date? = nil /// Date de début de l'événement
+    var endDate: Date? = nil /// Date de fin de l'événement
+    var title: String = "" /// Titre de l'événement
+    var recurrenceType: RecurrenceType = .none /// Type de récurrence (ex: "quotidien", "hebdomadaire")
+    var recurrenceEndDate: Date? = nil /// Date de fin de récurrence
     
+    // Initialisateur
+    init(id: Int, startDate: Date, endDate: Date, title: String, recurrenceType: RecurrenceType) {
+        self.id = id
+        self.startDate = startDate
+        self.endDate = endDate
+        self.title = title
+        self.recurrenceType = recurrenceType
+    }
+    
+    init(from pointer: OpaquePointer?) {
+        guard let pointer = pointer else {
+            return
+        }
+        
+        let columnCount = sqlite3_column_count(pointer)
+        var columnIndex: Int32 = 0
+        for i in 0..<columnCount {
+            columnIndex = Int32(DatabaseManager.shared.tableMaps[7].firstIndex(of: String(cString: sqlite3_column_name(pointer, i)!)) ?? 0)
+            
+            switch columnIndex {
+            case 1:
+                self.id = Int(sqlite3_column_int(pointer, i))
+            case 3:
+                if let dateString = sqlite3_column_text(pointer, i) {
+                    
+                    let dateStr = String(cString: dateString)
+                   
+                    self.startDate = DateUtils.shared.formatter.date(from: dateStr)!
+                } else {
+                    self.startDate = nil
+                }
+            case 4:
+                if let dateString = sqlite3_column_text(pointer, i) {
+                    
+                    let dateStr = String(cString: dateString)
+                   
+                    self.endDate = DateUtils.shared.formatter.date(from: dateStr)!
+                } else {
+                    self.endDate = nil
+                }
+            case 5:
+                self.title = String(cString: sqlite3_column_text(pointer, i)!)
+            case 6:
+                self.recurrenceType = Utils.shared.getRecurrenceTypeById(id: Int(sqlite3_column_int(pointer, i)))
+            default:
+                #if DEBUG
+                print("Unknown column, \(columnIndex)")
+                #endif
+            }
+        }
+    }
+    
+    var params: [Any] {
+        return [id, startDate as Any, endDate as Any, title, recurrenceType, recurrenceEndDate as Any]
+    }
+    
+    // Obtenir l'ID d'un CalendarEvent
+    func getId() -> Int {
+        return id
+    }
+
     func generateOccurrences() -> [CalendarEvent] {
         guard recurrenceType != .none else {
             return []

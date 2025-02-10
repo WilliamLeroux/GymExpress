@@ -12,8 +12,12 @@ class DateUtils {
     static let shared = DateUtils() /// Singleton
     let calendar = Calendar.current /// Calendrier actuel
     let currentYear = Calendar.current.component(.year, from: Date()) /// Année actuelle
+    let formatter = DateFormatter() /// Formatteur de date
     
-    private init() {}
+    
+    private init() {
+        formatter.dateFormat = "yyyy-MM-dd"
+    }
     
     /// Retourne la range de date pour les calendriers (en ce moment +5 ans)
     /// - Returns: Range fermé de date
