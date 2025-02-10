@@ -8,7 +8,7 @@
 import SQLite3
 import Foundation
 
-class DatabaseManager : ObservableObject{
+class DatabaseManager{
     static let shared = DatabaseManager() /// Singleton
     var tableMaps: [[String]] = [] /// Map
     
