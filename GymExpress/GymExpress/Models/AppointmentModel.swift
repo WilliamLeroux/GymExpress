@@ -52,14 +52,11 @@ struct AppointmentModel: Identifiable, SQLConvertable, InitializableFromSQLITE {
             case 5:
                 self.description = String(cString: sqlite3_column_text(pointer, i)!)
             case 6:
-                if let dateString = sqlite3_column_text(pointer, 5) {
+                if let dateString = sqlite3_column_text(pointer, i) {
                     
                     let dateStr = String(cString: dateString)
-
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy-MM-dd"
                    
-                    self.date = formatter.date(from: dateStr)!
+                    self.date = DateUtils.shared.formatter.date(from: dateStr)!
                 } else {
                     self.date = nil
                 }

@@ -79,4 +79,11 @@ struct Request {
         }
         return req + " FROM \(table.rawValue) \(condition);"
     }
+    
+    /// Crée une requête SQL Select pour avoir le id du dernier enregistrement créer
+    /// - Parameter table: Table cible
+    /// - Returns: String comprennant la chaîne
+    static func getNewId(table: DbTable) -> String {
+        return "SELECT id FROM \(table.rawValue) ORDER BY id DESC LIMIT 1;"
+    }
 }

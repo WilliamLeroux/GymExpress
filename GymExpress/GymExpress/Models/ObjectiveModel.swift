@@ -6,16 +6,17 @@
 //
 
 import Foundation
+import SQLite3
 
 /// Structure des objectifs
-struct Objective: Identifiable, Equatable, Hashable {
-    let id: Int = 0
-    let objective: String /// Nom de l'objectif
-    let initValue: Int /// Valeur initial
-    let valueList: [ObjectiveData] /// Liste des données
-    let maxValue: Int /// Valeur maximum
-    let startDate: Date /// Date de début
-    let endDate: Date /// Date de fin
+struct Objective: Identifiable, Equatable, Hashable, InitializableFromSQLITE, SQLConvertable {
+    var dbId: Int = 0
+    var objective: String = "" /// Nom de l'objectif
+    var initValue: Int = 0 /// Valeur initial
+    var valueList: [ObjectiveData] = [] /// Liste des données
+    var maxValue: Int = 0 /// Valeur maximum
+    var startDate: Date = Date() /// Date de début
+    var endDate: Date = Date() /// Date de fin
 
     init(objective: String, initValue: Int, valueList: [ObjectiveData], maxValue: Int, yearStart: Int, monthStart: Int, dayStart: Int, yearEnd: Int, monthEnd: Int, dayEnd: Int) {
         let calendar = Calendar.autoupdatingCurrent
@@ -26,4 +27,51 @@ struct Objective: Identifiable, Equatable, Hashable {
         self.valueList = valueList
         self.maxValue = maxValue
     }
+    
+    init (from pointer: OpaquePointer?) {
+        guard let pointer = pointer else {
+            return
+        }
+        
+        let columnCount = sqlite3_column_count(pointer)
+        var columnIndex: Int32 = 0
+        for i in 0..<columnCount {
+            columnIndex = Int32(DatabaseManager.shared.tableMaps[2].firstIndex(of: String(cString: sqlite3_column_name(pointer, i)!)) ?? 0)
+            
+            switch columnIndex {
+            case 1:
+                self.dbId = Int(sqlite3_column_int(pointer, Int32(i)))
+            case 3:
+                self.initValue = Int(sqlite3_column_int(pointer, Int32(i)))
+            case 4:
+                self.maxValue = Int(sqlite3_column_int(pointer, Int32(i)))
+            case 5:
+                if let dateString = sqlite3_column_text(pointer, i) {
+                    
+                    let dateStr = String(cString: dateString)
+                   
+                    self.startDate = DateUtils.shared.formatter.date(from: dateStr)!
+                } else {
+                    self.startDate = Date()
+                }
+            case 6:
+                if let dateString = sqlite3_column_text(pointer, i) {
+                    
+                    let dateStr = String(cString: dateString)
+                   
+                    self.endDate = DateUtils.shared.formatter.date(from: dateStr)!
+                } else {
+                    self.endDate = Date()
+                }
+            default :
+                break
+            }
+        }
+    }
+    
+    var params: [Any] {
+        return [objective, initValue, maxValue, startDate as Any, endDate as Any]
+    }
+    
+    var id: String { return objective }
 }

@@ -9,9 +9,14 @@ import SQLite3
 import Foundation
 
 class DatabaseUtils {
-    static let shared = DatabaseUtils()
+    static let shared = DatabaseUtils() /// Singleton
     private init() {}
     
+    /// Ajoute les valeurs au paramètre selon le type
+    /// - Parameters:
+    ///   - pointer: Pointeur de l'action
+    ///   - param: Paramètre à bind
+    ///   - i: Index
     func bindParam(pointer: OpaquePointer?, param: Any, i: Int) {
         switch param {
         case let param as Int: // Int

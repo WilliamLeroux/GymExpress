@@ -9,10 +9,10 @@ import SQLite3
 import Foundation
 
 class DatabaseManager : ObservableObject{
-    static let shared = DatabaseManager()
-    var tableMaps: [[String]] = []
+    static let shared = DatabaseManager() /// Singleton
+    var tableMaps: [[String]] = [] /// Map
     
-    private var db: OpaquePointer?
+    private var db: OpaquePointer? /// Pointeur de la base de données
     
     private init() {
         databaseSetup()
@@ -34,6 +34,7 @@ class DatabaseManager : ObservableObject{
         }
     }
     
+    /// Map la base de donnée
     private func mapDatabase() {
         var currentTable = ""
         var req = ""
@@ -63,6 +64,11 @@ class DatabaseManager : ObservableObject{
         print(tableMaps)
     }
     
+    /// Exécute les requête SELECT
+    /// - Parameters:
+    ///   - request: Chaine comprennant la requête
+    ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire
+    /// - Returns: Retourne le résultat selon le type donnée
     func fetchData<T> (request: String, params: [Any]) -> T? {
         var pointer: OpaquePointer?
         var result: Any? = nil
@@ -87,12 +93,23 @@ class DatabaseManager : ObservableObject{
         if sqlite3_step(pointer) == SQLITE_ROW {
             if let objectType = T.self as? InitializableFromSQLITE.Type {
                 result = objectType.init(from: pointer!)
+            } else if let objectType = T.self as? Int.Type{
+                result = sqlite3_column_int(pointer, 1)
+            } else if let objectType = T.self as? String.Type {
+                result = String(cString: sqlite3_column_text(pointer, 1)!)
+            } else if let objectType = T.self as? Double.Type {
+                result = sqlite3_column_double(pointer, 1)
             }
         }
         sqlite3_finalize(pointer)
         return result as? T
     }
     
+    /// Exécute les requête INSERT et UPDATE
+    /// - Parameters:
+    ///   - request: Chaine comprennant la requête
+    ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire
+    /// - Returns: Retourne true si la requête a fonctionné, false si elle n'a pas fonctionné
     func insertData<T: SQLConvertable>(request: String, params: T) -> Bool {
         var pointer: OpaquePointer?
         

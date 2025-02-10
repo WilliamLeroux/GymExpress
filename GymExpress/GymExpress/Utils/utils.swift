@@ -32,6 +32,26 @@ class Utils {
         }
     }
     
+    func getRecurrenceTypeId(recurrence: RecurrenceType) -> Int {
+        switch recurrence {
+        case .daily:
+            return 1
+        case .weekly:
+            return 2
+        }
+    }
+    
+    func getRecurrenceTypeById(id: Int) -> RecurrenceType {
+        switch id {
+        case 1:
+            return .daily
+        case 2:
+            return .weekly
+        default:
+            fatalError("Invalid recurrence id")
+        }
+    }
+    
     func getMembershipGradeId(membership: MembershipGrade) -> Int {
         switch membership {
         case .bronze:

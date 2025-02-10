@@ -20,7 +20,7 @@ struct SetupRequests {
     private static let OBJECTIVES_DATA = "CREATE TABLE IF NOT EXISTS objectives_data (id INTEGER PRIMARY KEY AUTOINCREMENT, objective_id INTEGER NOT NULL, data INTEGER NOT NULL, date DATE NOT NULL, FOREIGN KEY (objective_id) REFERENCES objectives(id));"
     
     /// Table workout
-    private static let WORKOUTS = "CREATE TABLE IF NOT EXISTS workouts (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, date DATE NOT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id));"
+    private static let WORKOUTS = "CREATE TABLE IF NOT EXISTS workouts (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, day INTEGER NOT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id));"
     
     /// Table exercice
     private static let EXERCICES = "CREATE TABLE IF NOT EXISTS exercices (id INTEGER PRIMARY KEY AUTOINCREMENT, workout_id INTEGER NOT NULL, name TEXT NOT NULL, image INTEGER NOT NULL, description TEXT NOT NULL, body_part INTEGER NOT NULL, exercice_type INTEGER NOT NULL, sets INTEGER NOT NULL, reps INTEGER NOT NULL, load INTEGER NOT NULL, FOREIGN KEY (workout_id) REFERENCES workouts(id));"

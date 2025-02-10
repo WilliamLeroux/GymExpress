@@ -15,9 +15,3 @@ enum DbTable: String, CaseIterable {
     case appointments = "appointments"
     case events = "events"
 }
-
-enum DbAction: String {
-    case select = "SELECT"
-    case insert = "INSERT INTO"
-    case update = "UPDATE"
-}
