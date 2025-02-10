@@ -29,10 +29,10 @@ class ClientConsultationController: ObservableObject {
     // MARK: - User Management
     private func loadInitialData() {
         allUsers = [
-            UserModel(id: 1, name: "Samuel", lastName: "Oliveira",
+            UserModel(name: "Samuel", lastName: "Oliveira",
                      email: "samuel@example.com", password: "",
                       type: .client, membership: MembershipData(grade: MembershipGrade.platinum, count: 100), salary: nil),
-            UserModel(id: 2, name: "Marie", lastName: "Dubois",
+            UserModel(name: "Marie", lastName: "Dubois",
                      email: "marie@example.com", password: "",
                       type: .client, membership: MembershipData(grade: MembershipGrade.bronze, count: 1), salary: nil)
         ]
@@ -73,11 +73,10 @@ class ClientConsultationController: ObservableObject {
     // MARK: - Appointment Management
     func createAppointment(clientId: Int, trainerId: Int, name: String, description: String, date: Date) {
         let newAppointment = AppointmentModel(
-            id: getNextAppointmentId(),
             trainerId: 1,
             clientId: clientId,
             name: name,
-            descritption: description,
+            description: description,
             date: date
         )
         

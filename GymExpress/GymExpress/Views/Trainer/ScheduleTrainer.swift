@@ -23,6 +23,7 @@ struct ScheduleTrainer: View {
     @State private var showAddEventSheet = false
     @State private var hoveredDay: Date? = nil
     @State private var keyboardMonitor: Any?
+    @State private var selectedDay: Date? = nil
 
     let hourHeight = 50.0
     let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
@@ -63,16 +64,24 @@ struct ScheduleTrainer: View {
                             )
                             .cornerRadius(16)
                             .onTapGesture {
-                                showAddEventSheet = true
+                                selectedDay = day
                             }
                             .onHover { hovering in
                                 hoveredDay = hovering ? day : nil
                             }
+                            .onChange(of: selectedDay) {
+                                if selectedDay != nil {
+                                    showAddEventSheet = true
+                                }
+                            }
                             .sheet(isPresented: $showAddEventSheet) {
-                                AddEventSheetView(isPresented: $showAddEventSheet, dateDay: day)
+                                AddEventSheetView(isPresented: $showAddEventSheet, dateDay: selectedDay!)
                                     .frame(height: 400)
                                     .presentationDetents([.height(400)])
                                     .interactiveDismissDisabled(true)
+                                    .onDisappear {
+                                        selectedDay = nil
+                                    }
                             }
 
                             ZStack(alignment: .topLeading) {
@@ -86,8 +95,8 @@ struct ScheduleTrainer: View {
                                     }
                                 }
 
-                                ForEach(controller.events.filter { Calendar.current.isDate($0.startDate, inSameDayAs: day) }) { event in
-                                    AnyView(eventCell(identifiableEvent.event))
+                                ForEach(controller.eventsForDay(day), id: \.self) { event in
+                                    AnyView(eventCell(event))
                                 }
                             }
                         }
@@ -114,7 +123,7 @@ struct ScheduleTrainer: View {
     }
 
     /// Gère l'affichage d'un événement dans le calendrier
-    func eventCell(_ event: CalendarEvent) -> some View {
+    func eventCell(_ event: CalendarEvent) -> any View {
         guard let endDate = event.endDate, let startDate = event.startDate else {
             return EmptyView()
         }

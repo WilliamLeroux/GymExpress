@@ -9,8 +9,8 @@ import Foundation
 import SQLite3
 
 // Structure d'un événement dans le calendrier d'un entraîneur.
-struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
-    private var id: Int = -1 /// Identifiant unique (privé)
+struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
+    var id: Int = -1 /// Identifiant unique (privé)
     var startDate: Date? = nil /// Date de début de l'événement
     var endDate: Date? = nil /// Date de fin de l'événement
     var title: String = "" /// Titre de l'événement
@@ -18,7 +18,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
     var recurrenceEndDate: Date? = nil /// Date de fin de récurrence
     
     // Initialisateur
-    init(id: Int, startDate: Date, endDate: Date, title: String, recurrenceType: RecurrenceType) {
+    init(id: Int = -1, startDate: Date, endDate: Date, title: String, recurrenceType: RecurrenceType) {
         self.id = id
         self.startDate = startDate
         self.endDate = endDate
@@ -72,11 +72,6 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
     var params: [Any] {
         return [id, startDate as Any, endDate as Any, title, recurrenceType, recurrenceEndDate as Any]
     }
-    
-    // Obtenir l'ID d'un CalendarEvent
-    func getId() -> Int {
-        return id
-    }
 
     func generateOccurrences() -> [CalendarEvent] {
         guard recurrenceType != .none else {
@@ -84,20 +79,20 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
         }
         
         let calendar = Calendar.current
-        let timeInterval = endDate.timeIntervalSince(startDate)
+        let timeInterval = (endDate?.timeIntervalSince(startDate ?? Date()))!
         var occurrences: [CalendarEvent] = []
         
-        let endRecurrenceDate = recurrenceEndDate ?? calendar.date(byAdding: .month, value: 1, to: startDate)!
+        let endRecurrenceDate = recurrenceEndDate ?? calendar.date(byAdding: .month, value: 1, to: startDate ?? Date())!
         
         var currentDate: Date
         
         switch recurrenceType {
         case .daily:
-            currentDate = calendar.date(byAdding: .day, value: 1, to: startDate) ?? startDate
+            currentDate = calendar.date(byAdding: .day, value: 1, to: startDate ?? Date()) ?? startDate ?? Date()
         case .weekly:
-            currentDate = calendar.date(byAdding: .weekOfYear, value: 1, to: startDate) ?? startDate
+            currentDate = calendar.date(byAdding: .weekOfYear, value: 1, to: startDate ?? Date()) ?? startDate ?? Date()
         case .monthly:
-            currentDate = calendar.date(byAdding: .month, value: 1, to: startDate) ?? startDate
+            currentDate = calendar.date(byAdding: .month, value: 1, to: startDate ?? Date()) ?? startDate ?? Date()
         case .none:
             return []
         }
@@ -105,9 +100,9 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE {
         while currentDate <= endRecurrenceDate {
             let newEvent = CalendarEvent(
                 id: UUID().hashValue,
-                title: title,
                 startDate: currentDate,
                 endDate: currentDate.addingTimeInterval(timeInterval),
+                title: title,
                 recurrenceType: .none
             )
             occurrences.append(newEvent)

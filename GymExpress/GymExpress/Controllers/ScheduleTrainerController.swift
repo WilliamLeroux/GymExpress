@@ -14,13 +14,14 @@ class ScheduleTrainerController: ObservableObject {
     
     @Published var startOfWeek: Date = Date()
     @Published var events: [CalendarEvent] = [
-        CalendarEvent(id: 1, title: "Entraînement", startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), recurrenceType: .none),
-        CalendarEvent(id: 2, title: "Réunion", startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), recurrenceType: .weekly)
+        CalendarEvent(id: 1, startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement", recurrenceType: .none),
+        CalendarEvent(id: 2, startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion", recurrenceType: .weekly)
     ]
     
     private init() {}
     
     func addEvent(event: CalendarEvent, startDate: Date) {
+        guard let startDate = event.startDate else { return }
         var newEvents = events
         newEvents.append(event)
         
@@ -28,7 +29,7 @@ class ScheduleTrainerController: ObservableObject {
         newEvents.append(contentsOf: occurrences)
         
         DispatchQueue.main.async {
-            self.events = newEvents.sorted { $0.startDate < $1.startDate }
+            self.events = newEvents.sorted { _,_ in startDate < startDate }
         }
     }
     
@@ -39,7 +40,7 @@ class ScheduleTrainerController: ObservableObject {
     }
     
     func eventsForDay(_ day: Date) -> [CalendarEvent] {
-        return events.filter { Calendar.current.isDate($0.startDate, inSameDayAs: day) }
+        return events.filter { Calendar.current.isDate($0.startDate!, inSameDayAs: day) }
     }
     
     func addKeyboardListener() {

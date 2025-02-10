@@ -38,7 +38,6 @@ struct AddClientSheet: View {
             Button("Enregistrer") {}
             .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
                 let newUser = UserModel(
-                    id: Int.random(in: 1...1000),
                     name: name,
                     lastName: lastName,
                     email: email,

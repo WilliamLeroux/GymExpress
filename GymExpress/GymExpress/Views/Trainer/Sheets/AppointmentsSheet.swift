@@ -22,8 +22,8 @@ struct AppointmentsSheet: View {
                 VStack {
                     ForEach(controller.getAppointments(for: user.id)) { appointment in
                         VStack(alignment: .leading) {
-                            Text("Date: \(formattedDate(appointment.date))")
-                            Text("Description: \(appointment.descritption)")
+                            Text("Date: \(formattedDate(appointment.date ?? Date()))")
+                            Text("Description: \(appointment.description)")
                         }
                         .frame(minWidth: 250)
                         .padding()

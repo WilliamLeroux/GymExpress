@@ -13,7 +13,7 @@ struct AddEventSheetView: View {
     @State private var startTime = Date()
     @State private var endTime = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
     @State private var isRecurring = false /// Indique si l'événement est récurrent
-    @State private var recurrenceType = "Toutes les semaines" /// Type de récurrence de l'événement
+    @State private var recurrenceType = RecurrenceType.none /// Type de récurrence de l'événement
     @State private var eventTitle = "" /// Titre de l'événement
     
     let minTime = Calendar.current.date(bySettingHour: 6, minute: 0, second: 0, of: Date())!
@@ -22,14 +22,7 @@ struct AddEventSheetView: View {
     var minTimeEnd: Date {
         return Calendar.current.date(byAdding: .minute, value: 30, to: startTime) ?? startTime
     }
-    let recurrenceOptions = ["Tous les jours", "Toutes les semaines", "Tous les mois"] /// Options de récurrence disponibles
-    
-    let recurrenceMapping: [String: RecurrenceType] = [
-        "Tous les jours": .daily,
-        "Toutes les semaines": .weekly,
-        "Tous les mois": .monthly
-    ]
-    
+            
     var body: some View {
         NavigationView {
             VStack {
@@ -55,8 +48,10 @@ struct AddEventSheetView: View {
                             Toggle("Récurrent", isOn: $isRecurring)
                             if isRecurring {
                                 Picker("", selection: $recurrenceType) {
-                                    ForEach(recurrenceOptions, id: \.self) { option in
-                                        Text(option)
+                                    ForEach(RecurrenceType.allCases, id: \.self) { option in
+                                        if option != .none {
+                                            Text(option.rawValue)
+                                        }
                                     }
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
@@ -75,15 +70,30 @@ struct AddEventSheetView: View {
                             
                             Button("Ajouter") {}
                                 .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
-                                    let recurrenceEnum = isRecurring ? (recurrenceMapping[recurrenceType] ?? .none) : .none
+                                    let calendar = Calendar.current
+                                    
+                                    let components = calendar.dateComponents([.year, .month, .day], from: dateDay)
+
+                                    var startComponents = components
+                                    startComponents.hour = calendar.component(.hour, from: startTime)
+                                    startComponents.minute = calendar.component(.minute, from: startTime)
+                                    
+                                    var endComponents = components
+                                    endComponents.hour = calendar.component(.hour, from: endTime)
+                                    endComponents.minute = calendar.component(.minute, from: endTime)
+                                    
+                                    guard let startDate = calendar.date(from: startComponents),
+                                          let endDate = calendar.date(from: endComponents) else {
+                                        return
+                                    }
+
                                     let newEvent = CalendarEvent(
-                                        id: UUID().hashValue,
+                                        startDate: startDate,
+                                        endDate: endDate,
                                         title: eventTitle,
-                                        startDate: startTime,
-                                        endDate: endTime,
-                                        recurrenceType: recurrenceEnum
+                                        recurrenceType: recurrenceType
                                     )
-                                    ScheduleTrainerController.shared.addEvent(event: newEvent, startDate: dateDay)
+                                    ScheduleTrainerController.shared.addEvent(event: newEvent, startDate: startDate)
                                     isPresented = false
                                 }))
                             
@@ -106,10 +116,6 @@ struct AddEventSheetView: View {
             .presentationDetents([.height(400)])
             .interactiveDismissDisabled(true)
             .background(Color.white)
-        }
-        .onAppear {
-            startTime = dateDay
-            print(startTime.debugDescription)
         }
     }
 }
