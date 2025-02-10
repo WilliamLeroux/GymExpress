@@ -10,7 +10,7 @@ import Charts
 import Combine
 
 struct ProgressView: View {
-    private let objectives: [Objective] = [Objective(
+    private var objectives: [Objective] = [Objective(
         objective: "objectif 1", initValue: 0, valueList: [ObjectiveData(value: 1, year: 2025, month: 2, day: 10), ObjectiveData(value: 2, year: 2025, month: 2, day: 12), ObjectiveData(value: 3, year: 2025, month: 2, day: 20)], maxValue: 50, yearStart: 2025, monthStart: 1, dayStart: 1, yearEnd: 2025, monthEnd: 6, dayEnd: 25),
                                            Objective(objective: "objectif 2", initValue: 2, valueList: [ObjectiveData(value: 10, year: 2025, month: 2, day: 10), ObjectiveData(value: 20, year: 2025, month: 2, day: 11)], maxValue: 20, yearStart: 2025, monthStart: 1, dayStart: 1, yearEnd: 2025, monthEnd: 4, dayEnd: 10),
                                            Objective(objective: "objectif 3", initValue: 2, valueList: [ObjectiveData(value: 10, year: 2025, month: 2, day: 20), ObjectiveData(value: 20, year: 2025, month: 3, day: 10), ObjectiveData(value: 30, year: 2025, month: 3, day: 20)], maxValue: 100, yearStart: 2025, monthStart: 1, dayStart: 1, yearEnd: 2026, monthEnd: 1, dayEnd: 1)
@@ -156,7 +156,7 @@ struct ProgressView: View {
                     
                     Chart(index.valueList) {
                         LineMark(
-                            x: .value("Date", $0.date),
+                            x: .value("Date", $0.date ?? Date()),
                             y: .value("Valeur", $0.value)
                         )
                         .interpolationMethod(.catmullRom)
