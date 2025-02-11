@@ -12,7 +12,7 @@ struct GymExpressApp: App {
     var dbManager: DatabaseManager = DatabaseManager.shared
     var body: some Scene {
         WindowGroup {
-            LoginView(viewModel: LoginController())
+            LoginView()
                 .preferredColorScheme(.light)
                 .frame(maxWidth: 1300, maxHeight: 800)
                 .frame(minWidth: 1000, minHeight: 600)

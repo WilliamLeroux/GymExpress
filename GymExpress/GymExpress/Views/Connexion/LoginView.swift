@@ -9,7 +9,7 @@ import SwiftUI
 import AppKit
 
 struct LoginView: View {
-    @StateObject var viewModel: LoginController /// Le contrôleur de connexion
+    @StateObject var viewModel: LoginController = LoginController()/// Le contrôleur de connexion
     @State private var isRememberMe: Bool = false /// Se souvenir des informations de connexion
     @State private var isHover = false /// Vérifie si la souris survol le bouton de connexion
     @State private var isNavigating = false /// Active la navigation si les champs sont valides
@@ -63,10 +63,11 @@ struct LoginView: View {
                                         isActive: $isNavigating
                                     ) {
                                         Button(action: {
-                                            if !viewModel.email.isEmpty && !viewModel.password.isEmpty {
+                                            if viewModel.isValidInformation() {
+                                                errorMessage = ""
                                                 isNavigating = true
                                             }else {
-                                                errorMessage = "Veuillez remplir tous les champs"
+                                                errorMessage = "Informations invalides"
                                             }
                                         }) {
                                             Text("Se connecter")
