@@ -29,12 +29,7 @@ class ClientConsultationController: ObservableObject {
     // MARK: - User Management
     private func loadInitialData() {
         allUsers = [
-            UserModel(name: "Samuel", lastName: "Oliveira",
-                     email: "samuel@example.com", password: "",
-                      type: .client, membership: MembershipData(grade: MembershipGrade.platinum, count: 100), salary: nil),
-            UserModel(name: "Marie", lastName: "Dubois",
-                     email: "marie@example.com", password: "",
-                      type: .client, membership: MembershipData(grade: MembershipGrade.bronze, count: 1), salary: nil)
+            UserModel(name: "Samuel", lastName: "Oliveira", email: "samuel@example.com", password: "", type: .client, membership: MembershipData(grade: MembershipGrade.platinum, count: 100), salary: nil)
         ]
     }
     
