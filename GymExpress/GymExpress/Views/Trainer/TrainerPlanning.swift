@@ -16,6 +16,8 @@ struct TrainingPlaningView: View {
     @FocusState private var isTypingLastName: Bool /// Indique si l'utilisateur est en train de taper le nom de famille
     @FocusState private var isTypingFirstName: Bool /// Indique si l'utilisateur est en train de taper le prénom
     
+    @State private var selectedExercises: [ExerciseModel] = []
+
     let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"] /// Jours de la semaine pour la planification
 
     var body: some View {
