@@ -7,25 +7,14 @@
 
 import SwiftUI
 
+
 struct TrainingPlaningView: View {
+    @ObservedObject var controller = TrainerPlanningController.shared
     
     @State private var lastName: String = "" /// Nom de famille saisi pour la recherche
     @State private var firstName: String = "" /// Prénom saisi pour la recherche
-    @State private var selectedClients: [String] = [] /// Liste des clients correspondant à la recherche
-    @State private var selectedClient: String? = nil /// Client sélectionné pour la planification
     @FocusState private var isTypingLastName: Bool /// Indique si l'utilisateur est en train de taper le nom de famille
     @FocusState private var isTypingFirstName: Bool /// Indique si l'utilisateur est en train de taper le prénom
-    
-    /// Liste de tous les clients disponibles
-    let allClients = [
-        "John Doe",
-        "Jane Smith",
-        "Alice Johnson",
-        "Bob Brown",
-        "Samuel Oliveira Martel",
-        "William Leroux",
-        "Nicolas Morin"
-    ]
     
     let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"] /// Jours de la semaine pour la planification
 
@@ -51,17 +40,15 @@ struct TrainingPlaningView: View {
                             Text("Recherche")
                                 .font(.headline)
                         }
-                        .buttonStyle(RoundedButtonStyle(width: 200, height: 50, action: {
-                            searchClients()
+                        .buttonStyle(RoundedButtonStyle(width: 200, height: 50,action: {
+                            controller.searchClients(firstName: firstName, lastName: lastName)
                         }))
                         .frame(maxWidth: .infinity)
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .center)
 
-
-                        
                         VStack(alignment: .leading, spacing: 8) {
-                            if selectedClients.isEmpty {
+                            if controller.selectedClients.isEmpty {
                                 Text("Aucun client trouvé")
                                     .foregroundColor(.secondary)
                                     .frame(maxWidth: .infinity, minHeight: 400)
@@ -69,21 +56,21 @@ struct TrainingPlaningView: View {
                             } else {
                                 ScrollView {
                                     LazyVStack(alignment: .leading, spacing: 8) {
-                                        ForEach(selectedClients, id: \.self) { client in
-                                            Text(client)
+                                        ForEach(controller.selectedClients, id: \.id) { client in
+                                            Text("\(client.name) \(client.lastName)")
                                                 .padding()
                                                 .frame(maxWidth: .infinity, alignment: .center)
-                                                .background(selectedClient == client ? Color.main.opacity(0.4) : Color.clear)
+                                                .background(controller.selectedClient?.id == client.id ? Color.main.opacity(0.4) : Color.clear)
                                                 .cornerRadius(8)
                                                 .contentShape(Rectangle())
                                                 .onTapGesture {
-                                                    selectedClient = client
+                                                    controller.selectedClient = client
                                                 }
                                         }
                                     }
-                                    .frame(maxWidth: .infinity, minHeight: 400)
+                                    .frame(maxWidth: .infinity, minHeight: 400, alignment: .top)
                                 }
-                                .frame(maxHeight: selectedClient == nil ? 400 : 100)
+                                .frame(maxHeight: controller.selectedClient == nil ? 400 : 100)
                                 .border(Color.gray.opacity(0.2))
                             }
                         }
@@ -92,10 +79,10 @@ struct TrainingPlaningView: View {
                 }
                 
                 // Section des jours
-                if let client = selectedClient {
+                if let client = controller.selectedClient {
                     GroupBox {
                         VStack {
-                            Text("Planification pour \(client)")
+                            Text("Planification pour \(client.name) \(client.lastName)")
                                 .font(.headline)
                                 .padding(.bottom, 10)
                             
@@ -111,23 +98,6 @@ struct TrainingPlaningView: View {
                 }
             }
             .padding()
-        }
-    }
-    
-    /// Fonction de recherche des clients en fonction du prénom et du nom saisis
-    private func searchClients() {
-        let lowercasedFirstName = firstName.lowercased()
-        let lowercasedLastName = lastName.lowercased()
-        
-        selectedClients = allClients.filter { client in
-            let fullName = client.lowercased()
-            return (lowercasedFirstName.isEmpty || fullName.contains(lowercasedFirstName)) &&
-            (lowercasedLastName.isEmpty || fullName.contains(lowercasedLastName))
-        }
-        
-        // Réinitialise le client sélectionné si aucun ne correspond
-        if !selectedClients.contains(selectedClient ?? "") {
-            selectedClient = nil
         }
     }
 }
@@ -188,24 +158,11 @@ struct DayColumn: View {
                 }
                 .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red, padding: 0, action: {
                     isDeleteMode.toggle()
-                    if isDeleteMode {
-                        deleteDay()
-                    }
                 }))
             }
             .padding(.top, 5)
         }
         .frame(maxWidth: .infinity)
-    }
-    
-    /// Fonction pour éditer la journée sélectionnée
-    private func editDay() {
-        // Implémenter la logique d'édition
-    }
-
-    /// Fonction pour supprimer la journée sélectionnée
-    private func deleteDay() {
-        // Implémenter la logique de suppression
     }
 }
 
