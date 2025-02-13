@@ -9,7 +9,7 @@ import SwiftUI
 import AppKit
 
 struct LoginView: View {
-    @StateObject var viewModel: LoginController = LoginController()/// Le contrôleur de connexion
+    @StateObject var viewModel: LoginController = LoginController.shared
     @State private var isRememberMe: Bool = false /// Se souvenir des informations de connexion
     @State private var isHover = false /// Vérifie si la souris survol le bouton de connexion
     @State private var isNavigating = false /// Active la navigation si les champs sont valides
@@ -59,11 +59,18 @@ struct LoginView: View {
                                         .foregroundStyle(Color.red)
                                     
                                     NavigationLink(
-                                        destination: RootNavigation(),
+                                        destination: Group {
+                                            if let user = viewModel.currentUser {
+                                                RootNavigation()
+                                            } else {
+                                                // Fallback view or empty view if needed
+                                                EmptyView()
+                                            }
+                                        },
                                         isActive: $isNavigating
                                     ) {
                                         Button(action: {
-                                            if viewModel.isValidInformation() {
+                                            if let user = viewModel.authenticateUser() {
                                                 errorMessage = ""
                                                 isNavigating = true
                                             }else {

@@ -147,7 +147,3 @@ struct WorkoutFrequenceView: View {
         .padding()
     }
 }
-
-#Preview {
-    RootNavigation()
-}

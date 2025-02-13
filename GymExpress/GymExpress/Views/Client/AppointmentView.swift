@@ -136,6 +136,3 @@ struct AppointmentView: View {
     }
 }
 
-#Preview {
-    RootNavigation()
-}

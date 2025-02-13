@@ -186,6 +186,3 @@ struct ProgressView: View {
     }
 }
 
-#Preview {
-    RootNavigation()
-}
