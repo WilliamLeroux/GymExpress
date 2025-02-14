@@ -27,11 +27,13 @@ class ExercisePlanController: ObservableObject {
     
     // Convertit les exercices temporaires en ExerciseModel
     func getExerciseModels() -> [ExerciseModel] {
+        print("📌 Récupération des exercices : \(addedExercises.count) trouvés")
+        
         return addedExercises.map { exercise in
             ExerciseModel(
-                imageId: 1, // Valeur par défaut
-                description: "",
-                bodyParts: 1, // Valeur par défaut
+                imageId: 1,
+                description: exercise.name,
+                bodyParts: 1,
                 exerciseType: getExerciseTypeInt(selectedType),
                 sets: Int(exercise.series) ?? 0,
                 reps: Int(exercise.reps) ?? 0,
@@ -52,10 +54,19 @@ class ExercisePlanController: ObservableObject {
     
     func addExercise() {
         guard let exerciseName = selectedExercise, !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
+            print("❌ Impossible d'ajouter l'exercice : champ(s) vide(s)")
             return
         }
+        
         let newExercise = Exercise(name: exerciseName, series: series, reps: reps, charge: charge, repos: repos)
         addedExercises.append(newExercise)
+        
+        print("✅ Exercice ajouté : \(exerciseName)")
+        print("📌 Liste actuelle des exercices :")
+        for ex in addedExercises {
+            print("- \(ex.name) | Sets: \(ex.series), Reps: \(ex.reps), Charge: \(ex.charge)")
+        }
+
         resetFields()
     }
     

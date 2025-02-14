@@ -10,7 +10,8 @@ import SwiftUI
 
 struct TrainingPlaningView: View {
     @ObservedObject var controller = TrainerPlanningController.shared
-    
+    @ObservedObject var exercisePlanController = ExercisePlanController() // ⬅ CHANGEMENT
+
     @State private var lastName: String = "" /// Nom de famille saisi pour la recherche
     @State private var firstName: String = "" /// Prénom saisi pour la recherche
     @FocusState private var isTypingLastName: Bool /// Indique si l'utilisateur est en train de taper le nom de famille
@@ -88,8 +89,10 @@ struct TrainingPlaningView: View {
                                 .font(.headline)
                                 .padding(.bottom, 10)
                             
+                            let days = weekDays // Stocker en variable locale
+
                             HStack(alignment: .top, spacing: 10) {
-                                ForEach(weekDays, id: \.self) { day in
+                                ForEach(days, id: \.self) { day in
                                     DayColumn(day: day)
                                 }
                             }
@@ -107,27 +110,32 @@ struct TrainingPlaningView: View {
 struct DayColumn: View {
     @ObservedObject var controller = TrainerPlanningController.shared
     @StateObject private var exercisePlanController = ExercisePlanController()
-    
+
     let day: String
     @State private var isDeleteMode: Bool = false
     @State private var showExercisePlan: Bool = false
-    
+
+    private var hasWorkout: Bool {
+        let dayIndex = getDayIndex(day)
+        return controller.workouts.contains { $0.day == dayIndex }
+    }
+
     private func getDayIndex(_ day: String) -> Int {
         let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
         return weekDays.firstIndex(of: day) ?? 0
     }
-    
+
     var body: some View {
         VStack {
             Text(day)
                 .font(.system(size: 14, weight: .medium))
                 .padding(.bottom, 5)
-            
+
             RoundedRectangle(cornerRadius: 8)
-                .stroke(isDeleteMode ? Color.red : Color.green, lineWidth: 4)
+                .stroke(hasWorkout ? Color.green : Color.red, lineWidth: 4)
                 .frame(width: 105, height: 170)
-                .animation(.easeInOut, value: isDeleteMode)
-            
+                .animation(.easeInOut, value: hasWorkout)
+
             HStack(spacing: 15) {
                 Button(action: {}) {
                     Image(systemName: "pencil")
@@ -139,25 +147,15 @@ struct DayColumn: View {
                 }))
                 .sheet(isPresented: $showExercisePlan) {
                     VStack {
-                        ExercisePlanCreationView(day: day)
-
+                        ExercisePlanCreationView(exercisePlanController: exercisePlanController, day: day)
                         HStack {
                             Button(action: {}) {
                                 Text("Sauvegarder")
                                     .font(.headline)
                             }
-                            .buttonStyle(RoundedButtonStyle(width: 125, height: 50, padding: 2, action: {
-                                // Créer un nouveau workout avec les exercices
-                                let exercises = exercisePlanController.getExerciseModels()
-                                controller.addWorkout(
-                                    for: controller.allUsers[0],
-                                    exercises: exercises,
-                                    day: getDayIndex(day)
-                                )
-                                showExercisePlan.toggle()
-                            }))
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 50, padding: 2, action: saveWorkout))
                             .padding()
-                            
+
                             Button(action: {}) {
                                 Text("Annuler")
                                     .font(.headline)
@@ -179,13 +177,44 @@ struct DayColumn: View {
                 }
                 .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red, padding: 0, action: {
                     isDeleteMode.toggle()
+                    deleteWorkout()
                 }))
             }
             .padding(.top, 5)
         }
         .frame(maxWidth: .infinity)
     }
+
+    func saveWorkout() {
+        guard let selectedClient = controller.selectedClient else {
+            return
+        }
+
+        let exercises = exercisePlanController.getExerciseModels()
+
+        if exercises.isEmpty {
+            return
+        }
+
+        let dayIndex = getDayIndex(day)
+
+        controller.addWorkout(
+            for: selectedClient,
+            exercises: exercises,
+            day: dayIndex
+        )
+        showExercisePlan.toggle()
+    }
+    
+    func deleteWorkout() {
+        let dayIndex = getDayIndex(day)
+
+        if let workoutToDelete = controller.workouts.first(where: { $0.day == dayIndex }) {
+            controller.deleteWorkout(workoutToDelete)
+        } else {}
+    }
 }
+
 
 // Preview
 struct TrainingPlanView_Previews: PreviewProvider {

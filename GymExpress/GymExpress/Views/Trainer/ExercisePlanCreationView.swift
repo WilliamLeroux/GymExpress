@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExercisePlanCreationView: View {
-    @StateObject private var controller = ExercisePlanController()
+    @ObservedObject var exercisePlanController: ExercisePlanController
     let day: String
     
     var body: some View {
@@ -23,9 +23,9 @@ struct ExercisePlanCreationView: View {
                     GroupBox {
                         HStack {
                             VStack(alignment: .leading) {
-                                Picker("", selection: $controller.selectedType) {
-                                    ForEach(controller.exerciseLegends, id: \.self) { type in
-                                        Text(type).tag(type as String?)
+                                Picker("Type d'exercice", selection: $exercisePlanController.selectedType) {
+                                    ForEach(exercisePlanController.exerciseLegends, id: \.self) { type in
+                                        Text(type).tag(type)
                                     }
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
@@ -33,13 +33,15 @@ struct ExercisePlanCreationView: View {
 
                                 ScrollView {
                                     VStack(alignment: .leading) {
-                                        ForEach(controller.exercisesByType[controller.selectedType] ?? [], id: \.self) { exercise in
+                                        let exercises = exercisePlanController.exercisesByType[exercisePlanController.selectedType] ?? []
+
+                                        ForEach(exercises, id: \.self) { exercise in
                                             Button(action: {
-                                                controller.selectedExercise = exercise
+                                                exercisePlanController.selectedExercise = exercise
                                             }) {
                                                 HStack {
-                                                    Image(systemName: controller.selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
-                                                        .foregroundColor(controller.selectedExercise == exercise ? .blue : .gray)
+                                                    Image(systemName: exercisePlanController.selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
+                                                        .foregroundColor(exercisePlanController.selectedExercise == exercise ? .blue : .gray)
                                                     Text(exercise)
                                                         .font(.title2)
                                                 }
@@ -47,7 +49,7 @@ struct ExercisePlanCreationView: View {
                                             }
                                         }
                                     }
-                                }.frame(maxHeight: 500)
+                                }.frame(minHeight: 500 ,maxHeight: 500, alignment: .leading)
                             }
                             .frame(minWidth: 300, maxWidth: 300)
                             .padding()
@@ -55,13 +57,13 @@ struct ExercisePlanCreationView: View {
                             Divider()
 
                             VStack(alignment: .leading, spacing: 30) {
-                                ParameterField(title: "Nombre de séries", exerciseLegends: "3", text: $controller.series)
+                                ParameterField(title: "Nombre de séries", exerciseLegends: "3", text: $exercisePlanController.series)
                                     .padding(.leading, 5)
-                                ParameterField(title: "Nombre de répétitions", exerciseLegends: "12", text: $controller.reps)
+                                ParameterField(title: "Nombre de répétitions", exerciseLegends: "12", text: $exercisePlanController.reps)
                                     .padding(.leading, 5)
-                                ParameterField(title: "Charge", exerciseLegends: "45 lbs", text: $controller.charge)
+                                ParameterField(title: "Charge", exerciseLegends: "45 lbs", text: $exercisePlanController.charge)
                                     .padding(.leading, 5)
-                                ParameterField(title: "Temps de repos", exerciseLegends: "120 (sec)", text: $controller.repos)
+                                ParameterField(title: "Temps de repos", exerciseLegends: "120 (sec)", text: $exercisePlanController.repos)
                                     .padding(.leading, 5)
                                 
                                 Button(action: {}) {
@@ -72,7 +74,7 @@ struct ExercisePlanCreationView: View {
                                         .font(.headline)
                                 }
                                 .buttonStyle(RoundedButtonStyle(width: 125 ,action: {
-                                    controller.addExercise()
+                                    exercisePlanController.addExercise()
                                 }))
                             }
                             .padding()
@@ -87,11 +89,11 @@ struct ExercisePlanCreationView: View {
                                     .font(.headline)
                                     .padding(.bottom, 10)
                                 
-                                if controller.addedExercises.isEmpty {
+                                if exercisePlanController.addedExercises.isEmpty {
                                     Text("Aucun exercice ajouté")
                                         .foregroundColor(.gray)
                                 } else {
-                                    ForEach(controller.addedExercises) { exercise in
+                                    ForEach(exercisePlanController.addedExercises) { exercise in
                                         VStack {
                                             HStack {
                                                 VStack(alignment: .leading) {
@@ -105,7 +107,7 @@ struct ExercisePlanCreationView: View {
                                                     Image(systemName: "trash")
                                                         .foregroundColor(.black)
                                                 }.buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red, padding: 0, action: {
-                                                    controller.removeExercise(exercise)
+                                                    exercisePlanController.removeExercise(exercise)
                                                 }))
                                             }
                                             .padding()
@@ -161,11 +163,5 @@ struct ParameterField: View {
             )
             .frame(width: 125)
         }
-    }
-}
-
-struct ExercisePlanCreationView_Previews: PreviewProvider {
-    static var previews: some View {
-        ExercisePlanCreationView(day: "Lundi")
     }
 }

@@ -48,18 +48,6 @@ class TrainerPlanningController: ObservableObject {
         }
     }
 
-    /// Ajouter un rendez-vous pour un client
-    func addAppointment(for client: UserModel, date: Date) {
-        let appointment = AppointmentModel(
-            trainerId: trainer.id,
-            clientId: client.id,
-            name: "Séance d'entraînement",
-            description: "Séance personnalisée avec \(trainer.name)",
-            date: date
-        )
-        appointments.append(appointment)
-    }
-
     /// Supprimer un rendez-vous
     func deleteAppointment(_ appointment: AppointmentModel) {
         appointments.removeAll { $0.id == appointment.id }
