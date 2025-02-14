@@ -19,13 +19,13 @@ class LoginController: ObservableObject {
 
     private init() {}
     
-    func authenticateUser() -> UserModel? {
+    func authenticateUser() -> Bool {
         let user: UserModel? = dbManager.fetchData(request: Request.select(table: .users, columns: ["*"], condition: "WHERE email = '\(email)'"), params: [])
         
         if user?.email == email && user?.password == password {
             self.currentUser = user
-            return user
+            return true
         }
-        return nil
+        return false
     }
 }

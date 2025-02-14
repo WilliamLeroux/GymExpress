@@ -59,18 +59,11 @@ struct LoginView: View {
                                         .foregroundStyle(Color.red)
                                     
                                     NavigationLink(
-                                        destination: Group {
-                                            if let user = viewModel.currentUser {
-                                                RootNavigation()
-                                            } else {
-                                                // Fallback view or empty view if needed
-                                                EmptyView()
-                                            }
-                                        },
+                                        destination: RootNavigation(),
                                         isActive: $isNavigating
                                     ) {
                                         Button(action: {
-                                            if let user = viewModel.authenticateUser() {
+                                            if viewModel.authenticateUser() {
                                                 errorMessage = ""
                                                 isNavigating = true
                                             }else {
