@@ -105,10 +105,17 @@ struct TrainingPlaningView: View {
 }
 
 struct DayColumn: View {
+    @ObservedObject var controller = TrainerPlanningController.shared
+    @StateObject private var exercisePlanController = ExercisePlanController()
     
-    let day: String /// Nom du jour de la semaine
-    @State private var isDeleteMode: Bool = false /// Indique si le mode suppression est activé
-    @State private var showExercisePlan: Bool = false /// Indique si la feuille de création de plan d'exercice est affichée
+    let day: String
+    @State private var isDeleteMode: Bool = false
+    @State private var showExercisePlan: Bool = false
+    
+    private func getDayIndex(_ day: String) -> Int {
+        let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
+        return weekDays.firstIndex(of: day) ?? 0
+    }
     
     var body: some View {
         VStack {
@@ -134,19 +141,31 @@ struct DayColumn: View {
                     VStack {
                         ExercisePlanCreationView(day: day)
 
-                        HStack{
+                        HStack {
                             Button(action: {}) {
                                 Text("Sauvegarder")
                                     .font(.headline)
                             }
-                            .buttonStyle(RoundedButtonStyle(width: 125, height: 50, padding: 2 , action: {showExercisePlan.toggle()}))
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 50, padding: 2, action: {
+                                // Créer un nouveau workout avec les exercices
+                                let exercises = exercisePlanController.getExerciseModels()
+                                controller.addWorkout(
+                                    for: controller.allUsers[0],
+                                    exercises: exercises,
+                                    day: getDayIndex(day)
+                                )
+                                showExercisePlan.toggle()
+                            }))
                             .padding()
                             
                             Button(action: {}) {
                                 Text("Annuler")
                                     .font(.headline)
                             }
-                            .buttonStyle(RoundedButtonStyle(width: 125, height: 50,color: .red.opacity(0.8), hoveringColor: .red ,padding: 2 , action: {showExercisePlan.toggle()}))
+                            .buttonStyle(RoundedButtonStyle(width: 125, height: 50, color: .red.opacity(0.8), hoveringColor: .red, padding: 2, action: {
+                                exercisePlanController.clearExercises()
+                                showExercisePlan.toggle()
+                            }))
                             .padding()
                         }
                     }

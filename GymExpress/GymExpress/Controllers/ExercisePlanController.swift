@@ -25,6 +25,31 @@ class ExercisePlanController: ObservableObject {
         "Corps-poids": ["Pompes", "Squats sautés", "Planche", "Burpees", "Dips entre bancs", "Mountain climbers", "Lunges", "Gainage latéral", "Crunchs"]
     ]
     
+    // Convertit les exercices temporaires en ExerciseModel
+    func getExerciseModels() -> [ExerciseModel] {
+        return addedExercises.map { exercise in
+            ExerciseModel(
+                imageId: 1, // Valeur par défaut
+                description: "",
+                bodyParts: 1, // Valeur par défaut
+                exerciseType: getExerciseTypeInt(selectedType),
+                sets: Int(exercise.series) ?? 0,
+                reps: Int(exercise.reps) ?? 0,
+                charge: Int(exercise.charge) ?? 0
+            )
+        }
+    }
+    
+    private func getExerciseTypeInt(_ type: String) -> Int {
+        switch type {
+            case "Musculation": return 1
+            case "Cardio": return 2
+            case "Étirement": return 3
+            case "Corps-poids": return 4
+            default: return 1
+        }
+    }
+    
     func addExercise() {
         guard let exerciseName = selectedExercise, !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
             return
@@ -44,5 +69,9 @@ class ExercisePlanController: ObservableObject {
         reps = ""
         charge = ""
         repos = ""
+    }
+    
+    func clearExercises() {
+        addedExercises.removeAll()
     }
 }
