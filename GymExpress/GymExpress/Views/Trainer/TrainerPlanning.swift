@@ -89,7 +89,7 @@ struct TrainingPlaningView: View {
                                 .font(.headline)
                                 .padding(.bottom, 10)
                             
-                            let days = weekDays // Stocker en variable locale
+                            let days = weekDays
 
                             HStack(alignment: .top, spacing: 10) {
                                 ForEach(days, id: \.self) { day in
@@ -131,10 +131,18 @@ struct DayColumn: View {
                 .font(.system(size: 14, weight: .medium))
                 .padding(.bottom, 5)
 
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(hasWorkout ? Color.green : Color.red, lineWidth: 4)
-                .frame(width: 105, height: 170)
-                .animation(.easeInOut, value: hasWorkout)
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(hasWorkout ? Color.green : Color.red, lineWidth: 4)
+                    .frame(width: 105, height: 170)
+                    .animation(.easeInOut, value: hasWorkout)
+
+                Image(systemName: "dumbbell.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(hasWorkout ? Color.green : Color.red)
+            }
 
             HStack(spacing: 15) {
                 Button(action: {}) {
@@ -148,6 +156,7 @@ struct DayColumn: View {
                 .sheet(isPresented: $showExercisePlan) {
                     VStack {
                         ExercisePlanCreationView(exercisePlanController: exercisePlanController, day: day)
+                        
                         HStack {
                             Button(action: {}) {
                                 Text("Sauvegarder")
@@ -167,7 +176,7 @@ struct DayColumn: View {
                             .padding()
                         }
                     }
-                    .frame(minWidth: 900, minHeight: 700)
+                    .frame(minWidth: 900, minHeight: 750)
                 }
 
                 Button(action: {}) {
