@@ -8,46 +8,52 @@
 import SwiftUI
 
 struct AddClientSheet: View {
+    @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var controller: ClientConsultationController
+    @State var selectedMembershipGrade: MembershipGrade
     
-    @State private var firstName: String = "" /// Prénom du client
-    @State private var lastName: String = "" /// Nom de famille du client
-    @State private var email: String = "" /// Adresse email du client
-    @State private var subscription: String = "Bronze" /// Type d'abonnement du client
-    @State private var paymentMethod: String = "" /// Méthode de paiement du client
+    @State private var name: String = ""
+    @State private var lastName: String = ""
+    @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var membership: MembershipData? = nil
     
-    @Environment(\.dismiss) var dismiss /// Action pour fermer la vue
-    
-    @Binding var allClients: [Client] /// Liste des clients disponible
-    
-    var body: some View{
-            VStack {
-                Form {
-                    TextField("Prénom", text: $firstName)
-                    TextField("Nom", text: $lastName)
-                    TextField("Email", text: $email)
-
-                    Picker("Abonnement", selection: $subscription) {
-                        Text("Platine").tag("Platine")
-                        Text("Or").tag("Or")
-                        Text("Argent").tag("Argent")
-                        Text("Bronze").tag("Bronze")
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                
-                TextField("Méthode de paiement", text: $paymentMethod)
+    var body: some View {
+        VStack {
+            TextField("Prénom", text: $name)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            TextField("Nom", text: $lastName)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            TextField("Email", text: $email)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            SecureField("Mot de passe", text: $password)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            Picker("Abonnement", selection: $selectedMembershipGrade) {
+                ForEach(MembershipGrade.allCases, id: \.self) { grade in
+                    Text(grade.rawValue).tag(grade)
+                }
             }
+            .pickerStyle(MenuPickerStyle())
             
-            Button(action: {}) {
-                Text("Ajouter")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(RoundedButtonStyle(width: 150, height: 40, action: {
-                let newClient = Client(id: UUID(), firstName: firstName, lastName: lastName, email: email, subscription: subscription, paymentMethod: paymentMethod, appointments: [])
-                allClients.append(newClient)
-                dismiss()  
+            Button("Enregistrer") {}
+            .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
+                let newUser = UserModel(
+                    name: name,
+                    lastName: lastName,
+                    email: email,
+                    password: password,
+                    type: .client,
+                    membership: MembershipData(
+                        grade: selectedMembershipGrade,
+                        count: 0
+                    ),
+                    salary: nil
+                )
+                controller.addUser(newUser)
+                presentationMode.wrappedValue.dismiss()
             }))
             .padding()
         }
+        .padding()
     }
 }

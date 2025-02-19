@@ -8,95 +8,114 @@
 import SwiftUI
 
 struct AddEventSheetView: View {
-    
     @Binding var isPresented: Bool /// État de présentation de la vue
-    @State private var startTime = Date() /// Heure de début de l'événement
-    @State private var endTime = Date() /// Heure de fin de l'événement
+    var dateDay: Date /// Jour de début
+    @State private var startTime = Date()
+    @State private var endTime = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
     @State private var isRecurring = false /// Indique si l'événement est récurrent
-    @State private var recurrenceType = "Toutes les semaines" /// Type de récurrence de l'événement
+    @State private var recurrenceType = RecurrenceType.none /// Type de récurrence de l'événement
+    @State private var eventTitle = "" /// Titre de l'événement
     
-    let recurrenceOptions = ["Tous les jours", "Toutes les semaines", "Tous les mois"] /// Options de récurrence disponibles
+    let minTime = Calendar.current.date(bySettingHour: 6, minute: 0, second: 0, of: Date())!
+    let maxTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
     
+    var minTimeEnd: Date {
+        return Calendar.current.date(byAdding: .minute, value: 30, to: startTime) ?? startTime
+    }
+            
     var body: some View {
         NavigationView {
             VStack {
                 Form {
-                    VStack{
-                        Section(header: Text("Heure de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
-                            DatePicker("Début", selection: $startTime, displayedComponents: .hourAndMinute)
-                                .frame(maxWidth: .infinity)
-                                .font(.title2)
-                                .padding(.top, 2)
-                            DatePicker("Fin", selection: $endTime, displayedComponents: .hourAndMinute)
-                                .frame(maxWidth: .infinity)
-                                .font(.title2)
+                    VStack {
+                        Section(header: Text("Titre de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
+                            TextField("", text: $eventTitle)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .padding(.top, 2)
                         }
-                        .font(.title)
                         
-                        Section(header: Text("").frame(maxWidth: .infinity, alignment: .center)) {
+                        Section(header: Text("Heure de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
+                            DatePicker("Début", selection: $startTime, in: minTime...maxTime, displayedComponents: .hourAndMinute)
+                                .onChange(of: startTime) { oldStartTime, newStartTime in
+                                    if endTime < newStartTime {
+                                        endTime = Calendar.current.date(byAdding: .minute, value: 30, to: newStartTime)!
+                                    }
+                                }
+                            DatePicker("Fin", selection: $endTime, in: minTimeEnd...maxTime, displayedComponents: .hourAndMinute)
+                        }
+                        
+                        Section(header: Text("Récurrence").frame(maxWidth: .infinity, alignment: .center)) {
                             Toggle("Récurrent", isOn: $isRecurring)
-                                .frame(maxWidth: .infinity)
-                                .font(.title2)
                             if isRecurring {
                                 Picker("", selection: $recurrenceType) {
-                                    ForEach(recurrenceOptions, id: \.self) { option in
-                                        Text(option)
+                                    ForEach(RecurrenceType.allCases, id: \.self) { option in
+                                        if option != .none {
+                                            Text(option.rawValue)
+                                        }
                                     }
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
-                                .frame(maxWidth: .infinity)
-                                .font(.headline)
                             }
                         }
-                        .padding(.top, 2)
-                    }.frame(maxWidth: .infinity, alignment: .center)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.clear)
+                        
+                        HStack {
+                            Spacer()
+                            
+                            Button("Annuler") {}
+                                .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
+                                    isPresented = false
+                                }))
+                            
+                            Spacer()
+                            
+                            Button("Ajouter") {}
+                                .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
+                                    let calendar = Calendar.current
+                                    
+                                    let components = calendar.dateComponents([.year, .month, .day], from: dateDay)
 
-                HStack {
-                    Spacer()
-                    
-                    Button(action: { isPresented = false }) {
-                        Text("Annuler")
-                            .font(.headline)
+                                    var startComponents = components
+                                    startComponents.hour = calendar.component(.hour, from: startTime)
+                                    startComponents.minute = calendar.component(.minute, from: startTime)
+                                    
+                                    var endComponents = components
+                                    endComponents.hour = calendar.component(.hour, from: endTime)
+                                    endComponents.minute = calendar.component(.minute, from: endTime)
+                                    
+                                    guard let startDate = calendar.date(from: startComponents),
+                                          let endDate = calendar.date(from: endComponents) else {
+                                        return
+                                    }
+
+                                    let newEvent = CalendarEvent(
+                                        startDate: startDate,
+                                        endDate: endDate,
+                                        title: eventTitle,
+                                        recurrenceType: recurrenceType
+                                    )
+                                    ScheduleTrainerController.shared.addEvent(event: newEvent, startDate: startDate)
+                                    isPresented = false
+                                }))
+                            
+                            Spacer()
+                        }
+                        .frame(alignment: .center)
+                        .padding(.top, 75)
+                        .padding()
+                        .background(Color.clear)
                     }
-                    .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
-                        isPresented = false
-                    }))
-
-                    Spacer()
-
-                    Button(action: {
-                        // Logique d'ajout de l'événement
-                        isPresented = false
-                    }) {
-                        Text("Ajouter")
-                            .font(.headline)
-                    }
-                    .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
-                        isPresented = false
-                    }))
-                    
-                    Spacer()
-
+                    .frame(alignment: .center)
+                    .background(Color.clear)
                 }
-                .frame(alignment: .center)
-                .padding()
-                .background(Color.clear)
+                .navigationTitle("Nouvel événement")
+                .frame(height: 350)
+                .background(Color.white)
             }
-            .navigationTitle("Nouvel événement")
-            .presentationDetents([.medium, .large])
             .padding(.all, 20)
+            .frame(height: 400)
+            .presentationDetents([.height(400)])
+            .interactiveDismissDisabled(true)
             .background(Color.white)
         }
-        .frame(maxWidth: .infinity, minHeight: 350)
-    }
-}
-
-struct AddEventSheetView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddEventSheetView(isPresented: Binding.constant(true))
     }
 }

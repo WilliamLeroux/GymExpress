@@ -8,66 +8,9 @@
 import SwiftUI
 
 struct ExercisePlanCreationView: View {
+    @ObservedObject var exercisePlanController: ExercisePlanController
+    let day: String
     
-    @State private var selectedType: String = "Musculation" /// Type d'exercice sélectionné
-    @State private var selectedExercise: String? = nil /// Exercice actuellement sélectionné
-    @State private var series: String = "" /// Nombre de séries de l'exercice
-    @State private var reps: String = "" /// Nombre de répétitions de l'exercice
-    @State private var charge: String = "" /// Charge utilisée pour l'exercice (en kg ou lbs)
-    @State private var repos: String = "" /// Temps de repos entre les séries (en secondes)
-    @State private var addedExercises: [Exercise] = [] /// Liste des exercices ajoutés au plan
-
-    let day: String /// Jour d'entraînement correspondant au plan
-    let exerciseLegends = ["Musculation", "Cardio", "Étirement", "Corps-poids"] /// Catégories d'exercices disponibles
-
-    /// Liste des exercices classés par type
-    let exercisesByType: [String: [String]] = [
-        "Musculation": [
-            "Développé couché",
-            "Squat",
-            "Soulevé de terre",
-            "Tirage vertical",
-            "Développé militaire",
-            "Curl biceps",
-            "Extension triceps",
-            "Fentes",
-            "Rowing barre"
-        ],
-        "Cardio": [
-            "Course à pied",
-            "Vélo",
-            "Rameur",
-            "Natation",
-            "Corde à sauter",
-            "Sprints",
-            "Montées de genoux",
-            "Escalier",
-            "Marche rapide"
-        ],
-        "Étirement": [
-            "Étirement des ischio-jambiers",
-            "Étirement du quadriceps",
-            "Étirement des mollets",
-            "Étirement des pectoraux",
-            "Étirement du dos",
-            "Rotation du tronc",
-            "Étirement des épaules",
-            "Étirement du cou",
-            "Étirement des hanches"
-        ],
-        "Corps-poids": [
-            "Pompes",
-            "Squats sautés",
-            "Planche",
-            "Burpees",
-            "Dips entre bancs",
-            "Mountain climbers",
-            "Lunges",
-            "Gainage latéral",
-            "Crunchs"
-        ]
-    ]
-
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -80,9 +23,9 @@ struct ExercisePlanCreationView: View {
                     GroupBox {
                         HStack {
                             VStack(alignment: .leading) {
-                                Picker("", selection: $selectedType) {
-                                    ForEach(exerciseLegends, id: \.self) { type in
-                                        Text(type).tag(type as String?)
+                                Picker("Type d'exercice", selection: $exercisePlanController.selectedType) {
+                                    ForEach(exercisePlanController.exerciseLegends, id: \.self) { type in
+                                        Text(type).tag(type)
                                     }
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
@@ -90,21 +33,23 @@ struct ExercisePlanCreationView: View {
 
                                 ScrollView {
                                     VStack(alignment: .leading) {
-                                        ForEach(exercisesByType[selectedType] ?? [], id: \.self) { exercise in
+                                        let exercises = exercisePlanController.exercisesByType[exercisePlanController.selectedType] ?? []
+
+                                        ForEach(exercises, id: \.self) { exercise in
                                             Button(action: {
-                                                selectedExercise = exercise
+                                                exercisePlanController.selectedExercise = exercise
                                             }) {
                                                 HStack {
-                                                    Image(systemName: selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
-                                                        .foregroundColor(selectedExercise == exercise ? .main : .gray)
+                                                    Image(systemName: exercisePlanController.selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
+                                                        .foregroundColor(exercisePlanController.selectedExercise == exercise ? .blue : .gray)
                                                     Text(exercise)
                                                         .font(.title2)
                                                 }
-                                                .frame(minWidth: 30,maxWidth: .infinity, alignment: .leading)
+                                                .frame(minWidth: 30, maxWidth: .infinity, alignment: .leading)
                                             }
                                         }
                                     }
-                                }.frame(maxHeight: 500)
+                                }.frame(minHeight: 500 ,maxHeight: 500, alignment: .leading)
                             }
                             .frame(minWidth: 300, maxWidth: 300)
                             .padding()
@@ -112,10 +57,14 @@ struct ExercisePlanCreationView: View {
                             Divider()
 
                             VStack(alignment: .leading, spacing: 30) {
-                                ParameterField(title: "Nombre de séries", exerciseLegends: "3" , text: $series)
-                                ParameterField(title: "Nombre de répétitions", exerciseLegends: "12", text: $reps)
-                                ParameterField(title: "Charge", exerciseLegends: "45 lbs", text: $charge)
-                                ParameterField(title: "Temps de repos", exerciseLegends: "120 (sec)", text: $repos)
+                                ParameterField(title: "Nombre de séries", exerciseLegends: "3", text: $exercisePlanController.series)
+                                    .padding(.leading, 5)
+                                ParameterField(title: "Nombre de répétitions", exerciseLegends: "12", text: $exercisePlanController.reps)
+                                    .padding(.leading, 5)
+                                ParameterField(title: "Charge", exerciseLegends: "45 lbs", text: $exercisePlanController.charge)
+                                    .padding(.leading, 5)
+                                ParameterField(title: "Temps de repos", exerciseLegends: "120 (sec)", text: $exercisePlanController.repos)
+                                    .padding(.leading, 5)
                                 
                                 Button(action: {}) {
                                     Text("Ajouter")
@@ -124,16 +73,15 @@ struct ExercisePlanCreationView: View {
                                         .foregroundColor(.black)
                                         .font(.headline)
                                 }
-                                .buttonStyle(RoundedButtonStyle(width: 125, height: 50, color: Color.main, hoveringColor: Color.green, padding: 2, action: { addExercise()
+                                .buttonStyle(RoundedButtonStyle(width: 125 ,action: {
+                                    exercisePlanController.addExercise()
                                 }))
                             }
                             .padding()
                             .frame(minWidth: 150, maxWidth: 150)
                         }
-                        
                     }
 
-                    // Deuxième groupe (exercices ajoutés)
                     GroupBox {
                         ScrollView{
                             VStack {
@@ -141,31 +89,30 @@ struct ExercisePlanCreationView: View {
                                     .font(.headline)
                                     .padding(.bottom, 10)
                                 
-                                if addedExercises.isEmpty {
+                                if exercisePlanController.addedExercises.isEmpty {
                                     Text("Aucun exercice ajouté")
                                         .foregroundColor(.gray)
                                 } else {
-                                    ForEach(addedExercises) { exercise in
+                                    ForEach(exercisePlanController.addedExercises) { exercise in
                                         VStack {
                                             HStack {
                                                 VStack(alignment: .leading) {
                                                     Text(exercise.name)
                                                         .font(.headline)
                                                     Text("Séries: \(exercise.series), Répétitions: \(exercise.reps)")
-                                                        .foregroundColor(.black)
                                                     Text("Charge: \(exercise.charge), Repos: \(exercise.repos)")
-                                                        .foregroundColor(.black)
                                                 }
                                                 Spacer()
                                                 Button(action: {}) {
                                                     Image(systemName: "trash")
                                                         .foregroundColor(.black)
-                                                }
-                                                .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red, action: { removeExercise(exercise) }))
+                                                }.buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: .red.opacity(0.8), hoveringColor: .red, padding: 0, action: {
+                                                    exercisePlanController.removeExercise(exercise)
+                                                }))
                                             }
                                             .padding()
                                         }
-                                        .background(Color.main)
+                                        .background(Color.gray.opacity(0.2))
                                         .cornerRadius(16)
                                         .padding(.horizontal)
                                     }
@@ -180,40 +127,6 @@ struct ExercisePlanCreationView: View {
             }
         }
         .padding()
-    }
-
-    
-    /// Ajoute un nouvel exercice à la liste des exercices du plan
-    private func addExercise() {
-        guard let exerciseName = selectedExercise, !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
-            return
-        }
-        
-        let newExercise = Exercise(
-            name: exerciseName,
-            series: series,
-            reps: reps,
-            charge: charge,
-            repos: repos
-        )
-        
-        addedExercises.append(newExercise)
-        resetFields()
-    }
-    
-    /// Supprime un exercice de la liste
-    /// - Parameter exercise: L'exercice à supprimer
-    private func removeExercise(_ exercise: Exercise) {
-        addedExercises.removeAll { $0.id == exercise.id }
-    }
-    
-    /// Réinitialise les champs du formulaire après l'ajout d'un exercice
-    private func resetFields() {
-        selectedExercise = nil
-        series = ""
-        reps = ""
-        charge = ""
-        repos = ""
     }
 }
 
@@ -250,11 +163,5 @@ struct ParameterField: View {
             )
             .frame(width: 125)
         }
-    }
-}
-
-struct ExercisePlanCreationView_Previews: PreviewProvider {
-    static var previews: some View {
-        ExercisePlanCreationView(day: "Lundi")
     }
 }
