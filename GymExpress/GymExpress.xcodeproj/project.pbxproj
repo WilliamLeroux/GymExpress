@@ -10,9 +10,22 @@
 		001622912D47D1000065CF99 /* GymExpress.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GymExpress.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		006722CD2D667B7800C4DB1D /* Exceptions for "GymExpress" folder in "GymExpress" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 001622902D47D1000065CF99 /* GymExpress */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		001622932D47D1000065CF99 /* GymExpress */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				006722CD2D667B7800C4DB1D /* Exceptions for "GymExpress" folder in "GymExpress" target */,
+			);
 			path = GymExpress;
 			sourceTree = "<group>";
 		};
@@ -256,6 +269,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GymExpress/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GymExpress/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -283,6 +297,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GymExpress/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GymExpress/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
