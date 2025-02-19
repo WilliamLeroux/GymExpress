@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ValidationUtils {
+struct Validation {
     
     /// Vérifie si l'adresse courriel est valide.
     static func isValidEmail(_ email: String) -> Bool {

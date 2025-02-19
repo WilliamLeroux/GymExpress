@@ -94,7 +94,3 @@ struct SubscriptionView: View {
         .padding()
     }
 }
-
-#Preview {
-    RootNavigation()
-}

@@ -59,6 +59,3 @@ struct DashboardTrainerView: View {
         }
     }
 }
-#Preview {
-    RootNavigation()
-}

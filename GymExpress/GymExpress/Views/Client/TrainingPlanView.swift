@@ -93,7 +93,3 @@ struct TrainingPlanView: View {
         }
     }
 }
-
-#Preview {
-    RootNavigation()
-}

@@ -142,6 +142,4 @@ struct HoverState: ViewModifier {
             }
     }
 }
-#Preview {
-    RootNavigation()
-}
+
