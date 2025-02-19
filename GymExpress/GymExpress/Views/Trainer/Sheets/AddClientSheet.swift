@@ -11,15 +11,19 @@ struct AddClientSheet: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var controller: ClientConsultationController
     @State var selectedMembershipGrade: MembershipGrade
+    var dbManager: DatabaseManager = DatabaseManager.shared
     
     @State private var name: String = ""
     @State private var lastName: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var membership: MembershipData? = nil
     
     var body: some View {
         VStack {
+            Text("ID sélectionné : \(Utils.shared.getMembershipGradeId(membership: selectedMembershipGrade))")
+                .font(.headline)
+                .padding()
+
             TextField("Prénom", text: $name)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             TextField("Nom", text: $lastName)
@@ -35,24 +39,19 @@ struct AddClientSheet: View {
             }
             .pickerStyle(MenuPickerStyle())
             
+            // TODO: Faire les vérifications du formulaire
+            
             Button("Enregistrer") {}
-            .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
-                let newUser = UserModel(
-                    name: name,
-                    lastName: lastName,
-                    email: email,
-                    password: password,
-                    type: .client,
-                    membership: MembershipData(
-                        grade: selectedMembershipGrade,
-                        count: 0
-                    ),
-                    salary: nil
-                )
-                controller.addUser(newUser)
-                presentationMode.wrappedValue.dismiss()
-            }))
-            .padding()
+                .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
+                    let membership = MembershipData(grade: selectedMembershipGrade)
+                    let user = UserModel(name: name, lastName: lastName, email: email, password: password, type: UserType.client, membership: membership)
+                    let success = dbManager.insertData(request: Request.createUser, params: user)
+                    if success {
+                        controller.addUser(user)
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }))
+                
         }
         .padding()
     }

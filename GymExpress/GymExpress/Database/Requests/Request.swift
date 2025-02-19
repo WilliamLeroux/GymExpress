@@ -15,7 +15,7 @@ struct Request {
     static let selectAllEmploye: String = "SELECT id, name, last_name, email, user_type, salary FROM users WHERE salary IS NOT NULL and is_deleted IS FALSE;"
     
     /// Retourne tout les clients
-    static let selectAllCLient: String = "SELECT id, name, last_name, email, user_type, salary FROM users WHERE salary IS NULL AND is_deleted IS FALSE;"
+    static let selectAllCLient: String = "SELECT id, name, last_name, email, user_type, membership, salary FROM users WHERE user_type = 0 AND is_deleted IS FALSE;"
     
     // MARK: INSERT
     

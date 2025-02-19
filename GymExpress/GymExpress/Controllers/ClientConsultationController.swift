@@ -11,7 +11,8 @@ class ClientConsultationController: ObservableObject {
     static let shared = ClientConsultationController()
     
     // MARK: - Published Properties
-    @Published private(set) var allUsers: [UserModel] = []
+    var dbManager: DatabaseManager = DatabaseManager.shared
+    @Published private var allUsers: [UserModel] = []
     @Published private(set) var filteredUsers: [UserModel] = []
     @Published var appointments: [AppointmentModel] = []
     @Published var search: String = "" {
@@ -23,14 +24,18 @@ class ClientConsultationController: ObservableObject {
     // MARK: - Initialization
     private init() {
         loadInitialData()
-        filterUsers()
     }
     
     // MARK: - User Management
     private func loadInitialData() {
-        allUsers = [
-            UserModel(name: "Samuel", lastName: "Oliveira", email: "samuel@example.com", password: "", type: .client, membership: MembershipData(grade: MembershipGrade.platinum, count: 100), salary: nil)
-        ]
+        print("Exécution de la requête:")
+        if let users: [UserModel] = dbManager.fetchDatas(request: Request.selectAllCLient, params: []){
+            print("Utilisateur trouvé: ", users)
+            allUsers = users
+            filterUsers()
+        } else {
+            print("Utilisateur non trouvé")
+        }
     }
     
     private func filterUsers() {

@@ -104,6 +104,58 @@ class DatabaseManager{
         return result as? T
     }
     
+    /// Exécute les requête SELECT
+    /// - Parameters:
+    ///   - request: Chaine comprennant la requête
+    ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire
+    /// - Returns: Retourne le résultat selon le type donnée
+    func fetchDatas<T>(request: String, params: [Any]) -> [T]? {
+        var pointer: OpaquePointer?
+        var result: [T] = []
+        
+        if sqlite3_prepare_v2(db, request, -1, &pointer, nil) == SQLITE_OK {
+            
+            for i in 0..<params.count {
+                switch params[i] {
+                case let param as Int:
+                    sqlite3_bind_int(pointer, Int32(i + 1), Int32(param))
+                case let param as String:
+                    let tempString = param as NSString
+                    sqlite3_bind_text(pointer, Int32(i + 1), tempString.utf8String, -1, nil)
+                case let param as Double:
+                    sqlite3_bind_double(pointer, Int32(i + 1), param)
+                case let param as Bool:
+                    sqlite3_bind_int(pointer, Int32(i + 1), param ? 1 : 0)
+                default:
+                    break
+                }
+            }
+            
+            while sqlite3_step(pointer) == SQLITE_ROW {
+                if let objectType = T.self as? InitializableFromSQLITE.Type {
+                    if let object = objectType.init(from: pointer!) as? T {
+                        result.append(object)
+                    }
+                } else if T.self is Int.Type {
+                    let value = sqlite3_column_int(pointer, 0)
+                    result.append(value as! T)
+                } else if T.self is String.Type {
+                    let value = String(cString: sqlite3_column_text(pointer, 0)!)
+                    result.append(value as! T)
+                } else if T.self is Double.Type {
+                    let value = sqlite3_column_double(pointer, 0)
+                    result.append(value as! T)
+                }
+            }
+        }
+
+        sqlite3_finalize(pointer)
+        
+        return result.isEmpty ? nil : result
+    }
+
+
+    
     /// Exécute les requête INSERT et UPDATE
     /// - Parameters:
     ///   - request: Chaine comprennant la requête
