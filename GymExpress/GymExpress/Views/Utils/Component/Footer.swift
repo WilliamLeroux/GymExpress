@@ -10,6 +10,7 @@ import SwiftUI
 struct Footer: View {
     @Environment(\.dismiss) var dismiss
     @State var isLoginPage : Bool
+    @ObservedObject var loginController = LoginController.shared
     
     init(isLoginPage: Bool) {
         self.isLoginPage = isLoginPage
@@ -18,6 +19,8 @@ struct Footer: View {
     var body: some View {
         if(!isLoginPage) {
             Button{
+                loginController.email = ""
+                loginController.password = ""
                 dismiss()
             } label: {
                 Text("Se déconnecter")
