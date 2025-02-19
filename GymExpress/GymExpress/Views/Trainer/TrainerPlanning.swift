@@ -228,7 +228,6 @@ struct DayColumn: View {
 // Preview
 struct TrainingPlanView_Previews: PreviewProvider {
     static var previews: some View {
-        RootNavigation()
         TrainingPlanView()
     }
 }

@@ -15,7 +15,7 @@ struct UserModel: SQLConvertable, InitializableFromSQLITE, Identifiable {
     var lastName: String = "" /// Nom
     var email: String = "" /// Adresse courriel
     var password: String = "" /// Mot de passe
-    var type: UserType = .client/// Type d'utilisateur
+    var type: UserType? = nil /// Type d'utilisateur
     var membership: MembershipData? = nil/// Abonnement
     var salary: Double? = nil/// Salaire
     
@@ -73,6 +73,6 @@ struct UserModel: SQLConvertable, InitializableFromSQLITE, Identifiable {
     }
     
     var params: [Any] {
-        return [name, lastName, email, password, type, membership as Any, salary as Any]
+        return [name, lastName, email, password, type as Any, membership as Any, salary as Any]
     }
 }

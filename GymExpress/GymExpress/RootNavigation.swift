@@ -10,14 +10,13 @@ import SwiftUI
 struct RootNavigation: View {
     @State private var hoveredItem: String? = nil /// Item survolé
     @ObservedObject private var controller = NavigationController.shared /// Controlleur de navigation
-    
-    private var userType: UserType /// Type d'utilisateur
+    @ObservedObject var loginController = LoginController.shared
+
     private var navOption: [String] = [] /// Liste des options
     
     /// - Parameter userType: Type d'utilisateur
-    init (userType: UserType = .trainer) {
-        self.userType = userType
-        self.navOption = Utils.shared.getNavOptions(userType: userType)
+    init () {
+        self.navOption = Utils.shared.getNavOptions(userType: loginController.currentUser?.type ?? .client)
     }
     
     var body: some View {
@@ -67,11 +66,11 @@ struct RootNavigation: View {
                         FinanceView()
                             .frame(minWidth: 800, maxWidth: 900)
                     case "Accueil":
-                        if userType == .client {
+                        if loginController.currentUser?.type == .client {
                             DashboardClientView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         }
-                        if userType == .trainer {
+                        if loginController.currentUser?.type == .trainer {
                             DashboardTrainerView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         } else {
@@ -123,6 +122,3 @@ struct RootNavigation: View {
     }
 }
 
-#Preview {
-    RootNavigation()
-}

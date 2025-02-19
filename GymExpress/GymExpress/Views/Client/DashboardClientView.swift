@@ -147,6 +147,3 @@ extension DashboardClientView {
     }
 }
 
-#Preview {
-    RootNavigation()
-}
