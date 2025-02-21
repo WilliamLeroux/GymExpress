@@ -59,9 +59,10 @@ class ExercisePlanController: ObservableObject {
         
         return addedExercises.map { exercise in
             ExerciseModel(
-                imageId: 1,
+                exerciceId: "",
+                imageId: "",
                 description: exercise.name,
-                bodyParts: 1,
+                bodyParts: .cardio,
                 exerciseType: getExerciseTypeInt(selectedType),
                 sets: Int(exercise.series) ?? 0,
                 reps: Int(exercise.reps) ?? 0,

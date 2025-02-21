@@ -56,11 +56,15 @@ class ClientConsultationController: ObservableObject {
     }
     
     func deleteUser(_ user: UserModel) {
-        allUsers.removeAll { $0.id == user.id }
+        allUsers.remove(at: allUsers.firstIndex(where: { $0.id == user.id })!)
         // Également supprimer les rendez-vous associés
         appointments.removeAll { $0.clientId == user.id }
         
-        let success = 
+        let success = dbManager.updateData(request: Request.update(table: .users, columns: ["is_deleted"], condition: "WHERE id = '\(user.id)'"), params: [true])
+        if success {
+            print("Delete success")
+        }
+      
         filterUsers()
     }
     
