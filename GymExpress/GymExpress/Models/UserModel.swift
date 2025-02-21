@@ -75,4 +75,6 @@ struct UserModel: SQLConvertable, InitializableFromSQLITE, Identifiable {
     var params: [Any] {
         return [name, lastName, email, password, type as Any, membership as Any, salary as Any]
     }
+    
+    
 }

@@ -53,13 +53,14 @@ class ClientConsultationController: ObservableObject {
     
     func addUser(_ user: UserModel) {
         allUsers.append(user)
-        filterUsers()
     }
     
     func deleteUser(_ user: UserModel) {
         allUsers.removeAll { $0.id == user.id }
         // Également supprimer les rendez-vous associés
         appointments.removeAll { $0.clientId == user.id }
+        
+        let success = 
         filterUsers()
     }
     
