@@ -181,4 +181,31 @@ class DatabaseManager{
         sqlite3_finalize(pointer)
         return true
     }
+    
+    
+    /// Exécute les requête UPDATE
+    /// - Parameters:
+    ///   - request: Chaine comprennant la requête
+    ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire
+    /// - Returns: Retourne true si la requête a fonctionné, false si elle n'a pas fonctionné
+    func updateData(request: String, params: [Any]) -> Bool {
+        var pointer: OpaquePointer?
+        
+        if sqlite3_prepare_v2(db, request, -1, &pointer, nil) == SQLITE_OK {
+            var i = 1
+            for param in params {
+                DatabaseUtils.shared.bindParam(pointer: pointer, param: param, i: i)
+                i+=1
+            }
+            
+            if sqlite3_step(pointer) != SQLITE_DONE {
+                if let errorMessage = sqlite3_errmsg(db) {
+                    print("Error inserting: \(String(cString: errorMessage))")
+                }
+                return false
+            }
+        }
+        sqlite3_finalize(pointer)
+        return true
+    }
 }
