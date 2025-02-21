@@ -100,4 +100,47 @@ class Utils {
             return 26.0
         }
     }
+    
+    func getMuscle(bodyPart: BodyParts) -> [String] {
+        switch bodyPart {
+        case .cardio:
+            return ["cardio"]
+        case .upperBody:
+            return ["chest", "back", "upper arms", "lower arms", "shoulders"]
+        case .lowerBody:
+            return ["lower legs", "upper legs"]
+        case .core:
+            return ["waist"];
+        }
+    }
+    
+    func getBodyPartsById(_ id: Int) -> BodyParts {
+        switch id {
+        case 0:
+            return .cardio
+        case 1:
+            return .upperBody
+        case 2:
+            return .lowerBody
+        case 3:
+            return .core
+        default:
+            fatalError("Invalid body part id")
+        }
+    }
+    
+    func getBodyPartsId(_ bodyPart: BodyParts) -> Int {
+        switch bodyPart {
+        case .cardio:
+            return 0
+        case .upperBody:
+            return 1
+        case .lowerBody:
+            return 2
+        case .core:
+            return 3
+        }
+    }
+    
+    
 }

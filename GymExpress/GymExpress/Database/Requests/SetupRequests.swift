@@ -23,7 +23,7 @@ struct SetupRequests {
     private static let WORKOUTS = "CREATE TABLE IF NOT EXISTS workouts (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, name TEXT NOT NULL, day INTEGER NOT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id));"
     
     /// Table exercice
-    private static let EXERCICES = "CREATE TABLE IF NOT EXISTS exercices (id INTEGER PRIMARY KEY AUTOINCREMENT, workout_id INTEGER NOT NULL, name TEXT NOT NULL, image INTEGER NOT NULL, description TEXT NOT NULL, body_part INTEGER NOT NULL, exercice_type INTEGER NOT NULL, sets INTEGER NOT NULL, reps INTEGER NOT NULL, load INTEGER NOT NULL, FOREIGN KEY (workout_id) REFERENCES workouts(id));"
+    private static let EXERCICES = "CREATE TABLE IF NOT EXISTS exercices (id INTEGER PRIMARY KEY AUTOINCREMENT, workout_id INTEGER NOT NULL, exercice_id TEXT NOT NULL, name TEXT NOT NULL, image TEXT NOT NULL, description TEXT NOT NULL, body_part INTEGER NOT NULL, exercice_type INTEGER NOT NULL, sets INTEGER NOT NULL, reps INTEGER NOT NULL, load INTEGER NOT NULL, FOREIGN KEY (workout_id) REFERENCES workouts(id));"
     
     /// Table appointment
     private static let APPOINTMENTS = "CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, trainer_id INTEGER NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL, date DATE NOT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id), FOREIGN KEY (trainer_id) REFERENCES users(id));"

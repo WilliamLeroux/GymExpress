@@ -30,6 +30,8 @@ class DatabaseUtils {
             sqlite3_bind_int(pointer, Int32(i), Int32(param ? 1 : 0))
         case let param as UserType: // UserType
             sqlite3_bind_int(pointer, Int32(i), Int32(param.rawValue))
+        case let param as BodyParts:
+            sqlite3_bind_int(pointer, Int32(i), Int32(Utils.shared.getBodyPartsId(param)))
         case let param as Optional<Date>: // Date?
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
