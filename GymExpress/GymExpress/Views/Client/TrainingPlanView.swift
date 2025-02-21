@@ -92,11 +92,6 @@ struct TrainingPlanView: View {
                 Text(selectedWorkout ?? "Aucun exercice sélectionné")
                     .font(.title)
                     .padding(50)
-                /*Image(.icon)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 100)
-                    .cornerRadius(15)*/
                 WebView(url: URL(string: "https://cdn-exercisedb.vercel.app/api/v1/images/guT8YnS.gif")!) {}
                     .scaledToFit()
                     .frame(width: 100, height: 100)
