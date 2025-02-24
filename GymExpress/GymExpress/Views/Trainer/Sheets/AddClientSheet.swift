@@ -44,16 +44,13 @@ struct AddClientSheet: View {
             Button("Enregistrer") {}
                 .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
                     let membership = MembershipData(grade: selectedMembershipGrade)
-                    var user = UserModel(name: name, lastName: lastName, email: email, password: password, type: UserType.client, membership: membership)
-                    let success = dbManager.insertData(request: Request.createUser, params: user)
+                    let user = UserModel(name: name, lastName: lastName, email: email, password: password, type: UserType.client, membership: membership)
+                    
                     if success {
-                        let id: Int? = dbManager.fetchData(request: Request.select(table: .users, columns: ["id"], condition: "WHERE email = '\(email)'"), params: [])
-                        user.id = id!
-                        controller.addUser(user)
+                        controller.addUser(createdUser!)
                         presentationMode.wrappedValue.dismiss()
                     }
                 }))
-                
         }
         .padding()
     }

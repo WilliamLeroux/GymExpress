@@ -51,20 +51,21 @@ class ClientConsultationController: ObservableObject {
         }
     }
     
-    func addUser(_ user: UserModel) {
+    func addUser(_ user: UserModel) -> Bool {
+        let success = dbManager.insertData(request: Request.createUser, params: user)
+        let createdUser: UserModel? = dbManager.fetchData(request: Request.select(table: .users, columns: ["*"], condition: "WHERE email = '\(user.email)'"), params: [])
         allUsers.append(user)
+        filterUsers()
     }
     
     func deleteUser(_ user: UserModel) {
         allUsers.remove(at: allUsers.firstIndex(where: { $0.id == user.id })!)
-        // Également supprimer les rendez-vous associés
         appointments.removeAll { $0.clientId == user.id }
         
         let success = dbManager.updateData(request: Request.update(table: .users, columns: ["is_deleted"], condition: "WHERE id = '\(user.id)'"), params: [true])
         if success {
             print("Delete success")
         }
-      
         filterUsers()
     }
     
