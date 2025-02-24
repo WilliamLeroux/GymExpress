@@ -53,9 +53,12 @@ class ClientConsultationController: ObservableObject {
     
     func addUser(_ user: UserModel) -> Bool {
         let success = dbManager.insertData(request: Request.createUser, params: user)
-        let createdUser: UserModel? = dbManager.fetchData(request: Request.select(table: .users, columns: ["*"], condition: "WHERE email = '\(user.email)'"), params: [])
-        allUsers.append(user)
-        filterUsers()
+        if success {
+            allUsers.append(user)
+            filterUsers()
+            return true
+        }
+        return false
     }
     
     func deleteUser(_ user: UserModel) {
@@ -71,6 +74,7 @@ class ClientConsultationController: ObservableObject {
     
     func updateUser(_ updatedUser: UserModel) {
         if let index = allUsers.firstIndex(where: { $0.id == updatedUser.id }) {
+            let success = dbManager.updateData(request: Request.update(table: .users, columns: ["*"]), params: [])
             allUsers[index] = updatedUser
             filterUsers()
         }
