@@ -5,13 +5,13 @@
 //  Created by William Leroux on 2025-01-28.
 //
 
-enum UserType: Int {
+enum UserType: Int, Codable {
     case client = 0
     case trainer = 1
     case admin = 2
 }
 
-enum MembershipGrade: String, CaseIterable, Identifiable{
+enum MembershipGrade: String, CaseIterable, Identifiable, Codable{
     case platinum = "Platine"
     case gold = "Or"
     case silver = "Argent"

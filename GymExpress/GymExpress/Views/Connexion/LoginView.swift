@@ -66,6 +66,9 @@ struct LoginView: View {
                                             if viewModel.authenticateUser() {
                                                 errorMessage = ""
                                                 isNavigating = true
+                                                if self.isRememberMe {
+                                                    viewModel.saveLoginInfos()
+                                                }
                                             }else {
                                                 errorMessage = "Informations invalides"
                                             }

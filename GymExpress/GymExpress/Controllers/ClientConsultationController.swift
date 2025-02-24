@@ -5,6 +5,8 @@
 //  Created by Samuel Oliveira Martel on 2025-02-07.
 //
 
+//********** TODO : validation des données dans le formulaire.
+
 import SwiftUI
 
 class ClientConsultationController: ObservableObject {
@@ -28,16 +30,20 @@ class ClientConsultationController: ObservableObject {
     
     // MARK: - User Management
     private func loadInitialData() {
-        print("Exécution de la requête:")
         if let users: [UserModel] = dbManager.fetchDatas(request: Request.selectAllCLient, params: []){
-            print("Utilisateur trouvé: ", users)
             allUsers = users
             filterUsers()
         } else {
             print("Utilisateur non trouvé")
         }
+        if let appointments: [AppointmentModel] = dbManager.fetchDatas(request: Request.selectAllAppointment, params: []) {
+            self.appointments =  appointments
+        } else {
+            print ("Aucun rendez-vous trouvé")
+        }
     }
     
+    // Rafraîchir la liste d'utilisateur
     private func filterUsers() {
         if search.isEmpty {
             filteredUsers = allUsers.filter { $0.type == .client }
@@ -51,6 +57,7 @@ class ClientConsultationController: ObservableObject {
         }
     }
     
+    // Ajouter un utilisateur
     func addUser(_ user: UserModel) -> Bool {
         let success = dbManager.insertData(request: Request.createUser, params: user)
         if success {
@@ -61,6 +68,7 @@ class ClientConsultationController: ObservableObject {
         return false
     }
     
+    // Supprimer un utilisateur
     func deleteUser(_ user: UserModel) {
         allUsers.remove(at: allUsers.firstIndex(where: { $0.id == user.id })!)
         appointments.removeAll { $0.clientId == user.id }
@@ -72,11 +80,14 @@ class ClientConsultationController: ObservableObject {
         filterUsers()
     }
     
-    func updateUser(_ updatedUser: UserModel) {
-        if let index = allUsers.firstIndex(where: { $0.id == updatedUser.id }) {
-            let success = dbManager.updateData(request: Request.update(table: .users, columns: ["*"]), params: [])
-            allUsers[index] = updatedUser
-            filterUsers()
+    // Mettre à jour un utilisateur
+    func updateUser(_ user: UserModel) {
+        if let index = allUsers.firstIndex(where: { $0.id == user.id }) {
+            let success = dbManager.updateData(request: Request.update(table: .users, columns: ["name", "last_name", "email", "membership"], condition: "WHERE id = '\(user.id)'"), params: [user.name, user.lastName, user.email, user.membership!])
+            if success {
+                allUsers[index] = user
+                filterUsers()
+            }
         }
     }
     
@@ -90,9 +101,12 @@ class ClientConsultationController: ObservableObject {
             date: date
         )
         
-        DispatchQueue.main.async {
-            self.appointments.append(newAppointment)
+        let success = dbManager.insertData(request: Request.createAppointment, params: newAppointment)
+        
+        if success {
+            appointments.append(newAppointment)
         }
+        
     }
 
     
