@@ -93,11 +93,11 @@ class DatabaseManager{
             if let objectType = T.self as? InitializableFromSQLITE.Type {
                 result = objectType.init(from: pointer!)
             } else if T.self is Int.Type{
-                result = sqlite3_column_int(pointer, 1)
+                result = Int(sqlite3_column_int(pointer, 0))
             } else if T.self is String.Type {
-                result = String(cString: sqlite3_column_text(pointer, 1)!)
+                result = String(cString: sqlite3_column_text(pointer, 0)!)
             } else if T.self is Double.Type {
-                result = sqlite3_column_double(pointer, 1)
+                result = Double(sqlite3_column_double(pointer, 0))
             }
         }
         sqlite3_finalize(pointer)
