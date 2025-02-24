@@ -156,7 +156,7 @@ class DatabaseManager{
 
 
     
-    /// Exécute les requête INSERT et UPDATE
+    /// Exécute les requête INSERT 
     /// - Parameters:
     ///   - request: Chaine comprennant la requête
     ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire
