@@ -8,51 +8,57 @@
 import Foundation
 
 class ExercisePlanController: ObservableObject {
-    @Published var selectedType: String = "Musculation"
-    @Published var selectedExercise: String? = nil
+    static let shared = ExercisePlanController()
+    @Published var selectedType: BodyParts = BodyParts.cardio
+    @Published var selectedExercise: String = "" {
+        didSet {
+            selectedExerciseModel = addedExercises.first(where: { $0.name == selectedExercise })
+        }
+    }
     @Published var series: String = ""
     @Published var reps: String = ""
     @Published var charge: String = ""
     @Published var repos: String = ""
-    @Published var addedExercises: [Exercise] = []
+    @Published var addedExercises: [ExerciseModel] = []
+    var selectedExerciseModel: ExerciseModel? = nil
     
-    let exerciseLegends = ["Musculation", "Cardio", "Étirement", "Corps-poids"]
+    let exerciseLegends = [BodyParts.cardio, BodyParts.upperBody, BodyParts.lowerBody, BodyParts.core]
     
-    let exercisesByType: [String: [String]] = [
-        "Musculation": [
-            "Développé couché", "Squat", "Soulevé de terre", "Tirage vertical", "Développé militaire",
-            "Curl biceps", "Extension triceps", "Fentes avec haltères", "Rowing barre", "Presse à jambes",
-            "Élévations latérales", "Élévations frontales", "Pull-over", "Rowing haltères", "Hip thrust",
-            "Leg curl allongé", "Leg extension", "Mollets debout à la machine", "Mollets assis", "Développé Arnold",
-            "Pec deck (Butterfly)", "Poulie vis-à-vis", "Extension triceps à la poulie", "Biceps curl à la poulie",
-            "Rowing assis à la poulie", "Hack squat", "Leg press inclinée", "Machine à adducteurs", "Machine à abducteurs"
-        ],
-        "Cardio": [
-            "Course sur tapis", "Vélo stationnaire", "Rameur", "Escalier mécanique", "Stepper",
-            "Corde à sauter", "HIIT sur vélo", "Elliptique", "Sprint sur tapis", "SkiErg",
-            "Tapis incliné", "Air Bike", "Tapis de course auto-alimenté", "Course en fractionné sur tapis"
-        ],
-        "Étirement": [
-            "Étirement des ischio-jambiers sur banc", "Étirement du quadriceps debout avec appui",
-            "Étirement des mollets sur step", "Étirement des pectoraux sur un cadre de porte",
-            "Étirement du dos sur Swiss ball", "Rotation du tronc avec bâton", "Étirement des épaules avec élastique",
-            "Étirement du cou assis", "Étirement des hanches sur tapis", "Étirement du piriforme sur banc",
-            "Étirement du psoas avec appui", "Étirement des adducteurs assis", "Étirement du bas du dos sur tapis",
-            "Étirement du grand dorsal en suspension", "Étirement du triceps derrière la tête",
-            "Étirement des fléchisseurs de hanche avec banc", "Étirement en papillon sur tapis",
-            "Étirement du fessier sur banc", "Étirement du biceps avec barre"
-        ],
-        "Corps-poids": [
-            "Pompes sur banc", "Squats sautés", "Planche sur Swiss ball", "Burpees avec slam ball",
-            "Dips sur barres parallèles", "Mountain climbers sur tapis", "Fentes sautées avec step",
-            "Gainage latéral avec disque", "Crunchs sur banc incliné", "Superman au sol",
-            "Pont fessier lesté", "Jump squats avec kettlebell", "Chaise contre le mur avec poids",
-            "Pistol squat sur banc", "Pompes diamant sur step", "Russian twists avec medecine ball",
-            "V-ups sur tapis", "Plank jacks avec sliders", "Crunchs lestés", "Planche avec TRX"
-        ]
-    ]
+    var exercisesByType: [String: [ExerciseModel]] = [:]
+    
+    init() {
+        
+        var tempExercises: [Exercises] = []
+        BodyParts.allCases.forEach {bodyPart in
+            let waiter = DispatchSemaphore(value: 0)
+            Task{
+                Utils.shared.getMuscle(bodyPart: bodyPart).forEach { muscle in
+                    let muscleWaiter = DispatchSemaphore(value: 0)
+                    Task{
+                        if tempExercises.isEmpty {
+                            tempExercises = await ExerciceFetch().getExercice(muscle)
+                        } else {
+                            tempExercises.append(contentsOf: await ExerciceFetch().getExercice(muscle))
+                        }
+                        muscleWaiter.signal()
+                    }
+                    muscleWaiter.wait()
+                }
+                waiter.signal()
+            }
+           
+            waiter.wait()
+            tempExercises.forEach {
+                if exercisesByType[bodyPart.rawValue] == nil {
+                    exercisesByType[bodyPart.rawValue] = [ExerciseModel(from: $0, bodyParts: bodyPart)]
+                } else {
+                    exercisesByType[bodyPart.rawValue]!.append(ExerciseModel(from: $0, bodyParts: bodyPart))
+                }
+            }
+            tempExercises.removeAll()
+        }
+    }
 
-    
     // Convertit les exercices temporaires en ExerciseModel
     func getExerciseModels() -> [ExerciseModel] {
         print("📌 Récupération des exercices : \(addedExercises.count) trouvés")
@@ -60,13 +66,13 @@ class ExercisePlanController: ObservableObject {
         return addedExercises.map { exercise in
             ExerciseModel(
                 exerciceId: "",
+                name: "",
                 imageId: "",
                 description: exercise.name,
                 bodyParts: .cardio,
-                exerciseType: getExerciseTypeInt(selectedType),
-                sets: Int(exercise.series) ?? 0,
-                reps: Int(exercise.reps) ?? 0,
-                charge: Int(exercise.charge) ?? 0
+                sets: Int(exercise.sets),
+                reps: Int(exercise.reps),
+                charge: Int(exercise.charge)
             )
         }
     }
@@ -82,22 +88,27 @@ class ExercisePlanController: ObservableObject {
     }
     
     func addExercise() {
-        guard let exerciseName = selectedExercise, !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
+        guard selectedExercise != "", !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
             return
         }
         
-        let newExercise = Exercise(name: exerciseName, series: series, reps: reps, charge: charge, repos: repos)
-        addedExercises.append(newExercise)
+        //let newExercise = ExerciseModel(exerciseId: "102", name: exerciseName, sets: series, reps: reps, charge: charge, repos: repos)
+        //exerciceId: String, name: String, imageId: String, description: String, bodyParts: BodyParts, exerciseType: Int, sets: Int, reps: Int, charge: Int
+        var tempExercise = selectedExerciseModel
+        tempExercise?.charge = Int(charge) ?? 0
+        tempExercise?.reps = Int(reps) ?? 0
+        tempExercise?.charge = Int(repos) ?? 0
+        addedExercises.append(tempExercise!)
         
         resetFields()
     }
     
-    func removeExercise(_ exercise: Exercise) {
+    func removeExercise(_ exercise: ExerciseModel) {
         addedExercises.removeAll { $0.id == exercise.id }
     }
     
     func resetFields() {
-        selectedExercise = nil
+        selectedExercise = ""
         series = ""
         reps = ""
         charge = ""
