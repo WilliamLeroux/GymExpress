@@ -19,6 +19,9 @@ struct AddEventSheetView: View {
     let minTime = Calendar.current.date(bySettingHour: 6, minute: 0, second: 0, of: Date())!
     let maxTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
     
+    let maxTimeOfStart = Calendar.current.date(bySettingHour: 21, minute: 30, second: 0, of: Date())!
+    let minTimeOfEnd = Calendar.current.date(bySettingHour: 21, minute: 30, second: 0, of: Date())!
+    
     var minTimeEnd: Date {
         return Calendar.current.date(byAdding: .minute, value: 30, to: startTime) ?? startTime
     }
@@ -35,13 +38,13 @@ struct AddEventSheetView: View {
                         }
                         
                         Section(header: Text("Heure de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
-                            DatePicker("Début", selection: $startTime, in: minTime...maxTime, displayedComponents: .hourAndMinute)
+                            DatePicker("Début", selection: $startTime, in: minTime...maxTimeOfStart, displayedComponents: .hourAndMinute)
                                 .onChange(of: startTime) { oldStartTime, newStartTime in
                                     if endTime < newStartTime {
                                         endTime = Calendar.current.date(byAdding: .minute, value: 30, to: newStartTime)!
                                     }
                                 }
-                            DatePicker("Fin", selection: $endTime, in: minTimeEnd...maxTime, displayedComponents: .hourAndMinute)
+                            DatePicker("Fin", selection: $endTime, in: minTimeOfEnd...maxTime, displayedComponents: .hourAndMinute)
                         }
                         
                         Section(header: Text("Récurrence").frame(maxWidth: .infinity, alignment: .center)) {
@@ -87,6 +90,8 @@ struct AddEventSheetView: View {
                                         return
                                     }
 
+                                    print (startDate)
+                                    
                                     let newEvent = CalendarEvent(
                                         startDate: startDate,
                                         endDate: endDate,

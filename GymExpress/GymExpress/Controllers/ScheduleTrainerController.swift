@@ -10,26 +10,80 @@ import Combine
 
 class ScheduleTrainerController: ObservableObject {
     static let shared = ScheduleTrainerController()
-    private var keyboardMonitor: Any?
-    
+    var dbManager: DatabaseManager = DatabaseManager.shared
+    private var keyboardMonitor: Any? = nil
+        
     @Published var startOfWeek: Date = Date()
-    @Published var events: [CalendarEvent] = [
-        CalendarEvent(id: 1, startDate: dateFrom(3, 2, 2025, 9, 0), endDate: dateFrom(3, 2, 2025, 11, 0), title: "Entraînement", recurrenceType: .none),
-        CalendarEvent(id: 2, startDate: dateFrom(5, 2, 2025, 14, 0), endDate: dateFrom(5, 2, 2025, 15, 0), title: "Réunion", recurrenceType: .weekly)
-    ]
+    @Published var events: [CalendarEvent] = []
     
-    private init() {}
+    private init() {
+        fetchEvents()
+    }
     
+    func fetchEvents() {
+        guard let userId = LoginController.shared.currentUser?.id else {
+            print("Utilisateur non connecté.")
+            return
+        }
+        // TODO - FIXER LE DECALAGE DANS LA BD
+        let query = "SELECT * FROM events WHERE start_date = ? AND is_deleted = FALSE"
+        
+        if let fetchedEvents: [CalendarEvent] = dbManager.fetchDatas(request: query, params: [userId]) {
+            var newEvents: [CalendarEvent] = []
+            
+            print(fetchedEvents)
+                        
+            for event in fetchedEvents {
+                newEvents.append(event)
+                let occurrences = event.generateOccurrences()
+                newEvents.append(contentsOf: occurrences)
+            }
+            
+            DispatchQueue.main.async {
+                self.events = newEvents.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
+            }
+        } else {
+            print("Échec de la récupération des événements depuis la base de données.")
+        }
+    }
+    
+    func deleteEvent(event: CalendarEvent, onFailure: @escaping () -> Void, onSuccess: @escaping () -> Void) {
+        if event.id < Int32.min || event.id > Int32.max {
+            print("Erreur : ID de l'événement invalide (\(event.id)). Annulation de la suppression.")
+            DispatchQueue.main.async {
+                onFailure()
+            }
+            return
+        }
+
+        let query = "UPDATE events SET is_deleted = TRUE WHERE id = ?"
+        let success = dbManager.updateData(request: query, params: [event.id])
+
+        if success {
+            DispatchQueue.main.async {
+                self.fetchEvents()
+                onSuccess() // ✅ Ferme la vue seulement si la suppression réussit
+            }
+        } else {
+            DispatchQueue.main.async {
+                print("Échec de la suppression, affichage de l'alerte")
+                onFailure()
+            }
+        }
+    }
+
     func addEvent(event: CalendarEvent, startDate: Date) {
-        guard let startDate = event.startDate else { return }
         var newEvents = events
-        newEvents.append(event)
+        var tempEvent = event
+                
+        tempEvent.userId = LoginController.shared.currentUser?.id ?? -1
+        newEvents.append(tempEvent)
         
-        let occurrences = event.generateOccurrences()
-        newEvents.append(contentsOf: occurrences)
+        var bool = dbManager.insertData(request: Request.createEvent, params: tempEvent)
         
+        print(bool)
         DispatchQueue.main.async {
-            self.events = newEvents.sorted { _,_ in startDate < startDate }
+            self.fetchEvents()
         }
     }
     
