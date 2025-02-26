@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AppointmentView: View {
+    @ObservedObject var controller = AppointmentController.shared
     @State private var appointmentList: [String] = ["1", "2", "3", "4", "5"] // Changer pour le model
     @State private var descList: [String] = ["allo", "allo", "allo", "allo", "allo"] // Changer pour le model
     @State private var trainerList: [String] = ["trainer1", "trainer2", "trainer3", "trainer4", "trainer5"] // Changer pour le model
@@ -20,13 +21,18 @@ struct AppointmentView: View {
     
     var body: some View {
         GroupBox {
+            // TODO: Bouton rafraichir la page
+            Button(action: {}) {
+                Label("Rafraîchir", systemImage: "refresh")
+            }
+            
             List {
-                ForEach(0..<appointmentList.count, id: \.self) { appointment in
-                    GroupBox(label: Text(appointmentList[appointment])) {
+                ForEach(0..<controller.appointments.count, id: \.self) { appointment in
+                    GroupBox(label: Text(controller.appointments[appointment].name)) {
                         HStack {
                             VStack {
-                                Text(descList[appointment])
-                                Text(trainerList[appointment])
+                                Text(controller.appointments[appointment].description)
+                                Text("\(controller.getTrainerName(trainerId: controller.appointments[appointment].trainerId))")
                                     .font(.caption2)
                             }
                             
