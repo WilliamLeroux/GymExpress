@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct DashboardTrainerView: View {
+    
+    private var navController = NavigationController.shared /// Controlleur de navigation
+
     var body: some View {
         NavigationStack {
             Grid {
@@ -19,33 +22,33 @@ struct DashboardTrainerView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .scaleEffect(0.60),
-                                      action: {
-                            } // CRUD du plan d'entraînement du client
+                                action: {
+                                    self.navController.selectedIndex = NavigationItemTrainer.planTrainingPlan.rawValue
+                                } // CRUD du plan d'entraînement du client
                             )
                             smallBox(title: "Espace client", view:
                                         Image(.client)
                                 .resizable()
                                 .scaledToFit()
-                                .scaleEffect(0.60)
+                                .scaleEffect(0.60),
+                                 action: {
+                                     self.navController.selectedIndex = NavigationItemTrainer.clientConsultation.rawValue
+                                 } // Consulter les informations du client, Listes des clients
                             )
                         }
                         .frame(width: 400)
-                        // Consulter les informations du client, Listes des clients
+                       
                         
                         HStack(){
                             smallBox(title: "Horraire", view:
                                         Image(.appointment)
                                 .resizable()
                                 .scaledToFit()
-                                .scaleEffect(0.60)
-                            ) // Modifier sa plage horaire
-                            
-                            smallBox(title: "CRUD Appointement", view:
-                                        Image(.clientAppointment)
-                                .resizable()
-                                .scaledToFit()
-                                .scaleEffect(0.60)
-                            ) // CRUD Appointment Client
+                                .scaleEffect(0.60),
+                                 action: {
+                                     self.navController.selectedIndex = NavigationItemTrainer.scheduleTrainer.rawValue
+                                 } // Modifier sa plage horaire
+                            )
                         }
                         .frame(width: 410, alignment: .leading)
                     }
