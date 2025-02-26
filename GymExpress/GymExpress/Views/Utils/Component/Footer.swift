@@ -22,6 +22,7 @@ struct Footer: View {
                 loginController.email = ""
                 loginController.password = ""
                 dismiss()
+                
             } label: {
                 Text("Se déconnecter")
                     .underline()

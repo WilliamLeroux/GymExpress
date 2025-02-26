@@ -13,8 +13,11 @@ struct GymExpressApp: App {
     @StateObject var viewModel: LoginController = LoginController.shared
     var body: some Scene {
         WindowGroup {
-            if let currentUser = viewModel.currentUser {
+            if viewModel.currentUser != nil {
                 RootNavigation()
+                    .preferredColorScheme(.light)
+                    .frame(maxWidth: 1300, maxHeight: 800)
+                    .frame(minWidth: 1000, minHeight: 600)
                     .environmentObject(viewModel)
             } else {
                 LoginView()

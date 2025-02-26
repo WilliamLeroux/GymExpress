@@ -11,7 +11,6 @@ import SwiftUI
 class LoginController: ObservableObject {
     static let shared = LoginController()
     var dbManager: DatabaseManager = DatabaseManager.shared
-    let rememberMe = UserDefaults.standard
     
     @Published var email: String = "" /// Email de l'utilisateur entré
     @Published var password: String = "" /// Mot de passe de l'utilisateur entré
