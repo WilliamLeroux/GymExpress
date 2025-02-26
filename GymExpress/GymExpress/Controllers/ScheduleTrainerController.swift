@@ -22,13 +22,10 @@ class ScheduleTrainerController: ObservableObject {
     
     func fetchEvents() {
         guard let userId = LoginController.shared.currentUser?.id else {
-            print("Utilisateur non connecté.")
             return
         }
-        // TODO - FIXER LE DECALAGE DANS LA BD
-        let query = "SELECT * FROM events WHERE start_date = ? AND is_deleted = FALSE"
-        
-        if let fetchedEvents: [CalendarEvent] = dbManager.fetchDatas(request: query, params: [userId]) {
+        // TODO - FIXER LE DECALAGE DANS LA BD        
+        if let fetchedEvents: [CalendarEvent] = dbManager.fetchDatas(request: Request.select(table: DbTable.events, columns: ["*"], condition: "WHERE start_date = ? AND is_deleted = ?"), params: [userId, false]) {
             var newEvents: [CalendarEvent] = []
                                     
             for event in fetchedEvents {
@@ -41,7 +38,6 @@ class ScheduleTrainerController: ObservableObject {
                 self.events = newEvents.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
             }
         } else {
-            print("Échec de la récupération des événements depuis la base de données.")
             DispatchQueue.main.async {
                 self.events = []
             }
@@ -49,17 +45,14 @@ class ScheduleTrainerController: ObservableObject {
     }
     
     func deleteEvent(event: CalendarEvent, onFailure: @escaping () -> Void, onSuccess: @escaping () -> Void) {
-        print(event.id)
         if event.id < Int32.min || event.id > Int32.max {
-            print("Erreur : ID de l'événement invalide (\(event.id)). Annulation de la suppression.")
             DispatchQueue.main.async {
                 onFailure()
             }
             return
         }
 
-        let query = "UPDATE events SET is_deleted = TRUE WHERE id = ?"
-        let success = dbManager.updateData(request: query, params: [event.id])
+        let success = dbManager.updateData(request: Request.update(table: DbTable.events, columns: ["is_deleted"], condition: "WHERE id = ?"), params: [true, event.id])
 
         if success {
             DispatchQueue.main.async {
@@ -68,7 +61,6 @@ class ScheduleTrainerController: ObservableObject {
             }
         } else {
             DispatchQueue.main.async {
-                print("Échec de la suppression, affichage de l'alerte")
                 onFailure()
             }
         }
@@ -83,7 +75,6 @@ class ScheduleTrainerController: ObservableObject {
         
         var bool = dbManager.insertData(request: Request.createEvent, params: tempEvent)
         
-        print(bool)
         DispatchQueue.main.async {
             self.fetchEvents()
         }
