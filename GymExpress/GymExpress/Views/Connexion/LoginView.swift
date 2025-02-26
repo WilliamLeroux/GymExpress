@@ -64,11 +64,13 @@ struct LoginView: View {
                                     ) {
                                         Button(action: {
                                             if viewModel.authenticateUser() {
-                                                errorMessage = ""
-                                                isNavigating = true
                                                 if self.isRememberMe {
                                                     viewModel.saveLoginInfos()
+                                                } else {
+                                                    viewModel.deleteLoginInfos()
                                                 }
+                                                errorMessage = ""
+                                                isNavigating = true
                                             }else {
                                                 errorMessage = "Informations invalides"
                                             }
