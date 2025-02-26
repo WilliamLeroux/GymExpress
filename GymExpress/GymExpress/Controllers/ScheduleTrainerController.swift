@@ -30,9 +30,7 @@ class ScheduleTrainerController: ObservableObject {
         
         if let fetchedEvents: [CalendarEvent] = dbManager.fetchDatas(request: query, params: [userId]) {
             var newEvents: [CalendarEvent] = []
-            
-            print(fetchedEvents)
-                        
+                                    
             for event in fetchedEvents {
                 newEvents.append(event)
                 let occurrences = event.generateOccurrences()
@@ -44,10 +42,14 @@ class ScheduleTrainerController: ObservableObject {
             }
         } else {
             print("Échec de la récupération des événements depuis la base de données.")
+            DispatchQueue.main.async {
+                self.events = []
+            }
         }
     }
     
     func deleteEvent(event: CalendarEvent, onFailure: @escaping () -> Void, onSuccess: @escaping () -> Void) {
+        print(event.id)
         if event.id < Int32.min || event.id > Int32.max {
             print("Erreur : ID de l'événement invalide (\(event.id)). Annulation de la suppression.")
             DispatchQueue.main.async {
@@ -62,7 +64,7 @@ class ScheduleTrainerController: ObservableObject {
         if success {
             DispatchQueue.main.async {
                 self.fetchEvents()
-                onSuccess() // ✅ Ferme la vue seulement si la suppression réussit
+                onSuccess()
             }
         } else {
             DispatchQueue.main.async {

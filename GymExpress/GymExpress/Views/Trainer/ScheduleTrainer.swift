@@ -226,5 +226,8 @@ struct EventDetailView: View {
                 isPresented = false
             }
         }
+        .onDisappear {
+            controller.fetchEvents()
+        }
     }
 }
