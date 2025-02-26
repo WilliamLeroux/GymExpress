@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DashboardTrainerView: View {
-    
     private var navController = NavigationController.shared /// Controlleur de navigation
     private var dashboardController = DashBoardTrainerController.shared /// Controlleur du Dashboard pour le Trainer
 

@@ -156,6 +156,8 @@ class DatabaseManager{
                         index += 1
                     }
                 }
+                
+                index = 0
             }
         }
 
