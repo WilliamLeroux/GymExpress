@@ -130,21 +130,31 @@ class DatabaseManager{
                     break
                 }
             }
-            
+            let columnCount = Int(sqlite3_column_count(pointer))
+            var index = 0
             while sqlite3_step(pointer) == SQLITE_ROW {
                 if let objectType = T.self as? InitializableFromSQLITE.Type {
                     if let object = objectType.init(from: pointer!) as? T {
                         result.append(object)
                     }
                 } else if T.self is Int.Type {
-                    let value = sqlite3_column_int(pointer, 0)
-                    result.append(value as! T)
+                    while index < columnCount {
+                        let value = sqlite3_column_int(pointer, Int32(index))
+                        result.append(value as! T)
+                        index += 1
+                    }
                 } else if T.self is String.Type {
-                    let value = String(cString: sqlite3_column_text(pointer, 0)!)
-                    result.append(value as! T)
+                    while index < columnCount {
+                        let value = String(cString: sqlite3_column_text(pointer, Int32(index))!)
+                        result.append(value as! T)
+                        index += 1
+                    }
                 } else if T.self is Double.Type {
-                    let value = sqlite3_column_double(pointer, 0)
-                    result.append(value as! T)
+                    while index < columnCount {
+                        let value = sqlite3_column_double(pointer, Int32(index))
+                        result.append(value as! T)
+                        index += 1
+                    }
                 }
             }
         }
