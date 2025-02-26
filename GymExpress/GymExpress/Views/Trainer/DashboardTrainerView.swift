@@ -10,6 +10,7 @@ import SwiftUI
 struct DashboardTrainerView: View {
     
     private var navController = NavigationController.shared /// Controlleur de navigation
+    private var dashboardController = DashBoardTrainerController.shared /// Controlleur du Dashboard pour le Trainer
 
     var body: some View {
         NavigationStack {
@@ -52,12 +53,8 @@ struct DashboardTrainerView: View {
                         }
                         .frame(width: 410, alignment: .leading)
                     }
-                    mediumBox(title: "Liste client du jour", view: Text("Liste client du jour, liste a point avec heure de depart"))
+                    mediumBox(title: "Liste client du jour", view: Text("Liste client du jour, liste a point avec heure de depart")).disabled(true)
                 }
-                GridRow {
-                    longBox(title: "Horraire de la semaine", view: Text("Jour par jours, bloc d'heure."))
-                }
-                .gridCellColumns(3)
             }
         }
     }
