@@ -16,7 +16,7 @@ class DateUtils {
     
     
     private init() {
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
     }
     
     /// Retourne la range de date pour les calendriers (en ce moment +5 ans)

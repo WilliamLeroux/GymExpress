@@ -11,6 +11,7 @@ import SQLite3
 // Structure d'un événement dans le calendrier d'un entraîneur.
 struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
     var id: Int = -1 /// Identifiant unique (privé)
+    var userId: Int = -1 /// Identifiant unique (user)
     var startDate: Date? = nil /// Date de début de l'événement
     var endDate: Date? = nil /// Date de fin de l'événement
     var title: String = "" /// Titre de l'événement
@@ -40,6 +41,8 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
             case 1:
                 self.id = Int(sqlite3_column_int(pointer, i))
             case 3:
+                self.userId = Int(sqlite3_column_int(pointer, i))
+            case 4:
                 if let dateString = sqlite3_column_text(pointer, i) {
                     
                     let dateStr = String(cString: dateString)
@@ -48,7 +51,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
                 } else {
                     self.startDate = nil
                 }
-            case 4:
+            case 5:
                 if let dateString = sqlite3_column_text(pointer, i) {
                     
                     let dateStr = String(cString: dateString)
@@ -57,10 +60,26 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
                 } else {
                     self.endDate = nil
                 }
-            case 5:
-                self.title = String(cString: sqlite3_column_text(pointer, i)!)
             case 6:
+                self.title = String(cString: sqlite3_column_text(pointer, i)!)
+            case 7:
                 self.recurrenceType = Utils.shared.getRecurrenceTypeById(id: Int(sqlite3_column_int(pointer, i)))
+            case 8:
+                if let dateString = sqlite3_column_text(pointer, i) {
+                    _ = String(cString: dateString)
+                    let calendar = Calendar.current
+                                        
+                    switch self.recurrenceType {
+                    case .daily:
+                        self.recurrenceEndDate = calendar.date(byAdding: .month, value: 1, to: self.startDate!) ?? self.startDate
+                    case .weekly:
+                        self.recurrenceEndDate = calendar.date(byAdding: .month, value: 3, to: self.startDate!) ?? self.startDate
+                    case .monthly:
+                        self.recurrenceEndDate = calendar.date(byAdding: .month, value: 6, to: self.startDate!) ?? self.startDate
+                    case .none:
+                        self.recurrenceEndDate = nil
+                    }
+                }
             default:
                 #if DEBUG
                 print("Unknown column, \(columnIndex)")
@@ -70,7 +89,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
     }
     
     var params: [Any] {
-        return [id, startDate as Any, endDate as Any, title, recurrenceType, recurrenceEndDate as Any]
+        return [id, userId, startDate as Any, endDate as Any, title, recurrenceType, recurrenceEndDate as Any]
     }
 
     func generateOccurrences() -> [CalendarEvent] {

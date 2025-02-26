@@ -34,7 +34,7 @@ class DatabaseUtils {
             sqlite3_bind_int(pointer, Int32(i), Int32(Utils.shared.getBodyPartsId(param)))
         case let param as Optional<Date>: // Date?
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
+            dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
             var tempDate : NSString = dateFormatter.string(from: Date()) as NSString
             if let param = param {
                 tempDate = dateFormatter.string(from: param) as NSString
@@ -58,12 +58,8 @@ class DatabaseUtils {
             } else {
                 sqlite3_bind_null(pointer, Int32(i))
             }
-        case let param as Optional<RecurrenceType>:
-            if let param = param {
-                sqlite3_bind_int(pointer, Int32(i), Int32(Utils.shared.getRecurrenceTypeId(recurrence: param)))
-            } else {
-                sqlite3_bind_null(pointer, Int32(i))
-            }
+        case let param as RecurrenceType:
+            sqlite3_bind_int(pointer, Int32(i), Int32(Utils.shared.getRecurrenceTypeId(recurrence: param)))
         default:
             break
         }

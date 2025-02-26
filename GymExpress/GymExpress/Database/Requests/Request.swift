@@ -44,7 +44,7 @@ struct Request {
     static let createAppointment: String = "INSERT INTO appointments (user_id, trainer_id, name, description, date) VALUES (?, ?, ?, ?, ?);"
     
     /// Crée un évènement
-    static let createEvent: String = "INSERT INTO events (user_id, start_date, end_date, title, recurrence) VALUES(?, ?, ?, ?, ?);"
+    static let createEvent: String = "INSERT INTO events (user_id, start_date, end_date, title, recurrence, recurrence_end_date) VALUES(?, ?, ?, ?, ?, ?);"
     
     /// Retourne une requête SQL Update
     /// - Parameters:
