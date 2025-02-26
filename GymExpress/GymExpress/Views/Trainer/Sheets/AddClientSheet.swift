@@ -20,8 +20,8 @@ struct AddClientSheet: View {
     
     var body: some View {
         VStack {
-            Text("ID sélectionné : \(Utils.shared.getMembershipGradeId(membership: selectedMembershipGrade))")
-                .font(.headline)
+            Text("Page d'ajouts de clients")
+                .font(.title)
                 .padding()
 
             TextField("Prénom", text: $name)
@@ -41,15 +41,23 @@ struct AddClientSheet: View {
             
             // TODO: Faire les vérifications du formulaire
             
-            Button("Enregistrer") {}
-                .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
-                    let membership = MembershipData(grade: selectedMembershipGrade)
-                    let user = UserModel(name: name, lastName: lastName, email: email, password: password, type: UserType.client, membership: membership)
-                    let result = controller.addUser(user)
-                    if result {
+            HStack {
+                Button("Enregistrer") {}
+                    .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
+                        let membership = MembershipData(grade: selectedMembershipGrade)
+                        let user = UserModel(name: name, lastName: lastName, email: email, password: password, type: UserType.client, membership: membership)
+                        let result = controller.addUser(user)
+                        if result {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }))
+                
+                Button("Annuler") {}
+                    .buttonStyle(RoundedButtonStyle(width: 150, height: 50, color: .white, hoveringColor: .main, borderColor: .mainHover, borderWidth: 1, action: {
                         presentationMode.wrappedValue.dismiss()
-                    }
-                }))
+                    }))
+            }
+            .padding(.top, 30)
         }
         .padding()
     }
