@@ -52,6 +52,10 @@ class AppointmentController: ObservableObject {
         
         let startDate = calendar.date(from: dateComp)!
         
+        let success = dbManager.updateData(request: Request.update(table: DbTable.appointments, columns: ["date"]), params: [startDate])
+        if success {
+            appointments[selectedEditIndex].date = startDate
+        }
     }
     
 }
