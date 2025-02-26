@@ -13,13 +13,14 @@ class AppointmentController: ObservableObject {
     
     @Published var appointments: [AppointmentModel] = []
     @Published var selectedIndex: Int = -1
+    @Published var selectedEditIndex: Int = -1
     
     private init(){
         loadInitialData()
     }
     
     private func loadInitialData() {
-        if let tempAppointments: [AppointmentModel] = dbManager.fetchDatas(request: Request.select(table: DbTable.appointments, columns: ["*"], condition: "WHERE user_id = \(LoginController.shared.currentUser?.id ?? 0)"), params: []) {
+        if let tempAppointments: [AppointmentModel] = dbManager.fetchDatas(request: Request.select(table: DbTable.appointments, columns: ["*"], condition: "WHERE user_id = ? AND is_deleted = ?"), params: [LoginController.shared.currentUser!.id, false]) {
             appointments = tempAppointments
         }
     }
@@ -29,6 +30,15 @@ class AppointmentController: ObservableObject {
             return "\(trainer[0]) \(trainer[1])"
         }
         return "Inconnu"
+    }
+    
+    func deleteAppointment() {
+        if selectedIndex >= 0 {
+            let success = dbManager.updateData(request: Request.update(table: DbTable.appointments, columns: ["is_deleted"]), params: [true])
+            if success {
+                appointments.remove(at: selectedIndex)
+            }
+        }
     }
     
 }

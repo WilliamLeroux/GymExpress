@@ -14,8 +14,8 @@ struct AppointmentView: View {
     @State private var trainerList: [String] = ["trainer1", "trainer2", "trainer3", "trainer4", "trainer5"] // Changer pour le model
     @State private var deleteAlert: Bool = false /// Booléen signifiant si l'alerte est affichée
     @State private var editAlert: Bool = false /// Booléen signifiant si l'alerte de modification est affichée
-    @State private var selectedIndex: Int = -1 /// Rendez-vous sélectionné pour la suppression
-    @State private var selectedEditIndex: Int = -1 /// Rendez-vous sélectionné pour la modification
+    //@State private var selectedIndex: Int = -1 /// Rendez-vous sélectionné pour la suppression
+    //@State private var selectedEditIndex: Int = -1 /// Rendez-vous sélectionné pour la modification
     @State private var selectedDate: Date = Date() /// Nouvelle date pour le rendez-vous sélectionné
     @State private var selectedTime: Date = Date() /// Nouvelle heure pour le rendez-vous sélectionné
     
@@ -43,14 +43,14 @@ struct AppointmentView: View {
                                     Image(systemName: "pencil")
                                 }
                                 .buttonStyle(RoundedButtonStyle(width: 30, height: 30, action: {
-                                    selectedEditIndex = appointment
+                                    controller.selectedEditIndex = appointment
                                 }))
                                 
                                 Button(action: {}) {
                                     Image(systemName: "trash")
                                 }
                                 .buttonStyle(RoundedButtonStyle(width: 30, height: 30, color: Color.red, hoveringColor: Color.red.opacity(0.8), action: {
-                                    selectedIndex = appointment
+                                    controller.selectedIndex = appointment
                                 }))
                                 
                             }
@@ -60,28 +60,28 @@ struct AppointmentView: View {
                     .groupBoxStyle(WorkoutBoxStyle())
                 }
             }
-            .onChange(of: selectedIndex) {
-                if selectedIndex != -1 {
+            .onChange(of: controller.selectedIndex) {
+                if controller.selectedIndex != -1 {
                     deleteAlert = true
                 }
             }
-            .onChange(of: selectedEditIndex){
-                if selectedEditIndex != -1 {
+            .onChange(of: controller.selectedEditIndex){
+                if controller.selectedEditIndex != -1 {
                     editAlert.toggle()
                 }
             }
             .sheet(isPresented: $deleteAlert) { // Sheet confirmation pour annuler un rendez-vous
                 ConfirmationSheet(
                     title: "Annulation",
-                    message: "Voulez-vous vraiment annuler \(appointmentList[selectedIndex]) ?",
+                    message: "Voulez-vous vraiment annuler \(controller.appointments[controller.selectedIndex].name) ?",
                     cancelAction: {
-                        selectedIndex = -1
+                        controller.selectedIndex = -1
                         deleteAlert = false}
                     ,
                     confirmAction: {
-                        selectedIndex = -1
+                        controller.deleteAppointment()
+                        controller.selectedIndex = -1
                         deleteAlert = false
-                        // Ajouter suppresion
                     }
                 )
             }
@@ -89,7 +89,7 @@ struct AppointmentView: View {
                 VStack {
                     Text("Modification du rendez-vous: ")
                         .font(.title)
-                    Text("\(appointmentList[selectedEditIndex])")
+                    Text("\(controller.appointments[controller.selectedEditIndex].name)")
                         .font(.title2)
                     
                     Text("Modification de la date:")
@@ -117,7 +117,7 @@ struct AppointmentView: View {
                             width: 85,
                             height: 40,
                             action: {
-                                selectedEditIndex = -1
+                                controller.selectedEditIndex = -1
                                 editAlert.toggle()
                             }
                         ))
@@ -129,7 +129,7 @@ struct AppointmentView: View {
                             width: 85,
                             height: 40,
                             action: {
-                                selectedEditIndex = -1
+                                controller.selectedEditIndex = -1
                                 editAlert.toggle()
                                 // Ajouter la sauvegarde
                             }
