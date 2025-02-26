@@ -41,4 +41,17 @@ class AppointmentController: ObservableObject {
         }
     }
     
+    func updateAppointment(date: Date, time: Date) {
+        let calendar = Calendar.current
+        
+        let components = calendar.dateComponents([.year, .month, .day], from: date)
+
+        var dateComp = components
+        dateComp.hour = calendar.component(.hour, from: time)
+        dateComp.minute = calendar.component(.minute, from: time)
+        
+        let startDate = calendar.date(from: dateComp)!
+        
+    }
+    
 }

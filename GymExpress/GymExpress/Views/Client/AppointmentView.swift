@@ -9,13 +9,8 @@ import SwiftUI
 
 struct AppointmentView: View {
     @ObservedObject var controller = AppointmentController.shared
-    @State private var appointmentList: [String] = ["1", "2", "3", "4", "5"] // Changer pour le model
-    @State private var descList: [String] = ["allo", "allo", "allo", "allo", "allo"] // Changer pour le model
-    @State private var trainerList: [String] = ["trainer1", "trainer2", "trainer3", "trainer4", "trainer5"] // Changer pour le model
     @State private var deleteAlert: Bool = false /// Booléen signifiant si l'alerte est affichée
     @State private var editAlert: Bool = false /// Booléen signifiant si l'alerte de modification est affichée
-    //@State private var selectedIndex: Int = -1 /// Rendez-vous sélectionné pour la suppression
-    //@State private var selectedEditIndex: Int = -1 /// Rendez-vous sélectionné pour la modification
     @State private var selectedDate: Date = Date() /// Nouvelle date pour le rendez-vous sélectionné
     @State private var selectedTime: Date = Date() /// Nouvelle heure pour le rendez-vous sélectionné
     
