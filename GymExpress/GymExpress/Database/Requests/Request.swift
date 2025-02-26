@@ -17,6 +17,9 @@ struct Request {
     /// Retourne tout les clients
     static let selectAllCLient: String = "SELECT id, name, last_name, email, user_type, membership, salary FROM users WHERE user_type = 0 AND is_deleted IS FALSE;"
     
+    /// Retourne tous les rendez-vous d'un client
+    static let selectAllAppointment: String =  "SELECT * FROM appointments;"
+    
     // MARK: INSERT
     
     /// Crée un utilisateur 

@@ -4,13 +4,15 @@
 //
 //  Created by William Leroux on 2025-02-21.
 //
-
+struct ExerciceResponse: Decodable, Encodable {
+    var data: Data
+}
 struct Data: Decodable, Encodable{
-    var exercices: [Exercice]
+    var exercises: [Exercises]
 }
 
-struct Exercice: Decodable, Encodable {
-    var exerciceId: String
+struct Exercises: Decodable, Encodable {
+    var exerciseId: String
     var name: String
     var gifUrl: String
     

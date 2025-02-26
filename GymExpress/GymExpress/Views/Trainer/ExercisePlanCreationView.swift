@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExercisePlanCreationView: View {
-    @ObservedObject var exercisePlanController: ExercisePlanController
+    @ObservedObject var exercisePlanController = ExercisePlanController.shared
     let day: String
     
     var body: some View {
@@ -23,26 +23,27 @@ struct ExercisePlanCreationView: View {
                     GroupBox {
                         HStack {
                             VStack(alignment: .leading) {
+                                
                                 Picker("Type d'exercice", selection: $exercisePlanController.selectedType) {
                                     ForEach(exercisePlanController.exerciseLegends, id: \.self) { type in
-                                        Text(type).tag(type)
+                                        Text(type.rawValue).tag(type.rawValue)
                                     }
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
                                 .frame(maxWidth: .infinity)
-
+                                 
                                 ScrollView {
                                     VStack(alignment: .leading) {
-                                        let exercises = exercisePlanController.exercisesByType[exercisePlanController.selectedType] ?? []
-
-                                        ForEach(exercises, id: \.self) { exercise in
+                                        let exercises = exercisePlanController.exercisesByType[exercisePlanController.selectedType.rawValue] ?? []
+                                        
+                                        ForEach(exercises, id: \.exerciceId) { exercise in
                                             Button(action: {
-                                                exercisePlanController.selectedExercise = exercise
+                                                exercisePlanController.selectedExercise = exercise.exerciceId
                                             }) {
                                                 HStack {
-                                                    Image(systemName: exercisePlanController.selectedExercise == exercise ? "checkmark.circle.fill" : "circle")
-                                                        .foregroundColor(exercisePlanController.selectedExercise == exercise ? .blue : .gray)
-                                                    Text(exercise)
+                                                    Image(systemName: exercisePlanController.selectedExercise == exercise.name ? "checkmark.circle.fill" : "circle")
+                                                        .foregroundColor(exercisePlanController.selectedExercise == exercise.name ? .blue : .gray)
+                                                    Text(exercise.name)
                                                         .font(.title2)
                                                 }
                                                 .frame(minWidth: 30, maxWidth: .infinity, alignment: .leading)
@@ -57,6 +58,7 @@ struct ExercisePlanCreationView: View {
                             Divider()
 
                             VStack(alignment: .leading, spacing: 30) {
+                                
                                 ParameterField(title: "Nombre de séries", exerciseLegends: "3", text: $exercisePlanController.series)
                                     .padding(.leading, 5)
                                 ParameterField(title: "Nombre de répétitions", exerciseLegends: "12", text: $exercisePlanController.reps)
@@ -92,6 +94,7 @@ struct ExercisePlanCreationView: View {
                                 if exercisePlanController.addedExercises.isEmpty {
                                     Text("Aucun exercice ajouté")
                                         .foregroundColor(.gray)
+                                 
                                 } else {
                                     ForEach(exercisePlanController.addedExercises) { exercise in
                                         VStack {
@@ -99,8 +102,8 @@ struct ExercisePlanCreationView: View {
                                                 VStack(alignment: .leading) {
                                                     Text(exercise.name)
                                                         .font(.headline)
-                                                    Text("Séries: \(exercise.series), Répétitions: \(exercise.reps)")
-                                                    Text("Charge: \(exercise.charge), Repos: \(exercise.repos)")
+                                                    Text("Séries: \(exercise.sets), Répétitions: \(exercise.reps)")
+                                                    Text("Charge: \(exercise.charge)")
                                                 }
                                                 Spacer()
                                                 Button(action: {}) {
@@ -128,15 +131,6 @@ struct ExercisePlanCreationView: View {
         }
         .padding()
     }
-}
-
-struct Exercise: Identifiable {
-    let id = UUID()
-    let name: String
-    let series: String
-    let reps: String
-    let charge: String
-    let repos: String
 }
 
 struct ParameterField: View {
