@@ -11,6 +11,7 @@ import SwiftUI
 class LoginController: ObservableObject {
     static let shared = LoginController()
     var dbManager: DatabaseManager = DatabaseManager.shared
+    let rememberMe = UserDefaults.standard
     
     @Published var email: String = "" /// Email de l'utilisateur entré
     @Published var password: String = "" /// Mot de passe de l'utilisateur entré
@@ -25,10 +26,8 @@ class LoginController: ObservableObject {
             let decoder = JSONDecoder()
             let user = try decoder.decode(UserModel.self, from: data)
             self.currentUser = user
-            self.isRememberMe = true
             print("Utilisateur connecté : \(currentUser!)")
         } catch {
-            // Fallback
         }
     }
     
@@ -51,11 +50,20 @@ class LoginController: ObservableObject {
             UserDefaults.standard.set(user, forKey: "user")
             print("Succès")
         } catch {
-
+            
         }
     }
+    
+    /// Supprimer les informations dans UserDefault
     func deleteLoginInfos() {
         UserDefaults.standard.removeObject(forKey: "user")
         print("Delete success")
+    }
+    /// Déconnecter l'utilisateur actuel
+    func logout() {
+        self.deleteLoginInfos()
+        self.currentUser = nil
+        self.email = ""
+        self.password = ""
     }
 }

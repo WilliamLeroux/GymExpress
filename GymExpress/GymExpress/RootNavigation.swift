@@ -14,7 +14,6 @@ struct RootNavigation: View {
 
     private var navOption: [String] = [] /// Liste des options
     
-    
     /// - Parameter userType: Type d'utilisateur
     init () {
         self.navOption = Utils.shared.getNavOptions(userType: loginController.currentUser?.type ?? .client)

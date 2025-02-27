@@ -13,18 +13,10 @@ struct GymExpressApp: App {
     @StateObject var viewModel: LoginController = LoginController.shared
     var body: some Scene {
         WindowGroup {
-            if viewModel.currentUser != nil {
-                RootNavigation()
-                    .preferredColorScheme(.light)
-                    .frame(maxWidth: 1300, maxHeight: 800)
-                    .frame(minWidth: 1000, minHeight: 600)
-                    .environmentObject(viewModel)
-            } else {
-                LoginView()
-                    .preferredColorScheme(.light)
-                    .frame(maxWidth: 1300, maxHeight: 800)
-                    .frame(minWidth: 1000, minHeight: 600)
-            }
+            LoginView()
+                .preferredColorScheme(.light)
+                .frame(maxWidth: 1300, maxHeight: 800)
+                .frame(minWidth: 1000, minHeight: 600)
         }
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 1300, height: 800)
