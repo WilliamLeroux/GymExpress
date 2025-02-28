@@ -13,10 +13,11 @@ class DateUtils {
     let calendar = Calendar.current /// Calendrier actuel
     let currentYear = Calendar.current.component(.year, from: Date()) /// Année actuelle
     let formatter = DateFormatter() /// Formatteur de date
-    
+    let formatterSimpleDate = DateFormatter()
     
     private init() {
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
+        formatterSimpleDate.dateFormat = "yyyy-MM-dd"
     }
     
     /// Retourne la range de date pour les calendriers (en ce moment +5 ans)

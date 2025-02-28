@@ -21,8 +21,9 @@ struct ExerciseModel: Identifiable, InitializableFromSQLITE, SQLConvertable {
     var reps: Int = -1 /// Nombre de répétitions
     var charge: Int = -1 /// Charge à lever
     
-    init(exerciceId: String, imageId: String, description: String, bodyParts: BodyParts, exerciseType: Int, sets: Int, reps: Int, charge: Int) {
+    init(exerciceId: String, name: String, imageId: String, description: String, bodyParts: BodyParts, exerciseType: Int = -1, sets: Int, reps: Int, charge: Int) {
         self.exerciceId = exerciceId
+        self.name = name
         self.imageId = imageId
         self.description = description
         self.bodyParts = bodyParts
@@ -30,6 +31,13 @@ struct ExerciseModel: Identifiable, InitializableFromSQLITE, SQLConvertable {
         self.sets = sets
         self.reps = reps
         self.charge = charge
+    }
+    
+    init(from exercise: Exercises, bodyParts: BodyParts) {
+        self.exerciceId = exercise.exerciseId
+        self.name = exercise.name
+        self.imageId = exercise.gifUrl
+        self.bodyParts = bodyParts
     }
     
     init(from pointer: OpaquePointer?) {

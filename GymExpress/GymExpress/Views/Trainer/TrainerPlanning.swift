@@ -10,7 +10,7 @@ import SwiftUI
 
 struct TrainingPlaningView: View {
     @ObservedObject var controller = TrainerPlanningController.shared
-    @ObservedObject var exercisePlanController = ExercisePlanController()
+    @ObservedObject var exercisePlanController = ExercisePlanController.shared
 
     @State private var lastName: String = "" /// Nom de famille saisi pour la recherche
     @State private var firstName: String = "" /// Prénom saisi pour la recherche
@@ -109,7 +109,7 @@ struct TrainingPlaningView: View {
 
 struct DayColumn: View {
     @ObservedObject var controller = TrainerPlanningController.shared
-    @StateObject private var exercisePlanController = ExercisePlanController()
+    @StateObject private var exercisePlanController = ExercisePlanController.shared
 
     let day: String
     @State private var isDeleteMode: Bool = false

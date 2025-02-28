@@ -6,9 +6,9 @@
 //
 
 enum BodyParts: String, CaseIterable, Identifiable {
-    case upperBody = "Upper-body"
-    case lowerBody = "Lower-body"
-    case core = "Core"
-    case cardio = "Cardio"
+    case upperBody = "upper-body"
+    case lowerBody = "lower-body"
+    case core = "core"
+    case cardio = "cardio"
     var id: String { self.rawValue }
 }

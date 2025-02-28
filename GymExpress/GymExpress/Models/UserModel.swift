@@ -9,7 +9,7 @@ import Foundation
 import SQLite3
 
 /// Strucutre d'un utilisateur
-struct UserModel: SQLConvertable, InitializableFromSQLITE, Identifiable {
+struct UserModel: SQLConvertable, InitializableFromSQLITE, Identifiable, Codable {
     var id: Int = -1 /// Identifiant
     var name: String = "" /// Prénom
     var lastName: String = "" /// Nom
@@ -75,4 +75,6 @@ struct UserModel: SQLConvertable, InitializableFromSQLITE, Identifiable {
     var params: [Any] {
         return [name, lastName, email, password, type as Any, membership as Any, salary as Any]
     }
+    
+    
 }

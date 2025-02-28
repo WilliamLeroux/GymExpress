@@ -15,7 +15,10 @@ struct Request {
     static let selectAllEmploye: String = "SELECT id, name, last_name, email, user_type, salary FROM users WHERE salary IS NOT NULL and is_deleted IS FALSE;"
     
     /// Retourne tout les clients
-    static let selectAllCLient: String = "SELECT id, name, last_name, email, user_type, salary FROM users WHERE salary IS NULL AND is_deleted IS FALSE;"
+    static let selectAllCLient: String = "SELECT id, name, last_name, email, user_type, membership, salary FROM users WHERE user_type = 0 AND is_deleted IS FALSE;"
+    
+    /// Retourne tous les rendez-vous d'un client
+    static let selectAllAppointment: String =  "SELECT * FROM appointments;"
     
     // MARK: INSERT
     
@@ -41,7 +44,7 @@ struct Request {
     static let createAppointment: String = "INSERT INTO appointments (user_id, trainer_id, name, description, date) VALUES (?, ?, ?, ?, ?);"
     
     /// Crée un évènement
-    static let createEvent: String = "INSERT INTO events (user_id, start_date, end_date, title, recurrence) VALUES(?, ?, ?, ?, ?);"
+    static let createEvent: String = "INSERT INTO events (user_id, start_date, end_date, title, recurrence, recurrence_end_date) VALUES(?, ?, ?, ?, ?, ?);"
     
     /// Retourne une requête SQL Update
     /// - Parameters:

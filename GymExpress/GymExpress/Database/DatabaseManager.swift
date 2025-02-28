@@ -93,18 +93,82 @@ class DatabaseManager{
             if let objectType = T.self as? InitializableFromSQLITE.Type {
                 result = objectType.init(from: pointer!)
             } else if T.self is Int.Type{
-                result = sqlite3_column_int(pointer, 1)
+                result = Int(sqlite3_column_int(pointer, 0))
             } else if T.self is String.Type {
-                result = String(cString: sqlite3_column_text(pointer, 1)!)
+                result = String(cString: sqlite3_column_text(pointer, 0)!)
             } else if T.self is Double.Type {
-                result = sqlite3_column_double(pointer, 1)
+                result = Double(sqlite3_column_double(pointer, 0))
             }
         }
         sqlite3_finalize(pointer)
         return result as? T
     }
     
-    /// Exécute les requête INSERT et UPDATE
+    /// Exécute les requête SELECT
+    /// - Parameters:
+    ///   - request: Chaine comprennant la requête
+    ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire
+    /// - Returns: Retourne le résultat selon le type donnée
+    func fetchDatas<T>(request: String, params: [Any]) -> [T]? {
+        var pointer: OpaquePointer?
+        var result: [T] = []
+        
+        if sqlite3_prepare_v2(db, request, -1, &pointer, nil) == SQLITE_OK {
+            
+            for i in 0..<params.count {
+                switch params[i] {
+                case let param as Int:
+                    sqlite3_bind_int(pointer, Int32(i + 1), Int32(param))
+                case let param as String:
+                    let tempString = param as NSString
+                    sqlite3_bind_text(pointer, Int32(i + 1), tempString.utf8String, -1, nil)
+                case let param as Double:
+                    sqlite3_bind_double(pointer, Int32(i + 1), param)
+                case let param as Bool:
+                    sqlite3_bind_int(pointer, Int32(i + 1), param ? 1 : 0)
+                default:
+                    break
+                }
+            }
+            let columnCount = Int(sqlite3_column_count(pointer))
+            var index = 0
+            while sqlite3_step(pointer) == SQLITE_ROW {
+                if let objectType = T.self as? InitializableFromSQLITE.Type {
+                    if let object = objectType.init(from: pointer!) as? T {
+                        result.append(object)
+                    }
+                } else if T.self is Int.Type {
+                    while index < columnCount {
+                        let value = sqlite3_column_int(pointer, Int32(index))
+                        result.append(value as! T)
+                        index += 1
+                    }
+                } else if T.self is String.Type {
+                    while index < columnCount {
+                        let value = String(cString: sqlite3_column_text(pointer, Int32(index))!)
+                        result.append(value as! T)
+                        index += 1
+                    }
+                } else if T.self is Double.Type {
+                    while index < columnCount {
+                        let value = sqlite3_column_double(pointer, Int32(index))
+                        result.append(value as! T)
+                        index += 1
+                    }
+                }
+                
+                index = 0
+            }
+        }
+
+        sqlite3_finalize(pointer)
+        
+        return result.isEmpty ? nil : result
+    }
+
+
+    
+    /// Exécute les requête INSERT 
     /// - Parameters:
     ///   - request: Chaine comprennant la requête
     ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire
@@ -115,6 +179,33 @@ class DatabaseManager{
         if sqlite3_prepare_v2(db, request, -1, &pointer, nil) == SQLITE_OK {
             var i = 1
             for param in params.params {
+                DatabaseUtils.shared.bindParam(pointer: pointer, param: param, i: i)
+                i+=1
+            }
+            
+            if sqlite3_step(pointer) != SQLITE_DONE {
+                if let errorMessage = sqlite3_errmsg(db) {
+                    print("Error inserting: \(String(cString: errorMessage))")
+                }
+                return false
+            }
+        }
+        sqlite3_finalize(pointer)
+        return true
+    }
+    
+    
+    /// Exécute les requête UPDATE
+    /// - Parameters:
+    ///   - request: Chaine comprennant la requête
+    ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire
+    /// - Returns: Retourne true si la requête a fonctionné, false si elle n'a pas fonctionné
+    func updateData(request: String, params: [Any]) -> Bool {
+        var pointer: OpaquePointer?
+        
+        if sqlite3_prepare_v2(db, request, -1, &pointer, nil) == SQLITE_OK {
+            var i = 1
+            for param in params {
                 DatabaseUtils.shared.bindParam(pointer: pointer, param: param, i: i)
                 i+=1
             }

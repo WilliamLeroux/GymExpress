@@ -8,10 +8,10 @@
 import SwiftUI
 
 /// Structure d'un abonnement
-struct MembershipData: Identifiable, Equatable {
+struct MembershipData: Identifiable, Equatable, Codable{
     var grade: MembershipGrade /// Grade
     var count: Int? = nil/// Nombre d'abonné
-    let descritpion: String? = nil /// Description de l'abonnement
+    var descritpion: String? = nil /// Description de l'abonnement
     var id: MembershipGrade { grade } /// Identifiant
     
     init(grade: MembershipGrade, count: Int? = nil) {

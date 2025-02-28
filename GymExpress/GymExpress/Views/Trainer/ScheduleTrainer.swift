@@ -24,6 +24,8 @@ struct ScheduleTrainer: View {
     @State private var hoveredDay: Date? = nil
     @State private var keyboardMonitor: Any?
     @State private var selectedDay: Date? = nil
+    @State private var selectedEvent: CalendarEvent? = nil
+    @State private var showEventDetailSheet = false
 
     let hourHeight = 50.0
     let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
@@ -77,7 +79,7 @@ struct ScheduleTrainer: View {
                             .sheet(isPresented: $showAddEventSheet) {
                                 AddEventSheetView(isPresented: $showAddEventSheet, dateDay: selectedDay!)
                                     .frame(height: 400)
-                                    .presentationDetents([.height(400)])
+                                    .presentationDetents([.height(600)])
                                     .interactiveDismissDisabled(true)
                                     .onDisappear {
                                         selectedDay = nil
@@ -112,6 +114,14 @@ struct ScheduleTrainer: View {
             .padding(.vertical, 16)
             .onAppear { controller.addKeyboardListener() }
             .onDisappear { controller.removeKeyboardListener() }
+            .sheet(isPresented: $showEventDetailSheet) {
+                if let selectedEvent = selectedEvent {
+                    EventDetailView(isPresented: $showEventDetailSheet, event: selectedEvent)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
+                        .interactiveDismissDisabled(true)
+                }
+            }
 
             Button(action: {}) {
                 Image(systemName: "chevron.right")
@@ -151,7 +161,14 @@ struct ScheduleTrainer: View {
         .background(RoundedRectangle(cornerRadius: 8).fill(Color.main.opacity(0.5)))
         .padding(.trailing, 40)
         .offset(x: 30, y: offset + 74)
-        .onTapGesture { print("Event ID: \(event.id)") }
+        .onTapGesture {
+            selectedEvent = event
+        }
+        .onChange(of: selectedEvent) {
+            if (selectedEvent != nil){
+                showEventDetailSheet = true
+            }
+        }
     }
 }
 
@@ -159,4 +176,62 @@ func dateFrom(_ day: Int, _ month: Int, _ year: Int, _ hour: Int = 0, _ minute: 
     let calendar = Calendar.current
     let dateComponents = DateComponents(year: year, month: month, day: day, hour: hour, minute: minute)
     return calendar.date(from: dateComponents) ?? .now
+}
+
+struct EventDetailView: View {
+    @Binding var isPresented: Bool
+    var event: CalendarEvent
+    @StateObject private var controller = ScheduleTrainerController.shared
+    @State private var showDeletionError = false
+    @State private var deletionSucceeded = false
+
+    var body: some View {
+        VStack {
+            Text(event.title)
+                .font(.title)
+                .bold()
+            
+            Spacer(minLength: 50)
+            
+            Text("Début : \(event.startDate?.formatted(.dateTime.locale(Locale(identifier: "fr_CA")).day().month(.wide).year().hour().minute()) ?? "N/A")")
+                .font(.title2)
+                .bold()
+            Text("Fin : \(event.endDate?.formatted(.dateTime.locale(Locale(identifier: "fr_CA")).day().month(.wide).year().hour().minute()) ?? "N/A")")
+                .font(.title2)
+                .bold()
+            
+            Spacer(minLength: 100)
+            
+            HStack {
+                Button("Supprimer l'événement", role: .destructive) {}
+                    .buttonStyle(RoundedButtonStyle(width: 175, height: 50,color: .red.opacity(0.8), hoveringColor: .red, action: {
+                        controller.deleteEvent(event: event,
+                            onFailure: { DispatchQueue.main.async { showDeletionError = true } },
+                            onSuccess: { DispatchQueue.main.async { deletionSucceeded = true } }
+                        )
+                    }))
+                .alert("Suppression impossible", isPresented: $showDeletionError) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    Text("Cet événement n'est pas l'événement d'origine de la récurrence et ne peut pas être supprimé individuellement.")
+                }
+                
+                Button("Fermer") {}
+                .buttonStyle(RoundedButtonStyle(width: 100, height: 50, action: {
+                    isPresented = false
+                }))
+            }
+            .padding(.top, 20)
+        }
+        .frame(minWidth: 350, maxHeight: 350)
+        .padding()
+        .onChange(of: deletionSucceeded) { success in
+            if success {
+                isPresented = false
+            }
+        }
+        .onDisappear {
+            controller.fetchEvents()
+        }
+    }
 }

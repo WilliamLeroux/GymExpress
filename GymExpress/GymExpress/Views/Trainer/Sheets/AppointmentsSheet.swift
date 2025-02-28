@@ -33,13 +33,15 @@ struct AppointmentsSheet: View {
                     }
                 }
             }
-
-            Button("Fermer") {
+            
+            Button("Fermer") {}
+            .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
                 presentationMode.wrappedValue.dismiss()
-            }
-            .buttonStyle(.bordered)
+            }))
             .padding()
+            .frame(alignment: .bottom)
         }
+        .frame(minWidth: 300, minHeight: 300)
         .padding()
     }
     
