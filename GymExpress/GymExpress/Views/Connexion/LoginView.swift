@@ -85,12 +85,12 @@ struct LoginView: View {
                                                 .padding(.horizontal, 30)
                                                 .padding(.vertical, 15)
                                                 .foregroundColor(.white)
-                                                .background(isHover ? Color.green : Color.main)
                                                 .cornerRadius(8)
                                                 .frame(width: 250, height: 50)
+                                                .background(isHover ? .mainHover : Color.main)
                                         }
                                     }
-                                    .buttonStyle(RoundedButtonStyle(width: 250))
+                                    .buttonStyle(RoundedButtonStyle(width: 250, color: .white))
                                     .navigationBarBackButtonHidden(true)
                                     .onHover { hovering in
                                         withAnimation(.easeInOut(duration: 0.2)) {
