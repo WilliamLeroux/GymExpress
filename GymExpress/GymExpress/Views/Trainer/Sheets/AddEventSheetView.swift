@@ -18,6 +18,7 @@ struct AddEventSheetView: View {
     @State private var recurrenceType = RecurrenceType.none /// Type de récurrence de l'événement (aucune, quotidienne, hebdomadaire, etc.)
 
     @State private var eventTitle = "" /// Titre de l'événement saisi par l'utilisateur
+    @FocusState private var isTypingEventTitle: Bool
 
     let minTime = Calendar.current.date(bySettingHour: 6, minute: 0, second: 0, of: Date())! /// Heure minimale autorisée pour le début de l'événement (06:00)
     let maxTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())! /// Heure maximale autorisée pour la fin de l'événement (22:00)
@@ -35,13 +36,14 @@ struct AddEventSheetView: View {
             VStack {
                 Form {
                     VStack {
-                        Section(header: Text("Titre de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
-                            TextField("", text: $eventTitle)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Spacer()
+
+                        Section(header: Text("Titre de l'événement").font(.title2.bold()).frame(maxWidth: .infinity, alignment: .center)) {
+                            TextFieldStyle(title: "", text: $eventTitle, width: 250, isTyping: $isTypingEventTitle)
                                 .padding(.top, 2)
                         }
                         
-                        Section(header: Text("Heure de l'événement").frame(maxWidth: .infinity, alignment: .center)) {
+                        Section(header: Text("Heure de l'événement").font(.title2.bold()).frame(maxWidth: .infinity, alignment: .center)) {
                             DatePicker("Début", selection: $startTime, in: minTime...maxTimeOfStart, displayedComponents: .hourAndMinute)
                                 .onChange(of: startTime) { _, newStartTime in
                                     let roundedStartTime = roundToNearestHalfHour(date: newStartTime)
@@ -62,30 +64,15 @@ struct AddEventSheetView: View {
                         
                         Section(header: Text("Récurrence").frame(maxWidth: .infinity, alignment: .center)) {
                             Toggle("Récurrent", isOn: $isRecurring)
-                            if isRecurring {
-                                Picker("", selection: $recurrenceType) {
-                                    ForEach(RecurrenceType.allCases, id: \.self) { option in
-                                        if option != .none {
-                                            Text(option.rawValue)
-                                        }
-                                    }
-                                }
-                                .pickerStyle(SegmentedPickerStyle())
+                            if isRecurring {CustomSegmentedPickerStyle(title: "", selection: $recurrenceType, options: RecurrenceType.allCases, colorStroke: Color.main )
                             }
                         }
                         
                         HStack {
                             Spacer()
                             
-                            Button("Annuler") {}
-                                .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
-                                    isPresented = false
-                                }))
-                            
-                            Spacer()
-                            
                             Button("Ajouter") {}
-                                .buttonStyle(RoundedButtonStyle(width: 100, height: 40, action: {
+                                .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
                                     let calendar = Calendar.current
                                     
                                     let components = calendar.dateComponents([.year, .month, .day], from: dateDay)
@@ -112,14 +99,20 @@ struct AddEventSheetView: View {
                                     ScheduleTrainerController.shared.addEvent(event: newEvent, startDate: startDate)
                                     isPresented = false
                                 }))
+                            Spacer()
+                            
+                            Button("Annuler") {}
+                                .buttonStyle(RoundedButtonStyle(width: 150, height: 50,color: .red.opacity(0.8), hoveringColor: .red, action: {
+                                    isPresented = false
+                                }))
                             
                             Spacer()
                         }
                         .frame(alignment: .center)
-                        .padding(.top, 75)
                         .padding()
                         .background(Color.clear)
                     }
+                    .padding(.top, 20)
                     .frame(alignment: .center)
                     .background(Color.clear)
                 }

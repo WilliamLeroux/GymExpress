@@ -12,6 +12,10 @@ struct AddClientSheet: View {
     @ObservedObject var controller: ClientConsultationController
     @State var selectedMembershipGrade: MembershipGrade
     var dbManager: DatabaseManager = DatabaseManager.shared
+    @FocusState private var isTypingPrenom: Bool
+    @FocusState private var isTypingNom: Bool
+    @FocusState private var isTypingEmail: Bool
+    @FocusState private var isTypingPwd: Bool
     
     @State private var name: String = ""
     @State private var lastName: String = ""
@@ -21,23 +25,18 @@ struct AddClientSheet: View {
     var body: some View {
         VStack {
             Text("Page d'ajouts de clients")
-                .font(.title)
+                .font(.title.bold())
                 .padding()
 
-            TextField("Prénom", text: $name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            TextField("Nom", text: $lastName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            TextField("Email", text: $email)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            SecureField("Mot de passe", text: $password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            Picker("Abonnement", selection: $selectedMembershipGrade) {
-                ForEach(MembershipGrade.allCases, id: \.self) { grade in
-                    Text(grade.rawValue).tag(grade)
-                }
-            }
-            .pickerStyle(MenuPickerStyle())
+            TextFieldStyle(title: "Prénom", text: $name, width: 500, isTyping: $isTypingPrenom)
+            
+            TextFieldStyle(title: "Nom", text: $lastName, width: 500, isTyping: $isTypingNom)
+            
+            TextFieldStyle(title: "Email", text: $email, width: 500, isTyping: $isTypingEmail)
+            
+            SecureFieldStyle(title: "Mot de passe", text: $password, width: 500, isTyping: $isTypingPwd)
+            
+            CustomPickerStyle( title: "Abonnement", selection: $selectedMembershipGrade, options: MembershipGrade.allCases, width: 500)
             
             // TODO: Faire les vérifications du formulaire
             
@@ -53,7 +52,7 @@ struct AddClientSheet: View {
                     }))
                 
                 Button("Annuler") {}
-                    .buttonStyle(RoundedButtonStyle(width: 150, height: 50, color: .white, hoveringColor: .main, borderColor: .mainHover, borderWidth: 1, action: {
+                    .buttonStyle(RoundedButtonStyle(width: 150, height: 50, color: .red.opacity(0.8), hoveringColor: .red, borderWidth: 1, action: {
                         presentationMode.wrappedValue.dismiss()
                     }))
             }
