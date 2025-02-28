@@ -17,6 +17,7 @@ class LoginController: ObservableObject {
     @Published var password: String = "" /// Mot de passe de l'utilisateur entré
     @Published var showErrorMessage: Bool = false /// Message d'erreur à afficher
     @Published var currentUser: UserModel? = nil /// Utilisateur actuel
+    @Published var isRememberMe: Bool = false /// Pour se souvenir de moi
     
     private init() {
         guard let data = UserDefaults.standard.data(forKey: "user") else {
@@ -25,9 +26,8 @@ class LoginController: ObservableObject {
             let decoder = JSONDecoder()
             let user = try decoder.decode(UserModel.self, from: data)
             self.currentUser = user
-            print(currentUser!)
+            print("Utilisateur connecté : \(currentUser!)")
         } catch {
-            // Fallback
         }
     }
     
@@ -50,7 +50,20 @@ class LoginController: ObservableObject {
             UserDefaults.standard.set(user, forKey: "user")
             print("Succès")
         } catch {
-
+            
         }
+    }
+    
+    /// Supprimer les informations dans UserDefault
+    func deleteLoginInfos() {
+        UserDefaults.standard.removeObject(forKey: "user")
+        print("Delete success")
+    }
+    /// Déconnecter l'utilisateur actuel
+    func logout() {
+        self.deleteLoginInfos()
+        self.currentUser = nil
+        self.email = ""
+        self.password = ""
     }
 }

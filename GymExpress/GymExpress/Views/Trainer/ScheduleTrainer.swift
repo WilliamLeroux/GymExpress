@@ -117,8 +117,8 @@ struct ScheduleTrainer: View {
             .sheet(isPresented: $showEventDetailSheet) {
                 if let selectedEvent = selectedEvent {
                     EventDetailView(isPresented: $showEventDetailSheet, event: selectedEvent)
-                        .presentationDetents([.medium, .large]) // Permet de choisir entre moyen et plein écran
-                        .presentationDragIndicator(.visible) // Ajoute un indicateur pour redimensionner
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
                         .interactiveDismissDisabled(true)
                 }
             }

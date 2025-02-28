@@ -14,6 +14,7 @@ struct LoginView: View {
     @State private var isHover = false /// Vérifie si la souris survol le bouton de connexion
     @State private var isNavigating = false /// Active la navigation si les champs sont valides
     @State private var errorMessage = "" /// Message d'erreur à afficher
+    @State private var autoLogin = false /// Pour se connecter automatiquement si l'utilisateur à sélectionné se souvenir de moi
     
     @FocusState private var isTypingEmail: Bool /// Vérifie si l'utilisateur est dans le textfield email
     @FocusState private var isTypingPassword: Bool /// Vérifie si l'utilisateur est dans le textfield password
@@ -64,11 +65,18 @@ struct LoginView: View {
                                     ) {
                                         Button(action: {
                                             if viewModel.authenticateUser() {
-                                                errorMessage = ""
-                                                isNavigating = true
+                                                if viewModel.currentUser != nil {
+                                                    isNavigating = true
+                                                }
+        
                                                 if self.isRememberMe {
                                                     viewModel.saveLoginInfos()
+                                                } else {
+                                                    viewModel.deleteLoginInfos()
                                                 }
+                                                errorMessage = ""
+                                                
+                                                
                                             }else {
                                                 errorMessage = "Informations invalides"
                                             }
@@ -121,6 +129,11 @@ struct LoginView: View {
                     Footer(isLoginPage: true)
                 }
                 .edgesIgnoringSafeArea(.top)
+            }
+        }
+        .onAppear {
+            if viewModel.currentUser != nil {
+                isNavigating = true
             }
         }
     }
