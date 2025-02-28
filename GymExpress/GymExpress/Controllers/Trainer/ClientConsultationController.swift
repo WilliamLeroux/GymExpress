@@ -115,7 +115,6 @@ class ClientConsultationController: ObservableObject {
         return result
     }
 
-    
     func getAvailableTimeSlots(for date: Date) -> [String] {
         return [
             "06:00 - 07:00",
