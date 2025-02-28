@@ -12,6 +12,7 @@ struct DashboardClientView: View {
     @State var freqList: [Bool] = [false, true, true, false, false, true, false] /// À changer, liste de fréquence
     @State var hasWorkout: Bool = true /// À changer, booléen signifiant qu'il a un entraînement aujourd'hui
     @State var workout: [String] = ["a", "b", "c", "d", "e", "f", "g"] /// À changer, entraînement
+    @ObservedObject var controller = ClientDashboardController.shared
     
     var body: some View {
         NavigationStack {
@@ -84,12 +85,12 @@ extension DashboardClientView {
                 ForEach(0..<7) { day in
                     HStack {
                         GroupBox(label:
-                                    Text("Day")
-                                .font(.caption)
+                                    Text("\(controller.calendar.weekdaySymbols[day])")
                                 .fontWeight(.semibold)
+                                .font(.system(size: 9))
                         ) {
                             HStack(spacing: 0) {
-                                if freqList[day] {
+                                if controller.frequence[day] {
                                     Label("", systemImage: "checkmark")
                                         .labelStyle(.iconOnly)
                                         .font(.system(size: 25, weight: .bold))

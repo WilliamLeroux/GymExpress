@@ -72,4 +72,19 @@ class WorkoutFrequenceController: ObservableObject {
         currentDate = calendar.date(byAdding: .month, value: -1, to: currentDate)!
         loadData()
     }
+    
+    func getWeek(weekNumber: Int) -> [Bool]{
+        var tempFreq : [Bool] = []
+        for i in 0..<7 {
+            tempFreq.append(false)
+        }
+        frequences.forEach { (freq) in
+            if freq.date != nil {
+                if calendar.component(.weekOfYear, from: freq.date!) == weekNumber {
+                    tempFreq[calendar.component(.weekday, from: freq.date!) - 1] = true
+                }
+            }
+        }
+        return tempFreq
+    }
 }
