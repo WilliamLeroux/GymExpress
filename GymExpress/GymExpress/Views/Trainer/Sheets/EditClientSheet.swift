@@ -16,6 +16,9 @@ struct EditClientSheet: View {
     @State private var lastName: String
     @State private var email: String
     @State private var selectedMembershipGrade: MembershipGrade
+    @FocusState private var isTypingName: Bool
+    @FocusState private var isTypingLastName: Bool
+    @FocusState private var isTypingEmail: Bool
     
     init(controller: ClientConsultationController, user: UserModel) {
         self.controller = controller
@@ -28,32 +31,65 @@ struct EditClientSheet: View {
     
     var body: some View {
         Form {
-            Section(header: Text("Informations générales")) {
-                TextField("Prénom", text: $name)
-                TextField("Nom", text: $lastName)
-                TextField("Email", text: $email)
+            Section(header: Text("Informations générales").font(.title.bold())) {
                 
-                Picker("Abonnement", selection: $selectedMembershipGrade) {
-                    ForEach(MembershipGrade.allCases, id: \.self) { grade in
-                        Text(grade.rawValue).tag(grade)
-                    }
+                HStack {
+                    Text("Prénom : ")
+                    TextFieldStyle(title: "", text: $name, isTyping: $isTypingName)
                 }
-                .pickerStyle(MenuPickerStyle())
+                .padding(.leading, 20)
+                .padding()
+                
+                HStack {
+                    Text("Nom : ")
+                    TextFieldStyle(title: "", text: $lastName, isTyping: $isTypingLastName)
+                }
+                .padding(.leading, 20)
+                .padding()
+                
+                HStack {
+                    Text("Email : ")
+                    TextFieldStyle(title: "", text: $email, isTyping: $isTypingEmail)
+                }
+                .padding(.leading, 20)
+                .padding()
+                
+                HStack {
+                    Text("Abonnement : ")
+                    CustomPickerStyle( title: "", selection: $selectedMembershipGrade, options: MembershipGrade.allCases, defaultSelection: user.membership?.grade )
+                }
+                .padding(.leading, 20)
+                .padding()
+
             }
+            .frame(alignment: .center)
         }
         
-        Button("Sauvegarder") {}.buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
-            var updatedUser = user
-            updatedUser.name = name
-            updatedUser.lastName = lastName
-            updatedUser.email = email
-            updatedUser.membership = MembershipData(
-                grade: selectedMembershipGrade,
-                count: user.membership?.count ?? 0
-            )
+        HStack {
+            Spacer()
             
-            controller.updateUser(updatedUser)
-            dismiss()
-        }))
+            Button("Sauvegarder") {}.buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
+                var updatedUser = user
+                updatedUser.name = name
+                updatedUser.lastName = lastName
+                updatedUser.email = email
+                updatedUser.membership = MembershipData(
+                    grade: selectedMembershipGrade,
+                    count: user.membership?.count ?? 0
+                )
+                
+                controller.updateUser(updatedUser)
+                dismiss()
+            }))
+            
+            Spacer()
+            
+            Button("Annuler") {}
+                .buttonStyle(RoundedButtonStyle(width: 150, height: 50, color: .red.opacity(0.8), hoveringColor: .red ,action: { dismiss() }))
+            
+            Spacer()
+        }
+        .padding(.top, 40)
+        .frame(maxWidth: .infinity, alignment: .bottom)
     }
 }

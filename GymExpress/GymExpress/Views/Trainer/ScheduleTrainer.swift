@@ -79,7 +79,7 @@ struct ScheduleTrainer: View {
                             .sheet(isPresented: $showAddEventSheet) {
                                 AddEventSheetView(isPresented: $showAddEventSheet, dateDay: selectedDay!)
                                     .frame(height: 400)
-                                    .presentationDetents([.height(400)])
+                                    .presentationDetents([.height(600)])
                                     .interactiveDismissDisabled(true)
                                     .onDisappear {
                                         selectedDay = nil
@@ -163,7 +163,11 @@ struct ScheduleTrainer: View {
         .offset(x: 30, y: offset + 74)
         .onTapGesture {
             selectedEvent = event
-            showEventDetailSheet = true
+        }
+        .onChange(of: selectedEvent) {
+            if (selectedEvent != nil){
+                showEventDetailSheet = true
+            }
         }
     }
 }
@@ -200,7 +204,7 @@ struct EventDetailView: View {
             
             HStack {
                 Button("Supprimer l'événement", role: .destructive) {}
-                    .buttonStyle(RoundedButtonStyle(width: 125, height: 50, action: {
+                    .buttonStyle(RoundedButtonStyle(width: 175, height: 50,color: .red.opacity(0.8), hoveringColor: .red, action: {
                         controller.deleteEvent(event: event,
                             onFailure: { DispatchQueue.main.async { showDeletionError = true } },
                             onSuccess: { DispatchQueue.main.async { deletionSucceeded = true } }
@@ -213,7 +217,7 @@ struct EventDetailView: View {
                 }
                 
                 Button("Fermer") {}
-                .buttonStyle(RoundedButtonStyle(width: 125, height: 50, action: {
+                .buttonStyle(RoundedButtonStyle(width: 100, height: 50, action: {
                     isPresented = false
                 }))
             }
