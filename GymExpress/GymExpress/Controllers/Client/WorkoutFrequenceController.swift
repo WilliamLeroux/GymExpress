@@ -17,6 +17,7 @@ class WorkoutFrequenceController: ObservableObject {
     private let notificationCenter = NotificationCenter.default
     @Published var currentDate: Date = Date()
     @Published var month: [Day] = []
+    @Published var highestCount: Int = 4
     
     private init() {
         currentMonth = calendar.component(.month, from: Date(timeIntervalSinceNow: 0))
@@ -42,6 +43,16 @@ class WorkoutFrequenceController: ObservableObject {
                 }
             }
         }
+        setHighestCount()
+    }
+    
+    private func setHighestCount() {
+        highestCount = 4
+        month.forEach { (day) in
+            if day.count > highestCount {
+                highestCount = day.count
+            }
+        }
     }
     
     func addPresence(date: Date) {
@@ -50,6 +61,7 @@ class WorkoutFrequenceController: ObservableObject {
         if success {
             frequences.append(freq)
             loadData()
+            setHighestCount()
             notificationCenter.post(name: NSNotification.Name("newFrequence"), object: frequences)
         }
     }

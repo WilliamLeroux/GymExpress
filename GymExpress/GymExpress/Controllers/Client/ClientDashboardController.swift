@@ -8,12 +8,12 @@
 import SwiftUI
 
 class ClientDashboardController: ObservableObject {
-    static let shared = ClientDashboardController()
-    private let frequenceController = WorkoutFrequenceController.shared
-    var calendar : Calendar
-    private let currentDate = Date()
-    private let notificationCenter = NotificationCenter.default
-    @Published var frequence: [Bool] = []
+    static let shared = ClientDashboardController() /// Singleton
+    private let frequenceController = WorkoutFrequenceController.shared /// Frequence controller
+    var calendar : Calendar /// Calendrier
+    private let currentDate = Date() /// Date actuelle
+    private let notificationCenter = NotificationCenter.default /// Notification
+    @Published var frequence: [Bool] = [] /// Tableau de fréquence
     
     private init() {
         calendar = Calendar.current

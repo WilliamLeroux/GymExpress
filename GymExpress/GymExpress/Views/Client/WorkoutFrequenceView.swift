@@ -20,7 +20,11 @@ struct WorkoutFrequenceView: View {
             GroupBox(label:
                         HStack{
                 Text("\(controller.currentDate.formatted(.dateTime.locale(Locale(identifier: "fr_CA")).month(.wide).year()))")
-                Button(action: {controller.decreaseMonth()}) {
+                Button(action: {
+                    withAnimation(.easeIn){
+                        controller.decreaseMonth()
+                    }
+                }) {
                     Image(systemName: "arrow.backward.circle.fill")
                         .foregroundStyle(.main)
                 }
@@ -33,7 +37,11 @@ struct WorkoutFrequenceView: View {
                     }
                 }
                 
-                Button(action: {controller.increaseMonth()}) {
+                Button(action: {
+                    withAnimation(.easeIn){
+                        controller.increaseMonth()
+                    }
+                }) {
                     Image(systemName: "arrow.forward.circle.fill")
                         .foregroundStyle(.main)
                 }
@@ -123,7 +131,7 @@ struct WorkoutFrequenceView: View {
                                 y: .value("Count", controller.month[day].count))
                     }
                 }
-                .chartYScale(domain: 0...5)
+                .chartYScale(domain: 0...controller.highestCount)
             }
             .groupBoxStyle(WorkoutBoxStyle())
             .padding()
