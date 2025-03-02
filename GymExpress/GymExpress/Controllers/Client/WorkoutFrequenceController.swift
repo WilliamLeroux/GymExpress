@@ -8,16 +8,16 @@
 import SwiftUI
 
 class WorkoutFrequenceController: ObservableObject {
-    static let shared = WorkoutFrequenceController()
-    private let dbManager = DatabaseManager.shared
-    private let calendar = Calendar.current
-    private var frequences: [FrequenceModel] = []
-    private var currentMonth: Int
-    private var currentYear: Int
-    private let notificationCenter = NotificationCenter.default
-    @Published var currentDate: Date = Date()
-    @Published var month: [Day] = []
-    @Published var highestCount: Int = 4
+    static let shared = WorkoutFrequenceController() /// Singleton
+    private let dbManager = DatabaseManager.shared /// Database
+    private let calendar = Calendar.current /// Calendrier
+    private var frequences: [FrequenceModel] = [] /// Tableau de toute les fréquences
+    private var currentMonth: Int /// Mois actuel
+    private var currentYear: Int /// Année actuel
+    private let notificationCenter = NotificationCenter.default /// Notification
+    @Published var currentDate: Date = Date() /// Date actuelle
+    @Published var month: [Day] = [] /// Tableau représentant un mois
+    @Published var highestCount: Int = 4 /// Plus haut count
     
     private init() {
         currentMonth = calendar.component(.month, from: Date(timeIntervalSinceNow: 0))
@@ -27,11 +27,13 @@ class WorkoutFrequenceController: ObservableObject {
         loadData()
     }
     
+    /// Charge les données initiales
     private func loadInitialData() {
         frequences = dbManager.fetchDatas(request: Request.select(table: DbTable.frequence, columns: ["id", "user_id", "date"], condition: "WHERE user_id = ?"), params: [LoginController.shared.currentUser?.id ?? -1]) ?? []
         notificationCenter.post(name: NSNotification.Name("newFrequence"), object: frequences)
     }
     
+    /// Charge les données selon un mois
     private func loadData() {
         for i in 0..<month.count {
             month[i].count = 0
@@ -46,6 +48,7 @@ class WorkoutFrequenceController: ObservableObject {
         setHighestCount()
     }
     
+    /// Met à jour le plus haut count
     private func setHighestCount() {
         highestCount = 4
         month.forEach { (day) in
@@ -55,6 +58,8 @@ class WorkoutFrequenceController: ObservableObject {
         }
     }
     
+    /// Ajoute une présence
+    /// - Parameter date: Date de la présence
     func addPresence(date: Date) {
         let freq = FrequenceModel(userId: LoginController.shared.currentUser?.id ?? -1, date: date, presence: true)
         let success = dbManager.insertData(request: Request.createFrequence, params: freq)
@@ -66,6 +71,7 @@ class WorkoutFrequenceController: ObservableObject {
         }
     }
     
+    /// Mois suivant
     func increaseMonth() {
         if currentMonth == 12 {
             currentMonth = 1
@@ -77,6 +83,7 @@ class WorkoutFrequenceController: ObservableObject {
         loadData()
     }
     
+    /// Mois précédent
     func decreaseMonth() {
         if currentMonth == 1 {
             currentMonth = 12
@@ -88,6 +95,9 @@ class WorkoutFrequenceController: ObservableObject {
         loadData()
     }
     
+    /// Retourne la présence pour une semaine
+    /// - Parameter weekNumber: Numéro de la semaine dans une année
+    /// - Returns: Tableau de bool représentant la présence
     func getWeek(weekNumber: Int) -> [Bool]{
         var tempFreq : [Bool] = []
         for _ in 0..<7 {

@@ -23,10 +23,13 @@ class ClientDashboardController: ObservableObject {
         notificationCenter.addObserver(forName: Notification.Name("newFrequence"), object: nil, queue: nil, using: reload(_:))
     }
     
+    /// Charge les données intiales
     private func loadInitialFrequence() {
         frequence = frequenceController.getWeek(weekNumber: calendar.component(.weekOfYear, from: currentDate))
     }
     
+    /// Recharge les données après qu'une notification soit reçu
+    /// - Parameter notification: Notification reçu
     @objc func reload(_ notification: Notification) {
         let frequences = notification.object as! [FrequenceModel]
         frequence.removeAll(keepingCapacity: false)
