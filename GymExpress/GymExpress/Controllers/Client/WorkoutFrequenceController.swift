@@ -14,6 +14,7 @@ class WorkoutFrequenceController: ObservableObject {
     private var frequences: [FrequenceModel] = []
     private var currentMonth: Int
     private var currentYear: Int
+    private let notificationCenter = NotificationCenter.default
     @Published var currentDate: Date = Date()
     @Published var month: [Day] = []
     
@@ -27,6 +28,7 @@ class WorkoutFrequenceController: ObservableObject {
     
     private func loadInitialData() {
         frequences = dbManager.fetchDatas(request: Request.select(table: DbTable.frequence, columns: ["id", "user_id", "date"], condition: "WHERE user_id = ?"), params: [LoginController.shared.currentUser?.id ?? -1]) ?? []
+        notificationCenter.post(name: NSNotification.Name("newFrequence"), object: frequences)
     }
     
     private func loadData() {
@@ -48,6 +50,7 @@ class WorkoutFrequenceController: ObservableObject {
         if success {
             frequences.append(freq)
             loadData()
+            notificationCenter.post(name: NSNotification.Name("newFrequence"), object: frequences)
         }
     }
     
@@ -75,7 +78,7 @@ class WorkoutFrequenceController: ObservableObject {
     
     func getWeek(weekNumber: Int) -> [Bool]{
         var tempFreq : [Bool] = []
-        for i in 0..<7 {
+        for _ in 0..<7 {
             tempFreq.append(false)
         }
         frequences.forEach { (freq) in
