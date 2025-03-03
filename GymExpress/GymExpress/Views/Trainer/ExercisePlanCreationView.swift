@@ -41,8 +41,8 @@ struct ExercisePlanCreationView: View {
                                                 exercisePlanController.selectedExercise = exercise.exerciceId
                                             }) {
                                                 HStack {
-                                                    Image(systemName: exercisePlanController.selectedExercise == exercise.name ? "checkmark.circle.fill" : "circle")
-                                                        .foregroundColor(exercisePlanController.selectedExercise == exercise.name ? .blue : .gray)
+                                                    Image(systemName: exercisePlanController.selectedExercise == exercise.exerciceId ? "checkmark.circle.fill" : "circle")
+                                                        .foregroundColor(exercisePlanController.selectedExercise == exercise.exerciceId ? .main : .gray)
                                                     Text(exercise.name)
                                                         .font(.title2)
                                                 }

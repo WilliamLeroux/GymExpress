@@ -56,13 +56,15 @@ class TrainerPlanningController: ObservableObject {
     /// Ajouter un entraînement pour un client
     func addWorkout(for client: UserModel, exercises: [ExerciseModel], day: Int) {
         let newWorkout = WorkoutModel(
-            name: "Full Body",
+            clientId: client.id,
+            name: "\(client.id)-\(day)",
             exerciceList: exercises,
             day: day
         )
+        print(newWorkout)
         workouts.append(newWorkout)
     }
-
+    
     /// Supprimer un entraînement
     func deleteWorkout(_ workout: WorkoutModel) {
         workouts.removeAll { $0.id == workout.id }

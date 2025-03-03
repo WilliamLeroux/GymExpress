@@ -211,6 +211,7 @@ struct DayColumn: View {
             exercises: exercises,
             day: dayIndex
         )
+        
         showExercisePlan.toggle()
     }
     
