@@ -108,8 +108,21 @@ class ClientConsultationController: ObservableObject {
         }
         
     }
-
     
+    func validateFields(name: String, lastName: String, email: String, password: String) -> Bool {
+        guard !name.isEmpty else { return false }
+        guard !lastName.isEmpty else { return false }
+        guard !email.isEmpty, isValidEmail(email) else { return false }
+        guard !password.isEmpty, password.count >= 6 else { return false }
+        
+        return true
+    }
+
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = #"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
+    }
+
     func getAppointments(for userId: Int) -> [AppointmentModel] {
         let result = appointments.filter { $0.clientId == userId }
         return result
