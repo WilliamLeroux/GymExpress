@@ -19,6 +19,7 @@ struct AddEventSheetView: View {
 
     @State private var eventTitle = "" /// Titre de l'événement saisi par l'utilisateur
     @FocusState private var isTypingEventTitle: Bool
+    @State private var showAlert = false
 
     let minTime = Calendar.current.date(bySettingHour: 6, minute: 0, second: 0, of: Date())! /// Heure minimale autorisée pour le début de l'événement (06:00)
     let maxTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())! /// Heure maximale autorisée pour la fin de l'événement (22:00)
@@ -73,6 +74,11 @@ struct AddEventSheetView: View {
                             
                             Button("Ajouter") {}
                                 .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
+                                    guard !eventTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                                        showAlert = true
+                                        return
+                                    }
+                                    
                                     let calendar = Calendar.current
                                     
                                     let components = calendar.dateComponents([.year, .month, .day], from: dateDay)
@@ -80,16 +86,16 @@ struct AddEventSheetView: View {
                                     var startComponents = components
                                     startComponents.hour = calendar.component(.hour, from: startTime)
                                     startComponents.minute = calendar.component(.minute, from: startTime)
-                                    
+
                                     var endComponents = components
                                     endComponents.hour = calendar.component(.hour, from: endTime)
                                     endComponents.minute = calendar.component(.minute, from: endTime)
-                                    
+
                                     guard let startDate = calendar.date(from: startComponents),
                                           let endDate = calendar.date(from: endComponents) else {
                                         return
                                     }
-                                    
+
                                     let newEvent = CalendarEvent(
                                         startDate: startDate,
                                         endDate: endDate,
@@ -99,6 +105,12 @@ struct AddEventSheetView: View {
                                     ScheduleTrainerController.shared.addEvent(event: newEvent, startDate: startDate)
                                     isPresented = false
                                 }))
+                                .alert("Erreur", isPresented: $showAlert) {
+                                    Button("OK", role: .cancel) {}
+                                } message: {
+                                    Text("Veuillez remplir tous les champs.")
+                                }
+
                             Spacer()
                             
                             Button("Annuler") {}
