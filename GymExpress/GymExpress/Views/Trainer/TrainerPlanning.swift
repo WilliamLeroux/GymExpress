@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct TrainingPlaningView: View {
     @ObservedObject var controller = TrainerPlanningController.shared
     @ObservedObject var exercisePlanController = ExercisePlanController.shared
