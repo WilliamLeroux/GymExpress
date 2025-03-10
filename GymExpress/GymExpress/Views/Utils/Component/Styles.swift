@@ -137,7 +137,7 @@ struct CustomPickerStyle<T: Hashable>: View {
     var colorBackground: Color /// Couleur de fond du Picker
     var colorStroke: Color /// Couleur de la bordure du Picker
     var defaultSelection: T? /// Valeur par défaut sélectionnée, si fournie
-
+    
     /// - Parameters:
     ///   - title: Titre affiché du Picker
     ///   - selection: Binding de l'option sélectionnée
@@ -154,7 +154,7 @@ struct CustomPickerStyle<T: Hashable>: View {
         self.colorBackground = colorBackground
         self.colorStroke = colorStroke
         self.defaultSelection = defaultSelection
-        if let defaultSelection = defaultSelection, selection.wrappedValue == nil {
+        if let defaultSelection = defaultSelection, !options.contains(where: { $0 == selection.wrappedValue }) {
             self._selection.wrappedValue = defaultSelection
         }
     }
@@ -263,7 +263,7 @@ struct TextFieldNumberStyle: View {
     var colorBackground: Color /// Couleur de fond du champ de texte.
     var colorStroke: Color /// Couleur de la bordure du champ de texte.
     var isTyping: Focus /// Indique si le champ est actuellement en édition.
-
+    
     init(title: String, text: Binding<String>, width: CGFloat = 350, colorBackground: Color = Color.white, colorStroke: Color = Color.main, isTyping: Focus) {
         self.title = title
         self._text = text
@@ -319,7 +319,7 @@ struct ConfirmationSheet: View {
                 Button(action: {}){
                     Text("Retour")
                 }
-                .buttonStyle(RoundedButtonStyle(width: 75, height: 40, color: Color.main, hoveringColor: Color.green, action: {
+                .buttonStyle(RoundedButtonStyle(width: 75, height: 40, color: Color.main, hoveringColor: Color.mainHover, action: {
                     cancelAction()
                 }))
                 

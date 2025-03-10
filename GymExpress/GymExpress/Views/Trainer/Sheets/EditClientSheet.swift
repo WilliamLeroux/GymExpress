@@ -61,7 +61,7 @@ struct EditClientSheet: View {
                 }
                 .padding(.leading, 20)
                 .padding()
-
+                
             }
             .frame(alignment: .center)
         }

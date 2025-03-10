@@ -87,7 +87,7 @@ class DashBoardTrainerController: ObservableObject {
                     return (id, "\(client[2]) \(client[1])")
                 })
                 
-                self.createAppointmentsWithClientInfo()
+                _ = self.createAppointmentsWithClientInfo()
             }
         } else {
             print("ERREUR: Pas de clients trouvés")

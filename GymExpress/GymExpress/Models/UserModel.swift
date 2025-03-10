@@ -64,9 +64,9 @@ struct UserModel: SQLConvertable, InitializableFromSQLITE, Identifiable, Codable
             case 8:
                 self.salary = Double(sqlite3_column_double(pointer, i))
             default:
-                #if DEBUG
-                    print("Unknown column, \(columnIndex)")
-                #endif
+#if DEBUG
+                print("Unknown column, \(columnIndex)")
+#endif
             }
         }
         

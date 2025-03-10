@@ -31,25 +31,25 @@ struct WebView: NSViewRepresentable {
         
         return webView
     }
-
+    
     func updateNSView(_ webView: WKWebView, context: Context) {
     }
     
     func makeCoordinator() -> Coordinator {
-            return Coordinator(onTap: onTap)
+        return Coordinator(onTap: onTap)
+    }
+    
+    class Coordinator: NSObject {
+        let onTap: () -> Void
+        
+        init(onTap: @escaping () -> Void) {
+            self.onTap = onTap
         }
-
-        class Coordinator: NSObject {
-            let onTap: () -> Void
-            
-            init(onTap: @escaping () -> Void) {
-                self.onTap = onTap
-            }
-            
-            @objc func handleTap(_ gesture: NSGestureRecognizer) {
-                onTap()
-            }
+        
+        @objc func handleTap(_ gesture: NSGestureRecognizer) {
+            onTap()
         }
+    }
 }
 
 struct TrainingPlanView: View {
@@ -69,14 +69,14 @@ struct TrainingPlanView: View {
                                     WebView(url: URL(string: "https://cdn-exercisedb.vercel.app/api/v1/images/guT8YnS.gif")!) {
                                         selectedWorkout = exercice
                                     }
-                                        .scaledToFill()
-                                        .frame(width: 90, height: 90)
-                                        .cornerRadius(15)
-                                        .onChange(of: selectedWorkout) {
-                                            if selectedWorkout != "" {
-                                                isShowingSheet.toggle()
-                                            }
+                                    .scaledToFill()
+                                    .frame(width: 90, height: 90)
+                                    .cornerRadius(15)
+                                    .onChange(of: selectedWorkout) {
+                                        if selectedWorkout != "" {
+                                            isShowingSheet.toggle()
                                         }
+                                    }
                                 }
                             }
                         }

@@ -41,7 +41,7 @@ struct ObjectiveData: Identifiable, Equatable, Hashable, InitializableFromSQLITE
                 if let dateString = sqlite3_column_text(pointer, i) {
                     
                     let dateStr = String(cString: dateString)
-                   
+                    
                     self.date = DateUtils.shared.formatter.date(from: dateStr)!
                 } else {
                     self.date = nil

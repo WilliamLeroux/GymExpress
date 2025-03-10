@@ -25,7 +25,7 @@ struct SubscriptionEditView: View {
                         }) {
                             Image(systemName: "pencil")
                                 .foregroundColor(getMemberShipColor(membershipGrade: membership))
-                                .font(.system(size: 24, weight: .bold)) 
+                                .font(.system(size: 24, weight: .bold))
                         }
                     }
                     .padding(.horizontal)
@@ -60,13 +60,13 @@ struct SubscriptionEditView: View {
 struct MembershipEditView: View {
     @Environment(\.dismiss) var dismiss
     let membership: MembershipGrade
-
+    
     var body: some View {
         VStack {
             Text("Modifier l'abonnement : \(membership.rawValue)")
                 .font(.title)
                 .padding()
-
+            
             Button("Fermer") {
                 dismiss()
             }

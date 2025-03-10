@@ -22,7 +22,7 @@ struct Request {
     
     // MARK: INSERT
     
-    /// Crée un utilisateur 
+    /// Crée un utilisateur
     static let createUser: String = "INSERT INTO users (name, last_name, email, password, user_type, membership, salary) VALUES (?, ?, ?, ?, ?, ?, ?);"
     
     /// Crée une présence

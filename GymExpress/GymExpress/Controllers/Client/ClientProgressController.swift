@@ -87,5 +87,5 @@ class ClientProgressController: ObservableObject {
         
         return true
     }
-        
+    
 }

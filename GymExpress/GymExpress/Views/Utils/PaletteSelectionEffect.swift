@@ -10,7 +10,7 @@ import SwiftUI
 
 struct PaletteSelectionEffect: ViewModifier {
     var isSelected: Bool
-
+    
     func body(content: Content) -> some View {
         content
             .background(isSelected ? Color.main : Color.white)

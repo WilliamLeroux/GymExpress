@@ -51,7 +51,7 @@ class ExercisePlanController: ObservableObject {
                 }
                 waiter.signal()
             }
-           
+            
             waiter.wait()
             tempExercises.forEach {
                 if exercisesByType[bodyPart.rawValue] == nil {
@@ -75,7 +75,7 @@ class ExercisePlanController: ObservableObject {
             }
         }
     }
-
+    
     // Convertit les exercices temporaires en ExerciseModel
     func getExerciseModels() -> [ExerciseModel] {
         return addedExercises.map { exercise in
@@ -94,11 +94,11 @@ class ExercisePlanController: ObservableObject {
     
     private func getExerciseTypeInt(_ type: String) -> Int {
         switch type {
-            case "Musculation": return 1
-            case "Cardio": return 2
-            case "Étirement": return 3
-            case "Corps-poids": return 4
-            default: return 1
+        case "Musculation": return 1
+        case "Cardio": return 2
+        case "Étirement": return 3
+        case "Corps-poids": return 4
+        default: return 1
         }
     }
     
@@ -110,7 +110,7 @@ class ExercisePlanController: ObservableObject {
         guard let exerciseToAdd = selectedExerciseModel else {
             return
         }
-                
+        
         var newExercise = ExerciseModel(
             exerciceId: exerciseToAdd.exerciceId,
             name: exerciseToAdd.name,

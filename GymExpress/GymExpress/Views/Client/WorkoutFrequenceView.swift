@@ -90,7 +90,7 @@ struct WorkoutFrequenceView: View {
                             }
                         }
                         .frame(width: 400, height: 200)
-                        .background(Color.gray.opacity(0.3))
+                        .background(Color.white)
                         .cornerRadius(15)
                         
                         HStack {
@@ -100,7 +100,8 @@ struct WorkoutFrequenceView: View {
                             .buttonStyle(RoundedButtonStyle(
                                 width: 75,
                                 height: 45,
-                                color: Color.main,
+                                color: .red.opacity(0.8),
+                                hoveringColor: .red,
                                 action: {
                                     isShowingSheet.toggle()
                                 }))

@@ -27,7 +27,7 @@ struct EditEmployeSheet: View {
                 text: Binding(
                     get: { employe.salary },
                     set: { newValue in
-                            employe.salary = newValue
+                        employe.salary = newValue
                     }
                 ),
                 isTyping: $isTypingSalary

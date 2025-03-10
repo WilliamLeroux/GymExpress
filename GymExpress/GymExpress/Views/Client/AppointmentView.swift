@@ -112,6 +112,8 @@ struct AppointmentView: View {
                         .buttonStyle(RoundedButtonStyle(
                             width: 85,
                             height: 40,
+                            color: .red.opacity(0.8),
+                            hoveringColor: .red,
                             action: {
                                 controller.selectedEditIndex = -1
                                 editAlert.toggle()

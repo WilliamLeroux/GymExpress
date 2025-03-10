@@ -18,7 +18,7 @@ struct Objective: Identifiable, Equatable, Hashable, InitializableFromSQLITE, SQ
     var maxValue: Int = 0 /// Valeur maximum
     var startDate: Date = Date() /// Date de début
     var endDate: Date = Date() /// Date de fin
-
+    
     init(objective: String, initValue: Int, valueList: [ObjectiveData], maxValue: Int, yearStart: Int, monthStart: Int, dayStart: Int, yearEnd: Int, monthEnd: Int, dayEnd: Int) {
         let calendar = Calendar.autoupdatingCurrent
         self.startDate = calendar.date(from: DateComponents(year: yearStart, month: monthStart, day: dayStart))!

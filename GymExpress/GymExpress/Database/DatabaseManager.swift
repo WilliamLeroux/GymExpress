@@ -160,15 +160,15 @@ class DatabaseManager{
                 index = 0
             }
         }
-
+        
         sqlite3_finalize(pointer)
         
         return result.isEmpty ? nil : result
     }
-
-
     
-    /// Exécute les requête INSERT 
+    
+    
+    /// Exécute les requête INSERT
     /// - Parameters:
     ///   - request: Chaine comprennant la requête
     ///   - params: Paramètre pour la requête, vide si aucun paramètre est nécessaire

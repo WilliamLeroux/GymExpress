@@ -35,11 +35,11 @@ struct AppointmentsSheet: View {
             }
             
             Button("Fermer") {}
-            .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
-                presentationMode.wrappedValue.dismiss()
-            }))
-            .padding()
-            .frame(alignment: .bottom)
+                .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
+                    presentationMode.wrappedValue.dismiss()
+                }))
+                .padding()
+                .frame(alignment: .bottom)
         }
         .frame(minWidth: 300, minHeight: 300)
         .padding()

@@ -14,7 +14,7 @@ class Utils {
     func getNavOptions(userType: UserType) -> [String] {
         var tempList: [String] = []
         switch userType {
-            case .trainer:
+        case .trainer:
             for item in NavigationItemTrainer.allCases {
                 tempList.append(item.rawValue)
             }

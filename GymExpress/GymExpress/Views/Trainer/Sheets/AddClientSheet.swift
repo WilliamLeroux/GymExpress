@@ -29,7 +29,7 @@ struct AddClientSheet: View {
             Text("Page d'ajouts de clients")
                 .font(.title.bold())
                 .padding()
-
+            
             TextFieldStyle(title: "Prénom", text: $name, width: 500, isTyping: $isTypingPrenom)
             
             TextFieldStyle(title: "Nom", text: $lastName, width: 500, isTyping: $isTypingNom)
@@ -39,7 +39,7 @@ struct AddClientSheet: View {
             SecureFieldStyle(title: "Mot de passe", text: $password, width: 500, isTyping: $isTypingPwd)
             
             CustomPickerStyle( title: "Abonnement", selection: $selectedMembershipGrade, options: MembershipGrade.allCases, width: 500)
-                        
+            
             HStack {
                 Button("Enregistrer") {}
                     .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {

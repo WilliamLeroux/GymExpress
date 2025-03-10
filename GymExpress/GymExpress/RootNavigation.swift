@@ -11,7 +11,7 @@ struct RootNavigation: View {
     @State private var hoveredItem: String? = nil /// Item survolé
     @ObservedObject private var controller = NavigationController.shared /// Controlleur de navigation
     @ObservedObject var loginController = LoginController.shared
-
+    
     private var navOption: [String] = [] /// Liste des options
     
     /// - Parameter userType: Type d'utilisateur
@@ -57,7 +57,7 @@ struct RootNavigation: View {
                 }
                 .toolbar(removing: .sidebarToggle)
                 .background(Color(.white))
-            
+                
             }
             detail: {
                 if let selectedItem = controller.selectedIndex {
@@ -69,8 +69,7 @@ struct RootNavigation: View {
                         if loginController.currentUser?.type == .client {
                             DashboardClientView()
                                 .frame(minWidth: 800, maxWidth: 900)
-                        }
-                        if loginController.currentUser?.type == .trainer {
+                        } else if loginController.currentUser?.type == .trainer {
                             DashboardTrainerView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         } else {
@@ -107,7 +106,7 @@ struct RootNavigation: View {
                     case "Horaires":
                         ScheduleTrainer()
                             .frame(minWidth: 800, maxWidth: 900)
-
+                        
                     default:
                         DashboardClientView()
                             .frame(minWidth: 800, maxWidth: 900)

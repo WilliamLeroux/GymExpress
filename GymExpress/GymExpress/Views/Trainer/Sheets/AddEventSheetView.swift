@@ -10,27 +10,27 @@ import SwiftUI
 struct AddEventSheetView: View {
     @Binding var isPresented: Bool /// État de présentation de la vue (détermine si la feuille modale est affichée)
     var dateDay: Date /// Jour sélectionné pour l'événement
-
+    
     @State private var startTime = Date() /// Heure de début de l'événement (initialisée à l'heure actuelle)
     @State private var endTime = Calendar.current.date(byAdding: .minute, value: 30, to: Date())! /// Heure de fin de l'événement (par défaut, 30 minutes après le début)
-
+    
     @State private var isRecurring = false /// Indique si l'événement est récurrent
     @State private var recurrenceType = RecurrenceType.none /// Type de récurrence de l'événement (aucune, quotidienne, hebdomadaire, etc.)
-
+    
     @State private var eventTitle = "" /// Titre de l'événement saisi par l'utilisateur
     @FocusState private var isTypingEventTitle: Bool
     @State private var showAlert = false
-
+    
     let minTime = Calendar.current.date(bySettingHour: 6, minute: 0, second: 0, of: Date())! /// Heure minimale autorisée pour le début de l'événement (06:00)
     let maxTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())! /// Heure maximale autorisée pour la fin de l'événement (22:00)
-
+    
     let maxTimeOfStart = Calendar.current.date(bySettingHour: 21, minute: 00, second: 0, of: Date())! /// Dernière heure possible pour commencer un événement (21:00)
     
     /// Heure minimale de fin d'événement (au moins 60 minutes après l'heure de début)
     var minTimeEnd: Date {
         return Calendar.current.date(byAdding: .minute, value: 60, to: startTime) ?? startTime
     }
-
+    
     
     var body: some View {
         NavigationView {
@@ -38,7 +38,7 @@ struct AddEventSheetView: View {
                 Form {
                     VStack {
                         Spacer()
-
+                        
                         Section(header: Text("Titre de l'événement").font(.title2.bold()).frame(maxWidth: .infinity, alignment: .center)) {
                             TextFieldStyle(title: "", text: $eventTitle, width: 250, isTyping: $isTypingEventTitle)
                                 .padding(.top, 2)
@@ -82,20 +82,20 @@ struct AddEventSheetView: View {
                                     let calendar = Calendar.current
                                     
                                     let components = calendar.dateComponents([.year, .month, .day], from: dateDay)
-
+                                    
                                     var startComponents = components
                                     startComponents.hour = calendar.component(.hour, from: startTime)
                                     startComponents.minute = calendar.component(.minute, from: startTime)
-
+                                    
                                     var endComponents = components
                                     endComponents.hour = calendar.component(.hour, from: endTime)
                                     endComponents.minute = calendar.component(.minute, from: endTime)
-
+                                    
                                     guard let startDate = calendar.date(from: startComponents),
                                           let endDate = calendar.date(from: endComponents) else {
                                         return
                                     }
-
+                                    
                                     let newEvent = CalendarEvent(
                                         startDate: startDate,
                                         endDate: endDate,
@@ -110,7 +110,7 @@ struct AddEventSheetView: View {
                                 } message: {
                                     Text("Veuillez remplir tous les champs.")
                                 }
-
+                            
                             Spacer()
                             
                             Button("Annuler") {}

@@ -15,21 +15,21 @@ struct CreateAppointmentSheet: View {
     @Binding var appointmentComment: String
     @Environment(\.dismiss) var dismiss
     @FocusState private var isTypingComment: Bool
-
+    
     @State private var showAlert = false
     @State private var alertMessage = ""
-
+    
     var body: some View {
         VStack {
             Spacer()
-
+            
             Form {
                 VStack(alignment: .center) {
                     DatePicker("Date du rendez-vous", selection: $appointmentDate, displayedComponents: .date)
                         .frame(maxWidth: .infinity)
                     
                     Spacer().frame(height: 20)
-
+                    
                     Section(header: Text("Plage horaire").font(.title3.bold()).frame(maxWidth: .infinity, alignment: .center)) {
                         CustomPickerStyle(
                             title: "",
@@ -45,9 +45,9 @@ struct CreateAppointmentSheet: View {
                             }
                         }
                     }
-
+                    
                     Spacer().frame(height: 20)
-                
+                    
                     Section(header: Text("Commentaire").font(.title3.bold()).frame(maxWidth: .infinity, alignment: .center)) {
                         TextFieldStyle(title: "", text: $appointmentComment, isTyping: $isTypingComment)
                             .frame(minHeight: 60)
@@ -66,13 +66,13 @@ struct CreateAppointmentSheet: View {
                             showAlert = true
                             return
                         }
-
+                        
                         if appointmentComment.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                             alertMessage = "Veuillez entrer un commentaire."
                             showAlert = true
                             return
                         }
-
+                        
                         controller.createAppointment(
                             clientId: client.id,
                             trainerId: 1,
@@ -82,21 +82,21 @@ struct CreateAppointmentSheet: View {
                             selectedTimeSlot: selectedTimeSlot,
                             nameUser: "\(client.lastName) \(client.name)"
                         )
-
+                        
                         if controller.errorMessage != nil {
                             alertMessage = controller.errorMessage!
                             showAlert = true
                         } else {
                             appointmentDate = Date()
                             appointmentComment = ""
-
+                            
                             let availableSlots = controller.getAvailableTimeSlots(for: appointmentDate)
                             if let firstSlot = availableSlots.first {
                                 selectedTimeSlot = firstSlot
                             } else {
                                 selectedTimeSlot = ""
                             }
-
+                            
                             dismiss()
                         }
                     }))
