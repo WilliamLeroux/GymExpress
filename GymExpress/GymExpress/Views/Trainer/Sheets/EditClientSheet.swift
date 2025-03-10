@@ -16,6 +16,7 @@ struct EditClientSheet: View {
     @State private var lastName: String
     @State private var email: String
     @State private var selectedMembershipGrade: MembershipGrade
+    @State private var showErrorAlert: Bool = false
     @FocusState private var isTypingName: Bool
     @FocusState private var isTypingLastName: Bool
     @FocusState private var isTypingEmail: Bool
@@ -68,19 +69,32 @@ struct EditClientSheet: View {
         HStack {
             Spacer()
             
-            Button("Sauvegarder") {}.buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
-                var updatedUser = user
-                updatedUser.name = name
-                updatedUser.lastName = lastName
-                updatedUser.email = email
-                updatedUser.membership = MembershipData(
-                    grade: selectedMembershipGrade,
-                    count: user.membership?.count ?? 0
-                )
-                
-                controller.updateUser(updatedUser)
-                dismiss()
-            }))
+            Button("Sauvegarder") {}
+                .buttonStyle(RoundedButtonStyle(width: 150, height: 50, action: {
+                    if !controller.validateFields(name: name, lastName: lastName, email: email, password: "PASSWORDBYPASS") {
+                        showErrorAlert = true
+                        return
+                    }
+                    
+                    var updatedUser = user
+                    updatedUser.name = name
+                    updatedUser.lastName = lastName
+                    updatedUser.email = email
+                    updatedUser.membership = MembershipData(
+                        grade: selectedMembershipGrade,
+                        count: user.membership?.count ?? 0
+                    )
+                    
+                    controller.updateUser(updatedUser)
+                    dismiss()
+                }))
+                .alert(isPresented: $showErrorAlert) {
+                    Alert(
+                        title: Text("Erreur"),
+                        message: Text("Une erreur est survenue lors de la validation des champs."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
             
             Spacer()
             

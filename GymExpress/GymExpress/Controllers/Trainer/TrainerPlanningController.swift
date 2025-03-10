@@ -14,22 +14,22 @@ class TrainerPlanningController: ObservableObject {
     @Published var workouts: [WorkoutModel] = []
     @Published var selectedClients: [UserModel] = []
     @Published var selectedClient: UserModel?
+    @Published private var allUsers: [UserModel] = []
 
-    var trainer = UserModel(
-        name: "Entraîneur",
-        lastName: "Exemple",
-        email: "coach@example.com",
-        password: "password",
-        type: .trainer,
-        membership: MembershipData(grade: .platinum, count: 100),
-        salary: 50000
-    )
-
-    var allUsers: [UserModel] = [
-        UserModel(name: "Samuel", lastName: "Oliveira", email: "samuel@example.com", password: "", type: .client, membership: MembershipData(grade: .platinum, count: 100), salary: nil),
-        UserModel(name: "Alice", lastName: "Dupont", email: "alice@example.com", password: "", type: .client, membership: MembershipData(grade: .gold, count: 50), salary: nil),
-        UserModel(name: "Bob", lastName: "Martin", email: "bob@example.com", password: "", type: .client, membership: MembershipData(grade: .silver, count: 30), salary: nil)
-    ]
+    var dbManager: DatabaseManager = DatabaseManager.shared
+    var trainer: UserModel = LoginController.shared.currentUser!
+    
+    private init() {
+        loadInitialData()
+    }
+    
+    private func loadInitialData() {
+        if let users: [UserModel] = dbManager.fetchDatas(request: Request.selectAllCLient, params: []){
+            allUsers = users
+        } else {
+            print("Utilisateur non trouvé")
+        }
+    }
 
     /// Fonction de recherche des clients en fonction du prénom et du nom saisis
     func searchClients(firstName: String, lastName: String) {
@@ -56,13 +56,15 @@ class TrainerPlanningController: ObservableObject {
     /// Ajouter un entraînement pour un client
     func addWorkout(for client: UserModel, exercises: [ExerciseModel], day: Int) {
         let newWorkout = WorkoutModel(
-            name: "Full Body",
+            clientId: client.id,
+            name: "\(client.id)-\(day)",
             exerciceList: exercises,
             day: day
         )
+        print(newWorkout)
         workouts.append(newWorkout)
     }
-
+    
     /// Supprimer un entraînement
     func deleteWorkout(_ workout: WorkoutModel) {
         workouts.removeAll { $0.id == workout.id }

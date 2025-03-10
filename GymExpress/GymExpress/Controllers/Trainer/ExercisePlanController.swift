@@ -12,7 +12,7 @@ class ExercisePlanController: ObservableObject {
     @Published var selectedType: BodyParts = BodyParts.cardio
     @Published var selectedExercise: String = "" {
         didSet {
-            selectedExerciseModel = addedExercises.first(where: { $0.name == selectedExercise })
+            updateSelectedExerciseModel()
         }
     }
     @Published var series: String = ""
@@ -20,14 +20,19 @@ class ExercisePlanController: ObservableObject {
     @Published var charge: String = ""
     @Published var repos: String = ""
     @Published var addedExercises: [ExerciseModel] = []
-    var selectedExerciseModel: ExerciseModel? = nil
+    @Published var selectedExerciseModel: ExerciseModel? = nil
     
     let exerciseLegends = [BodyParts.cardio, BodyParts.upperBody, BodyParts.lowerBody, BodyParts.core]
     
     var exercisesByType: [String: [ExerciseModel]] = [:]
+    private var isDataLoaded = false
+    private var nextExerciseId = 1
     
     init() {
-        
+        loadExercises()
+    }
+    
+    private func loadExercises() {
         var tempExercises: [Exercises] = []
         BodyParts.allCases.forEach {bodyPart in
             let waiter = DispatchSemaphore(value: 0)
@@ -57,12 +62,22 @@ class ExercisePlanController: ObservableObject {
             }
             tempExercises.removeAll()
         }
+        isDataLoaded = true
+        if !selectedExercise.isEmpty {
+            updateSelectedExerciseModel()
+        }
+    }
+    
+    private func updateSelectedExerciseModel() {
+        if isDataLoaded && !selectedExercise.isEmpty {
+            DispatchQueue.main.async {
+                self.selectedExerciseModel = self.exercisesByType[self.selectedType.rawValue]?.first(where: { $0.exerciceId == self.selectedExercise })
+            }
+        }
     }
 
     // Convertit les exercices temporaires en ExerciseModel
     func getExerciseModels() -> [ExerciseModel] {
-        print("📌 Récupération des exercices : \(addedExercises.count) trouvés")
-        
         return addedExercises.map { exercise in
             ExerciseModel(
                 exerciceId: "",
@@ -88,18 +103,29 @@ class ExercisePlanController: ObservableObject {
     }
     
     func addExercise() {
-        guard selectedExercise != "", !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
+        guard !selectedExercise.isEmpty, !series.isEmpty, !reps.isEmpty, !charge.isEmpty, !repos.isEmpty else {
             return
         }
         
-        //let newExercise = ExerciseModel(exerciseId: "102", name: exerciseName, sets: series, reps: reps, charge: charge, repos: repos)
-        //exerciceId: String, name: String, imageId: String, description: String, bodyParts: BodyParts, exerciseType: Int, sets: Int, reps: Int, charge: Int
-        var tempExercise = selectedExerciseModel
-        tempExercise?.charge = Int(charge) ?? 0
-        tempExercise?.reps = Int(reps) ?? 0
-        tempExercise?.charge = Int(repos) ?? 0
-        addedExercises.append(tempExercise!)
+        guard let exerciseToAdd = selectedExerciseModel else {
+            return
+        }
+                
+        var newExercise = ExerciseModel(
+            exerciceId: exerciseToAdd.exerciceId,
+            name: exerciseToAdd.name,
+            imageId: exerciseToAdd.imageId,
+            description: exerciseToAdd.description,
+            bodyParts: exerciseToAdd.bodyParts,
+            sets: Int(series) ?? 0,
+            reps: Int(reps) ?? 0,
+            charge: Int(charge) ?? 0
+        )
         
+        newExercise.id = nextExerciseId
+        nextExerciseId += 1
+        
+        addedExercises.append(newExercise)
         resetFields()
     }
     
@@ -113,6 +139,7 @@ class ExercisePlanController: ObservableObject {
         reps = ""
         charge = ""
         repos = ""
+        selectedExerciseModel = nil
     }
     
     func clearExercises() {

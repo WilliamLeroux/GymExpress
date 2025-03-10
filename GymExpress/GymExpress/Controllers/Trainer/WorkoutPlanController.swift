@@ -10,8 +10,8 @@ import Foundation
 class WorkoutPlanController: ObservableObject {
     @Published var workouts: [WorkoutModel] = []
     
-    func addWorkout(name: String, exercises: [ExerciseModel], day: Int) {
-        let newWorkout = WorkoutModel(name: name, exerciceList: exercises, day: day)
+    func addWorkout(clientId: Int, name: String, exercises: [ExerciseModel], day: Int) {
+        let newWorkout = WorkoutModel(clientId: clientId, name: name, exerciceList: exercises, day: day)
         workouts.append(newWorkout)
     }
     
