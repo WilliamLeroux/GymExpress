@@ -73,11 +73,13 @@ class ScheduleTrainerController: ObservableObject {
         tempEvent.userId = LoginController.shared.currentUser?.id ?? -1
         newEvents.append(tempEvent)
         
-        var bool = dbManager.insertData(request: Request.createEvent, params: tempEvent)
-        
-        DispatchQueue.main.async {
-            self.fetchEvents()
+        let success = dbManager.insertData(request: Request.createEvent, params: tempEvent)
+        if success {
+            DispatchQueue.main.async {
+                self.fetchEvents()
+            }
         }
+        
     }
     
     func changeWeek(by value: Int) {

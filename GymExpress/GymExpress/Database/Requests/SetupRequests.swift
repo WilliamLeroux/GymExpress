@@ -14,7 +14,7 @@ struct SetupRequests {
     private static let FREQUENCE = "CREATE TABLE IF NOT EXISTS frequence (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, date DATE NOT NULL, present BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id));"
     
     /// Table objectives
-    private static let OBJECTIVES = "CREATE TABLE IF NOT EXISTS objectives (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, init_value INTEGER NOT NULL, max_value INTEGER NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id));"
+    private static let OBJECTIVES = "CREATE TABLE IF NOT EXISTS objectives (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, init_value INTEGER NOT NULL, max_value INTEGER NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, objective TEXT NOT NULL, is_deleted BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (user_id) REFERENCES users(id));"
     
     /// Table objective data
     private static let OBJECTIVES_DATA = "CREATE TABLE IF NOT EXISTS objectives_data (id INTEGER PRIMARY KEY AUTOINCREMENT, objective_id INTEGER NOT NULL, data INTEGER NOT NULL, date DATE NOT NULL, FOREIGN KEY (objective_id) REFERENCES objectives(id));"

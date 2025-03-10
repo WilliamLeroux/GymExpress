@@ -182,7 +182,6 @@ class DatabaseManager{
                 DatabaseUtils.shared.bindParam(pointer: pointer, param: param, i: i)
                 i+=1
             }
-            
             if sqlite3_step(pointer) != SQLITE_DONE {
                 if let errorMessage = sqlite3_errmsg(db) {
                     print("Error inserting: \(String(cString: errorMessage))")

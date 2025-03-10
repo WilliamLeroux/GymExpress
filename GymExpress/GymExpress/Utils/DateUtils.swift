@@ -10,12 +10,13 @@ import Foundation
 /// Classe utils pour la gestion des dates
 class DateUtils {
     static let shared = DateUtils() /// Singleton
-    let calendar = Calendar.current /// Calendrier actuel
+    var calendar = Calendar.current /// Calendrier actuel
     let currentYear = Calendar.current.component(.year, from: Date()) /// Année actuelle
     let formatter = DateFormatter() /// Formatteur de date
     let formatterSimpleDate = DateFormatter()
     
     private init() {
+        calendar.locale = Locale(identifier: "fr_CA")
         formatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         formatterSimpleDate.dateFormat = "yyyy-MM-dd"
     }

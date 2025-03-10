@@ -29,7 +29,7 @@ struct Request {
     static let createFrequence: String = "INSERT INTO frequence (user_id, date, present) VALUES (?, ?, ?);"
     
     /// Crée un objectif
-    static let createObjective: String = "INSERT INTO objectives (user_id, init_value, max_value, start_value, end_value) VALUES (?, ?, ?, ?, ?);"
+    static let createObjective: String = "INSERT INTO objectives (user_id, init_value, max_value, start_date, end_date, objective) VALUES (?, ?, ?, ?, ?, ?);"
     
     /// Crée une donnée pour un objectif
     static let createObjectiveData: String = "INSERT INTO objectives_data (objective_id, data, date) VALUES (?, ?, ?);"

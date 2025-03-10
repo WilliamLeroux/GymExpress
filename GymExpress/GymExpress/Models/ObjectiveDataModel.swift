@@ -11,11 +11,13 @@ import SQLite3
 /// Structure des données pour un objectif
 struct ObjectiveData: Identifiable, Equatable, Hashable, InitializableFromSQLITE, SQLConvertable {
     var id: Int = 0 /// Identifiant
+    var objId: Int = 0
     var value: Int = -1 /// Valeur
     var date: Date? = nil /// Date d'ajour
     
-    init(value: Int, year: Int, month: Int, day: Int) {
+    init(objId: Int, value: Int, year: Int, month: Int, day: Int) {
         let calendar = Calendar.autoupdatingCurrent
+        self.objId = objId
         self.date = calendar.date(from: DateComponents(year: year, month: month, day: day))!
         self.value = value
     }
@@ -51,6 +53,6 @@ struct ObjectiveData: Identifiable, Equatable, Hashable, InitializableFromSQLITE
     }
     
     var params: [Any] {
-        return [value, date as Any]
+        return [objId, value, date as Any]
     }
 }

@@ -18,7 +18,7 @@ struct AppointmentView: View {
         GroupBox {
             // TODO: Bouton rafraichir la page
             Button(action: {}) {
-                Label("Rafraîchir", systemImage: "refresh")
+                Label("Rafraîchir", systemImage: "arrow.clockwise.circle")
             }
             
             List {
@@ -26,8 +26,9 @@ struct AppointmentView: View {
                     GroupBox(label: Text(controller.appointments[appointment].name)) {
                         HStack {
                             VStack {
-                                Text(controller.appointments[appointment].description)
-                                Text("\(controller.getTrainerName(trainerId: controller.appointments[appointment].trainerId))")
+                                Text("Date: \(String(describing: controller.appointments[appointment].date!))")
+                                Text("Description: \(controller.appointments[appointment].description)")
+                                Text("Entraîneur: \(controller.getTrainerName(trainerId: controller.appointments[appointment].trainerId))")
                                     .font(.caption2)
                             }
                             
@@ -124,9 +125,9 @@ struct AppointmentView: View {
                             width: 85,
                             height: 40,
                             action: {
+                                controller.updateAppointment(date: selectedDate, time: selectedTime)
                                 controller.selectedEditIndex = -1
                                 editAlert.toggle()
-                                // Ajouter la sauvegarde
                             }
                         ))
                     }

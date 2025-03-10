@@ -11,6 +11,7 @@ import SQLite3
 /// Structure des objectifs
 struct Objective: Identifiable, Equatable, Hashable, InitializableFromSQLITE, SQLConvertable {
     var dbId: Int = 0
+    var userId = -1 /// Id du user
     var objective: String = "" /// Nom de l'objectif
     var initValue: Int = 0 /// Valeur initial
     var valueList: [ObjectiveData] = [] /// Liste des données
@@ -49,8 +50,11 @@ struct Objective: Identifiable, Equatable, Hashable, InitializableFromSQLITE, SQ
                 if let dateString = sqlite3_column_text(pointer, i) {
                     
                     let dateStr = String(cString: dateString)
-                   
-                    self.startDate = DateUtils.shared.formatter.date(from: dateStr)!
+                    if dateStr.count(where: {$0 == "-"}) != 2 {
+                        self.startDate = DateUtils.shared.formatter.date(from: dateStr)!
+                    } else {
+                        self.startDate = DateUtils.shared.formatterSimpleDate.date(from: dateStr)!
+                    }
                 } else {
                     self.startDate = Date()
                 }
@@ -58,11 +62,16 @@ struct Objective: Identifiable, Equatable, Hashable, InitializableFromSQLITE, SQ
                 if let dateString = sqlite3_column_text(pointer, i) {
                     
                     let dateStr = String(cString: dateString)
-                   
-                    self.endDate = DateUtils.shared.formatter.date(from: dateStr)!
+                    if dateStr.count(where: {$0 == "-"}) != 2 {
+                        self.endDate = DateUtils.shared.formatter.date(from: dateStr)!
+                    } else {
+                        self.endDate = DateUtils.shared.formatterSimpleDate.date(from: dateStr)!
+                    }
                 } else {
                     self.endDate = Date()
                 }
+            case 7:
+                self.objective = String(cString: sqlite3_column_text(pointer, i)!)
             default :
                 break
             }
@@ -70,7 +79,7 @@ struct Objective: Identifiable, Equatable, Hashable, InitializableFromSQLITE, SQ
     }
     
     var params: [Any] {
-        return [objective, initValue, maxValue, startDate as Any, endDate as Any]
+        return [userId, initValue, maxValue, startDate as Any, endDate as Any, objective]
     }
     
     var id: String { return objective }

@@ -9,23 +9,22 @@ import SwiftUI
 import Charts
 
 struct WorkoutFrequenceView: View {
+    @ObservedObject var controller = WorkoutFrequenceController.shared
     @State private var selectedIndex: Int? = nil /// Index jour sélectionné
     @State private var isShowingSheet: Bool = false /// Signifie que la sheet d'enregistrement de présence est affiché
-    @State private var weekList : [String] = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"] // Changer pour le model
-    let data = [Week(day: "Lundi", count: 3),
-                Week(day: "Mardi", count: 1),
-                Week(day: "Mercredi", count: 0),
-                Week(day: "Jeudi", count: 3),
-                Week(day: "Vendredi", count: 3),
-                Week(day: "Samedi", count: 2),
-                Week(day: "Dimanche", count: 0)]
+    @State private var selectedDate: Date = Date()
+    
     
     var body: some View {
         GroupBox {
             GroupBox(label:
                         HStack{
-                Text("Mois")
-                Button(action: {}) {
+                Text("\(controller.currentDate.formatted(.dateTime.locale(Locale(identifier: "fr_CA")).month(.wide).year()))")
+                Button(action: {
+                    withAnimation(.easeIn){
+                        controller.decreaseMonth()
+                    }
+                }) {
                     Image(systemName: "arrow.backward.circle.fill")
                         .foregroundStyle(.main)
                 }
@@ -38,7 +37,11 @@ struct WorkoutFrequenceView: View {
                     }
                 }
                 
-                Button(action: {}) {
+                Button(action: {
+                    withAnimation(.easeIn){
+                        controller.increaseMonth()
+                    }
+                }) {
                     Image(systemName: "arrow.forward.circle.fill")
                         .foregroundStyle(.main)
                 }
@@ -78,25 +81,15 @@ struct WorkoutFrequenceView: View {
                         
                         VStack{
                             HStack {
-                                ForEach(0..<weekList.count, id: \.self) { day in
-                                    Button(action: {selectedIndex = day}) {
-                                        Text(weekList[day])
-                                            .frame(width: 75, height: 50)
-                                    }
-                                    .onHover { hovering in
-                                        if (hovering){
-                                            NSCursor.pointingHand.push()
-                                        }
-                                        else {
-                                            NSCursor.pop()
-                                        }
-                                    }
-                                    .border(selectedIndex == day ? Color.green : Color.gray, width: selectedIndex == day ? 2 : 1)
-                                    
-                                }
+                                DatePicker(
+                                    "",
+                                    selection: $selectedDate,
+                                    displayedComponents: [.date]
+                                )
+                                .datePickerStyle(.graphical)
                             }
                         }
-                        .frame(width: 800, height: 200)
+                        .frame(width: 400, height: 200)
                         .background(Color.gray.opacity(0.3))
                         .cornerRadius(15)
                         
@@ -121,6 +114,9 @@ struct WorkoutFrequenceView: View {
                                 height: 45,
                                 color: Color.main,
                                 action: {
+                                    let components = Calendar.current.dateComponents([.year, .month, .day], from: selectedDate)
+                                    let date = Calendar.current.date(from: components)!
+                                    controller.addPresence(date: date)
                                     isShowingSheet.toggle()
                                 }))
                             .padding()
@@ -130,12 +126,12 @@ struct WorkoutFrequenceView: View {
                 .padding()
             }) {
                 Chart {
-                    ForEach(data) {dataPoint in
-                        BarMark(x: .value("Day", dataPoint.day),
-                                y: .value("Count", dataPoint.count))
+                    ForEach(0..<controller.month.count, id: \.self) { day in
+                        BarMark(x: .value("Day", controller.month[day].name),
+                                y: .value("Count", controller.month[day].count))
                     }
                 }
-                .chartYScale(domain: 0...4)
+                .chartYScale(domain: 0...controller.highestCount)
             }
             .groupBoxStyle(WorkoutBoxStyle())
             .padding()
