@@ -69,8 +69,7 @@ struct RootNavigation: View {
                         if loginController.currentUser?.type == .client {
                             DashboardClientView()
                                 .frame(minWidth: 800, maxWidth: 900)
-                        }
-                        if loginController.currentUser?.type == .trainer {
+                        } else if loginController.currentUser?.type == .trainer {
                             DashboardTrainerView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         } else {

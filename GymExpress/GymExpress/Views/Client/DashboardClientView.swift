@@ -29,11 +29,12 @@ struct DashboardClientView: View {
                                         self.navController.selectedIndex = NavigationItemClient.progress.rawValue
                                     }
                             )
-                            smallBox(title: "Gérer mon abonnement", view:
+                            smallBox(title: "Gérer mon abonnement" ,view:
                                         Image(.subscription)
                                             .resizable()
                                             .scaledToFit()
-                                            .scaleEffect(0.60),
+                                            .scaleEffect(0.60)
+                                            .foregroundStyle(getMemberShipColor(membershipGrade: controller.currentMembership!.grade)),
                                      action: {
                                         self.navController.selectedIndex = NavigationItemClient.subscription.rawValue
                                     }
