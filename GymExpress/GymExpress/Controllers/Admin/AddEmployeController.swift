@@ -29,7 +29,10 @@ class AddEmployeController: ObservableObject {
     func addEmploye(){
         let uuid = UUID().uuidString
         let userType = getUserTypeFromEmployesType(selectedEmployeType)
-        print("Le type est : \(userType)")
-        let newEmploye = UserModel(name: name, lastName: last_name, email: uuid, password: "nil", type: UserType.janitor, membership: nil)
+        let newEmploye = UserModel(name: name, lastName: last_name, email: uuid, password: "nil", type: userType, membership: nil)
+        let success = dbManager.insertData(request: Request.createUser, params: newEmploye)
+        if success {
+            print("Succès")
+        }
     }
 }
