@@ -29,6 +29,14 @@ class Utils {
                 tempList.append(item.rawValue)
             }
             return tempList
+        case .receptionist:
+            return []
+        case .janitor:
+            return []
+        case .machineRepairer:
+            return []
+        case .cook:
+            return []
         }
     }
     

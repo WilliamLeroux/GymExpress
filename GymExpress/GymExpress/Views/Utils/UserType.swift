@@ -9,6 +9,10 @@ enum UserType: Int, Codable {
     case client = 0
     case trainer = 1
     case admin = 2
+    case receptionist = 3
+    case janitor = 4
+    case machineRepairer = 5
+    case cook = 6
 }
 
 enum MembershipGrade: String, CaseIterable, Identifiable, Codable{
@@ -24,5 +28,20 @@ enum EmployesType: String, CaseIterable {
     case trainer = "Entraîneur"
     case janitor = "Concierge"
     case machineRepairer = "Réparateur de machine"
-    case cuisinier = "Cuisinier"
+    case cook = "Cuisinier"
+}
+
+func getUserTypeFromEmployesType(_ type: EmployesType) -> UserType {
+    switch type {
+    case .receptionist:
+        return .receptionist
+    case .trainer:
+        return .trainer
+    case .janitor:
+        return .janitor
+    case .machineRepairer:
+        return .machineRepairer
+    case .cook:
+        return .cook
+    }
 }
