@@ -15,7 +15,7 @@ extension View {
     ///   - view: Contenu de la boite
     ///   - action: Action lors d'un clique, vide par défaut
     /// - Returns: GroupBox
-    func smallBox(title: String = " ", view: some View, action: @escaping Action = {}) -> some View {
+    func smallBox(title: String = " ", borderColor: Color = .clear, view: some View, action: @escaping Action = {}) -> some View {
         return GroupBox(label: Text(title)) {
             view
                 .frame(width: 200, height: 200)
@@ -23,6 +23,7 @@ extension View {
         .groupBoxStyle(ClearSmallBoxStyle())
         .modifier(HoverState())
         .cornerRadius(15)
+        .overlay(RoundedRectangle(cornerSize: .init(width: 15, height: 15)).stroke(borderColor, lineWidth: 5))
         .onTapGesture {
             action()
         }
