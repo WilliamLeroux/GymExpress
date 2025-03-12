@@ -67,4 +67,8 @@ class AppointmentController: ObservableObject {
         }
     }
     
+    func refresh() {
+        loadInitialData()
+    }
+    
 }

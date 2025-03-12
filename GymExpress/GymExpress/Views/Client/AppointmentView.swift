@@ -17,7 +17,7 @@ struct AppointmentView: View {
     var body: some View {
         GroupBox {
             // TODO: Bouton rafraichir la page
-            Button(action: {}) {
+            Button(action: {controller.refresh()}) {
                 Label("Rafraîchir", systemImage: "arrow.clockwise.circle")
             }
             
