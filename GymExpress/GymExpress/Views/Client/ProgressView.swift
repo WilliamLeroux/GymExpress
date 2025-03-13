@@ -25,6 +25,7 @@ struct ProgressView: View {
     @State private var selectedObjective: Int = -1
     @State private var selectedObjectiveEdit: Int = -1
     @State var error = ""
+    @State private var sheetCreated: Bool = false
     
     @FocusState private var isFocused: Bool /// Signifie que le Textfield pour créer un objectif a le focus
     @FocusState private var isFocusedInitial: Bool /// Signifie que le Textfield pour la valeur initial a le focus
@@ -118,6 +119,7 @@ struct ProgressView: View {
         GroupBox {
             List {
                 ForEach(controller.objectives, id: \.self) {index in
+                    
                     HStack {
                         Text(index.objective)
                             .font(.system(size: 12, weight: .semibold))
@@ -140,56 +142,7 @@ struct ProgressView: View {
                                     }
                                 }
                             }
-                            .sheet(isPresented: $isShowingSheetData) {
-                                VStack {
-                                    Text("Ajout de donnée")
-                                        .font(.title)
-                                    
-                                    TextFieldStyle(title: "Donnée (ex. 10)", text: $newValue, isTyping: $isFocusedNewData)
-                                    DatePicker(
-                                        "Date",
-                                        selection: $dateValue,
-                                        in: DateUtils.shared.getDateRange(),
-                                        displayedComponents: [.date]
-                                    )
-                                    .datePickerStyle(.stepperField)
-                                    HStack {
-                                        Button(action: {}) {
-                                            Text("Annuler")
-                                        }
-                                        .buttonStyle(RoundedButtonStyle(
-                                            width: 75,
-                                            height: 30,
-                                            color: .red.opacity(0.8),
-                                            hoveringColor: .red,
-                                            action: {
-                                                newValue = ""
-                                                dateValue = Date()
-                                                isShowingSheetData = false
-                                            }))
-                                        
-                                        Button(action: {}) {
-                                            Text("Ajouter")
-                                        }
-                                        .buttonStyle(RoundedButtonStyle(
-                                            width: 75,
-                                            height: 30,
-                                            action: {
-                                                isShowingSheetData = false
-                                                let success = controller.addData(objectiveId: selectedObjectiveEdit, value: Int(newValue) ?? 0, date: dateValue)
-                                                if !success {
-                                                    error = "Les données entrer ne sont pas valides"
-                                                } else {
-                                                    error = ""
-                                                }
-                                                selectedObjectiveEdit = -1
-                                            }
-                                        ))
-                                    }
-                                    
-                                }
-                                .padding(.all, 20)
-                            }
+                            
                             .onChange(of: isShowingSheetData) {
                                 if !isShowingSheetData {
                                     selectedObjectiveEdit = -1
@@ -203,21 +156,17 @@ struct ProgressView: View {
                                 selectedObjective = index.dbId
                             }))
                             .onChange(of: selectedObjective) {
-                                if selectedObjective != -1 {
+                                if selectedObjective == index.dbId {
                                     isShowingSheetConfirmation = true
                                 }
                             }
-                            .sheet(isPresented: $isShowingSheetConfirmation) {
-                                ConfirmationSheet(
-                                    title: "Suppression",
-                                    message: "Êtes-vous sûr de vouloir supprimer l'objectif \(controller.objectives.first(where: { $0.dbId == selectedObjective })?.objective ?? "") ?",
-                                    cancelAction: {
-                                        isShowingSheetConfirmation.toggle()
-                                    },
-                                    confirmAction: {
-                                        controller.deleteObjective(selectedObjective)
-                                        isShowingSheetConfirmation.toggle()
-                                    })
+                            .onChange(of: isShowingSheetConfirmation) {
+                                if selectedObjective == index.dbId {
+                                    if !isShowingSheetConfirmation {
+                                        selectedObjective = -1
+                                    }
+                                }
+                                
                             }
                         }
                         
@@ -246,9 +195,71 @@ struct ProgressView: View {
                     .foregroundStyle(.main)
                     .background(.white)
                     .padding()
+                }
+            }
+            .sheet(isPresented: $isShowingSheetConfirmation) {
+                ConfirmationSheet(
+                    title: "Suppression",
+                    message: "Êtes-vous sûr de vouloir supprimer l'objectif \(controller.objectives.first(where: { $0.dbId == selectedObjective })?.objective ?? "") ?",
+                    cancelAction: {
+                        isShowingSheetConfirmation = false
+                    },
+                    confirmAction: {
+                        controller.deleteObjective(selectedObjective)
+                        isShowingSheetConfirmation = false
+                        
+                    }
+                )
+            }
+            .sheet(isPresented: $isShowingSheetData) {
+                VStack {
+                    Text("Ajout de donnée")
+                        .font(.title)
+                    
+                    TextFieldStyle(title: "Donnée (ex. 10)", text: $newValue, isTyping: $isFocusedNewData)
+                    DatePicker(
+                        "Date",
+                        selection: $dateValue,
+                        in: DateUtils.shared.getDateRange(),
+                        displayedComponents: [.date]
+                    )
+                    .datePickerStyle(.stepperField)
+                    HStack {
+                        Button(action: {}) {
+                            Text("Annuler")
+                        }
+                        .buttonStyle(RoundedButtonStyle(
+                            width: 75,
+                            height: 30,
+                            color: .red.opacity(0.8),
+                            hoveringColor: .red,
+                            action: {
+                                newValue = ""
+                                dateValue = Date()
+                                isShowingSheetData = false
+                            }))
+                        
+                        Button(action: {}) {
+                            Text("Ajouter")
+                        }
+                        .buttonStyle(RoundedButtonStyle(
+                            width: 75,
+                            height: 30,
+                            action: {
+                                isShowingSheetData = false
+                                let success = controller.addData(objectiveId: selectedObjectiveEdit, value: Int(newValue) ?? 0, date: dateValue)
+                                if !success {
+                                    error = "Les données entrer ne sont pas valides"
+                                } else {
+                                    error = ""
+                                }
+                                selectedObjectiveEdit = -1
+                            }
+                        ))
+                    }
                     
                 }
-                
+                .padding(.all, 20)
             }
         }
         .cornerRadius(15)
