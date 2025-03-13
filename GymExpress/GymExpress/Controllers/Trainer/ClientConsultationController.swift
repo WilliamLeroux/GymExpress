@@ -5,8 +5,6 @@
 //  Created by Samuel Oliveira Martel on 2025-02-07.
 //
 
-//********** TODO : validation des données dans le formulaire.
-
 import SwiftUI
 
 class ClientConsultationController: ObservableObject {

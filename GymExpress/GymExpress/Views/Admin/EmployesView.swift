@@ -8,30 +8,12 @@
 import SwiftUI
 
 struct EmployesView: View {
+    @ObservedObject var controller = EmployesController.shared
     
-    @State private var search: String = "" ///< Texte recherché dans la barre de recherche
-    @FocusState private var isTypingSearch: Bool ///< Bool si l'utilisateur est dans le textfield recherché
-    @State private var selections : Set<Employes.ID> = [] ///< Temporaire
-    @State private var selectedEmployeType: EmployesType = .trainer ///< Temporaire
-    
+    @State private var selectedEmployeType: EmployesType = .trainer ///< Type d'employé à afficher
     @State private var isShowEditSheet: Bool = false ///< Bool pour afficher la sheet modifier employé
     @State private var isShowAddSheet: Bool = false ///< Bool pour afficher la sheet ajouter employé
-    @State private var selectedEmploye: Employes? = nil ///< Employé selectionné dans la liste
-    
-    ///< Données temporaires
-    @State var allEmployes = [ Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Martel", lastName: "Pascal", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-                        Employes(id: UUID(), name: "Morin", lastName: "Nicolas", salary: "58000"),
-    ]
+    @State private var selectedEmploye: UserModel? = nil ///< Employé selectionné dans la liste
     
     var body: some View {
         VStack {
@@ -41,8 +23,6 @@ struct EmployesView: View {
                 .buttonStyle(RoundedButtonStyle(width: 150, action: {
                     isShowAddSheet.toggle()
                 }))
-                TextFieldStyle(title: "Rechercher un employé", text: $search, isTyping: $isTypingSearch)
-                    .padding(.vertical, 25)
                 Picker("", selection: $selectedEmployeType) {
                     ForEach(EmployesType.allCases, id: \.self) { employeType in
                         Text(employeType.rawValue)
@@ -50,40 +30,45 @@ struct EmployesView: View {
                 }
                 .frame(width: 200)
             }
-            Table(of: Employes.self){
+            Table(of: UserModel.self){
                 TableColumn("Prénom", value: \.name)
                 TableColumn("Nom", value: \.lastName)
                 TableColumn("Salaire") { employe in
-                    Text("\(employe.salary)")
+                    if let salary = employe.salary {
+                        Text("\(salary, specifier: "%.2f") $")
+                    } else {
+                        Text("N/A")
+                    }
                 }
             } rows: {
-                ForEach(allEmployes) { employe in
+                ForEach(controller.allEmploye.filter { $0.type == getUserTypeFromEmployesType(selectedEmployeType)}) { employe in
                     TableRow(employe)
-                        .contextMenu {
-                            Button("Modifier") {
-                                selectedEmploye = employe
-                                isShowEditSheet.toggle()
-                            }
-                            Divider()
-                            Button("Supprimer", role: .destructive) {
-                                // TODO ouvrir sheet supprimer
-                            }
+                    .contextMenu {
+                        Button("Modifier") {
+                            print("DEBUG: Selected employee: \(employe.name) \(employe.lastName)")
+                            selectedEmploye = employe
+                            isShowEditSheet.toggle()
                         }
+                        Divider()
+                        Button("Supprimer", role: .destructive) {
+                            selectedEmploye = employe
+                            controller.deleteUser(employe)
+                        }
+                    }
                 }
             }
-            .cornerRadius(8)
-        }
-        .sheet(item: $selectedEmploye) { employe in
-            EditEmployeSheet(
-                employe: employe,
-                onSave: { updatedEmploye in
-                    if let index = allEmployes.firstIndex(where: { $0.id == updatedEmploye.id }) {
-                        allEmployes[index] = updatedEmploye
-                    }
-                })
-        }
-        .sheet(isPresented: $isShowAddSheet) {
-            AddEmployeSheet()
+ 
+            .sheet(isPresented: $isShowAddSheet) {
+                AddEmployeSheet()
+            }
+            .sheet(item: $selectedEmploye) { user in
+                EditEmployeSheet(
+                    controller: controller,
+                    user: user
+                )
+                .frame(minWidth: 500, minHeight: 300)
+                .padding(.all, 20)
+            }
         }
     }
 }

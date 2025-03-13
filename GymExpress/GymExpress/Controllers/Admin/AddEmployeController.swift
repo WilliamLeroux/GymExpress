@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import SwiftUI
 
 
 class AddEmployeController: ObservableObject {
     var dbManager: DatabaseManager = DatabaseManager.shared
+    @ObservedObject var employeController = EmployesController.shared
     @Published var name: String = ""
     @Published var last_name: String = ""
     @Published var salary: String = ""
@@ -29,10 +31,8 @@ class AddEmployeController: ObservableObject {
     func addEmploye(){
         let uuid = UUID().uuidString
         let userType = getUserTypeFromEmployesType(selectedEmployeType)
-        let newEmploye = UserModel(name: name, lastName: last_name, email: uuid, password: "nil", type: userType, membership: nil)
-        let success = dbManager.insertData(request: Request.createUser, params: newEmploye)
-        if success {
-            print("Succès")
-        }
+        let newEmploye = UserModel(name: name, lastName: last_name, email: uuid, password: "nil", type: userType, membership: nil, salary: Double(salary))
+        _ = dbManager.insertData(request: Request.createUser, params: newEmploye)
+        employeController.allEmploye.append(newEmploye)
     }
 }

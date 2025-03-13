@@ -74,7 +74,7 @@ struct RootNavigation: View {
                             DashboardTrainerView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         } else {
-                            DashboardAdminView()
+                            FinanceView()
                                 .frame(minWidth: 800, maxWidth: 900)
                         }
                     case "Employés":
