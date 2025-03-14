@@ -46,7 +46,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
                 if let dateString = sqlite3_column_text(pointer, i) {
                     
                     let dateStr = String(cString: dateString)
-                   
+                    
                     self.startDate = DateUtils.shared.formatter.date(from: dateStr)!
                 } else {
                     self.startDate = nil
@@ -55,7 +55,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
                 if let dateString = sqlite3_column_text(pointer, i) {
                     
                     let dateStr = String(cString: dateString)
-                   
+                    
                     self.endDate = DateUtils.shared.formatter.date(from: dateStr)!
                 } else {
                     self.endDate = nil
@@ -68,7 +68,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
                 if let dateString = sqlite3_column_text(pointer, i) {
                     _ = String(cString: dateString)
                     let calendar = Calendar.current
-                                        
+                    
                     switch self.recurrenceType {
                     case .daily:
                         self.recurrenceEndDate = calendar.date(byAdding: .month, value: 1, to: self.startDate!) ?? self.startDate
@@ -81,9 +81,9 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
                     }
                 }
             default:
-                #if DEBUG
+#if DEBUG
                 print("Unknown column, \(columnIndex)")
-                #endif
+#endif
             }
         }
     }
@@ -91,7 +91,7 @@ struct CalendarEvent: SQLConvertable, InitializableFromSQLITE, Hashable{
     var params: [Any] {
         return [id, userId, startDate as Any, endDate as Any, title, recurrenceType, recurrenceEndDate as Any]
     }
-
+    
     func generateOccurrences() -> [CalendarEvent] {
         guard recurrenceType != .none else {
             return []

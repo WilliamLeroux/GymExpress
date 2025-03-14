@@ -13,6 +13,8 @@ class LoginController: ObservableObject {
     var dbManager: DatabaseManager = DatabaseManager.shared
     let rememberMe = UserDefaults.standard
     
+    private let notificationCenter = NotificationCenter.default
+    
     @Published var email: String = "" /// Email de l'utilisateur entré
     @Published var password: String = "" /// Mot de passe de l'utilisateur entré
     @Published var showErrorMessage: Bool = false /// Message d'erreur à afficher
@@ -26,9 +28,9 @@ class LoginController: ObservableObject {
             let decoder = JSONDecoder()
             let user = try decoder.decode(UserModel.self, from: data)
             self.currentUser = user
-            print("Utilisateur connecté : \(currentUser!)")
         } catch {
         }
+        notificationCenter.addObserver(forName: Notification.Name("UserMembershipUpdated"), object: nil, queue: nil, using: refreshUser(_:))
     }
     
     /// Vérifier dans la base de donnée si un utilisateur existe.
@@ -42,13 +44,24 @@ class LoginController: ObservableObject {
         return false
     }
     
+    @objc func refreshUser(_ notification: Notification) {
+        if currentUser != nil {
+            if currentUser!.membership != nil {
+                let tempMembership = notification.object as? MembershipData
+                if tempMembership != nil {
+                    currentUser!.membership!.grade = tempMembership!.grade
+                    saveLoginInfos()
+                }
+            }
+        }
+    }
+    
     /// Sauvegarder les informations de connexion d'un utilisateur.
     func saveLoginInfos() {
         do {
             let encoder = JSONEncoder()
             let user = try encoder.encode(currentUser)
             UserDefaults.standard.set(user, forKey: "user")
-            print("Succès")
         } catch {
             
         }
@@ -57,7 +70,6 @@ class LoginController: ObservableObject {
     /// Supprimer les informations dans UserDefault
     func deleteLoginInfos() {
         UserDefaults.standard.removeObject(forKey: "user")
-        print("Delete success")
     }
     /// Déconnecter l'utilisateur actuel
     func logout() {

@@ -10,12 +10,14 @@ import SQLite3
 
 /// Structure d'un entrainement
 struct WorkoutModel: Identifiable, SQLConvertable, InitializableFromSQLITE{
-    var id: Int = -1/// Identifiant du programme
+    var id: Int = -1 /// Identifiant du programme
+    var clientId: Int = -1 /// Id du client
     var name: String = "" /// Nom de l'entrainement
     var exerciseList: [ExerciseModel] = [] /// Liste d'exercises
     var day: Int = 0 /// Jour de la semaine en Int
     
-    init(name: String, exerciceList: [ExerciseModel], day: Int) {
+    init(clientId: Int, name: String, exerciceList: [ExerciseModel], day: Int) {
+        self.clientId = clientId
         self.name = name
         self.exerciseList = exerciceList
         self.day = day
@@ -35,8 +37,10 @@ struct WorkoutModel: Identifiable, SQLConvertable, InitializableFromSQLITE{
             case 1:
                 self.id = Int(sqlite3_column_int(pointer, Int32(i)))
             case 2:
-                self.name = String(cString: sqlite3_column_text(pointer, Int32(i))!)
+                self.clientId = Int(sqlite3_column_int(pointer, Int32(i)))
             case 3:
+                self.name = String(cString: sqlite3_column_text(pointer, Int32(i))!)
+            case 4:
                 self.day = Int(sqlite3_column_int(pointer, Int32(i)))
             default:
                 break

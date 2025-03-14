@@ -64,7 +64,7 @@ class ClientProgressController: ObservableObject {
     }
     
     func deleteObjective(_ id: Int) {
-        let success = db.updateData(request: Request.update(table: DbTable.objectives, columns: ["is_deleted"], condition: "WHERE id = ?"), params: [id, true])
+        let success = db.updateData(request: Request.update(table: DbTable.objectives, columns: ["is_deleted"], condition: "WHERE id = ?"), params: [true, id])
         if success {
             objectives.remove(at: objectives.firstIndex(of: objectives.first(where: { $0.dbId == id })!)!)
         }
@@ -87,5 +87,5 @@ class ClientProgressController: ObservableObject {
         
         return true
     }
-        
+    
 }

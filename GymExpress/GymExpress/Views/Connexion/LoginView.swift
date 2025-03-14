@@ -44,7 +44,7 @@ struct LoginView: View {
                                 Divider()
                                 VStack(alignment: .center, spacing: 20) {
                                     TextFieldStyle(title: "Adresse courriel", text: $viewModel.email, isTyping: $isTypingEmail)
-                                        
+                                    
                                     SecureField("Mot de passe", text: $viewModel.password)
                                         .padding()
                                         .frame(maxWidth: 350)
@@ -55,7 +55,7 @@ struct LoginView: View {
                                                 .stroke(Color.main, lineWidth: isTypingPassword ? 4 : 1)
                                         )
                                         .focused($isTypingPassword)
-     
+                                    
                                     Text(errorMessage)
                                         .foregroundStyle(Color.red)
                                     
@@ -68,7 +68,7 @@ struct LoginView: View {
                                                 if viewModel.currentUser != nil {
                                                     isNavigating = true
                                                 }
-        
+                                                
                                                 if self.isRememberMe {
                                                     viewModel.saveLoginInfos()
                                                 } else {

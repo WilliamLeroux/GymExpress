@@ -18,7 +18,7 @@ struct ExercisePlanCreationView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 20)
-
+                
                 HStack(spacing: 20) {
                     GroupBox {
                         HStack {
@@ -31,7 +31,7 @@ struct ExercisePlanCreationView: View {
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
                                 .frame(maxWidth: .infinity)
-                                 
+                                
                                 ScrollView {
                                     VStack(alignment: .leading) {
                                         let exercises = exercisePlanController.exercisesByType[exercisePlanController.selectedType.rawValue] ?? []
@@ -41,8 +41,8 @@ struct ExercisePlanCreationView: View {
                                                 exercisePlanController.selectedExercise = exercise.exerciceId
                                             }) {
                                                 HStack {
-                                                    Image(systemName: exercisePlanController.selectedExercise == exercise.name ? "checkmark.circle.fill" : "circle")
-                                                        .foregroundColor(exercisePlanController.selectedExercise == exercise.name ? .blue : .gray)
+                                                    Image(systemName: exercisePlanController.selectedExercise == exercise.exerciceId ? "checkmark.circle.fill" : "circle")
+                                                        .foregroundColor(exercisePlanController.selectedExercise == exercise.exerciceId ? .main : .gray)
                                                     Text(exercise.name)
                                                         .font(.title2)
                                                 }
@@ -54,9 +54,9 @@ struct ExercisePlanCreationView: View {
                             }
                             .frame(minWidth: 300, maxWidth: 300)
                             .padding()
-
+                            
                             Divider()
-
+                            
                             VStack(alignment: .leading, spacing: 30) {
                                 
                                 ParameterField(title: "Nombre de séries", exerciseLegends: "3", text: $exercisePlanController.series)
@@ -83,7 +83,7 @@ struct ExercisePlanCreationView: View {
                             .frame(minWidth: 150, maxWidth: 150)
                         }
                     }
-
+                    
                     GroupBox {
                         ScrollView{
                             VStack {
@@ -94,7 +94,7 @@ struct ExercisePlanCreationView: View {
                                 if exercisePlanController.addedExercises.isEmpty {
                                     Text("Aucun exercice ajouté")
                                         .foregroundColor(.gray)
-                                 
+                                    
                                 } else {
                                     ForEach(exercisePlanController.addedExercises) { exercise in
                                         VStack {
@@ -138,7 +138,7 @@ struct ParameterField: View {
     var exerciseLegends : String
     @Binding var text: String
     @FocusState private var isTyping: Bool
-        
+    
     init(title: String, exerciseLegends: String ,text: Binding<String>) {
         self.title = title
         self.exerciseLegends = exerciseLegends

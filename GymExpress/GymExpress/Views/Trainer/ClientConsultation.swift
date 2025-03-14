@@ -25,7 +25,7 @@ struct ClientConsultation: View {
     @State private var isShowAppointmentSheet: Bool = false /// État d'affichage de la feuille des rendez-vous
     
     var body: some View {
-        VStack {
+        VStack { 
             HStack {
                 Button("Ajouter un client") {}
                     .buttonStyle(RoundedButtonStyle(width: 150, action: {

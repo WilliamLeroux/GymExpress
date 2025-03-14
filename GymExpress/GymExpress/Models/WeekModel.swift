@@ -11,6 +11,6 @@ import Foundation
 struct Week: Identifiable, Equatable {
     let day: String /// Jour
     let count: Int /// Nombre de présence
-
+    
     var id: String { return day } /// Identifiant
 }

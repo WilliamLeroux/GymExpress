@@ -26,10 +26,10 @@ struct ScheduleTrainer: View {
     @State private var selectedDay: Date? = nil
     @State private var selectedEvent: CalendarEvent? = nil
     @State private var showEventDetailSheet = false
-
+    
     let hourHeight = 50.0
     let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
-
+    
     var body: some View {
         HStack {
             Button(action: {}) {
@@ -38,7 +38,7 @@ struct ScheduleTrainer: View {
             .buttonStyle(RoundedButtonStyle(width: 50, height: 50, color: Color.main, action: {
                 controller.changeWeek(by: -1)
             }))
-
+            
             ScrollView(.vertical, showsIndicators: false) {
                 HStack(spacing: 0) {
                     ForEach(0..<7) { index in
@@ -85,7 +85,7 @@ struct ScheduleTrainer: View {
                                         selectedDay = nil
                                     }
                             }
-
+                            
                             ZStack(alignment: .topLeading) {
                                 VStack(alignment: .center, spacing: 0) {
                                     ForEach(6..<23) { hour in
@@ -96,7 +96,7 @@ struct ScheduleTrainer: View {
                                         .frame(height: hourHeight)
                                     }
                                 }
-
+                                
                                 ForEach(controller.eventsForDay(day), id: \.self) { event in
                                     AnyView(eventCell(event))
                                 }
@@ -104,7 +104,7 @@ struct ScheduleTrainer: View {
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 4)
-
+                        
                         if index != 6 {
                             Divider()
                         }
@@ -122,7 +122,7 @@ struct ScheduleTrainer: View {
                         .interactiveDismissDisabled(true)
                 }
             }
-
+            
             Button(action: {}) {
                 Image(systemName: "chevron.right")
             }
@@ -131,22 +131,22 @@ struct ScheduleTrainer: View {
             }))
         }
     }
-
+    
     /// Gère l'affichage d'un événement dans le calendrier
     func eventCell(_ event: CalendarEvent) -> any View {
         guard let endDate = event.endDate, let startDate = event.startDate else {
             return EmptyView()
         }
-
+        
         let duration = endDate.timeIntervalSince(startDate)
         let height = duration / 60 / 60 * hourHeight
-
+        
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: startDate)
         let minute = calendar.component(.minute, from: startDate)
         let offset = Double(hour - 7) * hourHeight
         let recurrenceText = event.recurrenceType.rawValue
-
+        
         return VStack(alignment: .leading) {
             Text("\(hour):\(String(format: "%02d", minute))")
             Text(event.title).bold()
@@ -184,7 +184,7 @@ struct EventDetailView: View {
     @StateObject private var controller = ScheduleTrainerController.shared
     @State private var showDeletionError = false
     @State private var deletionSucceeded = false
-
+    
     var body: some View {
         VStack {
             Text(event.title)
@@ -206,30 +206,31 @@ struct EventDetailView: View {
                 Button("Supprimer l'événement", role: .destructive) {}
                     .buttonStyle(RoundedButtonStyle(width: 175, height: 50,color: .red.opacity(0.8), hoveringColor: .red, action: {
                         controller.deleteEvent(event: event,
-                            onFailure: { DispatchQueue.main.async { showDeletionError = true } },
-                            onSuccess: { DispatchQueue.main.async { deletionSucceeded = true } }
+                                               onFailure: { DispatchQueue.main.async { showDeletionError = true } },
+                                               onSuccess: { DispatchQueue.main.async { deletionSucceeded = true } }
                         )
                     }))
-                .alert("Suppression impossible", isPresented: $showDeletionError) {
-                    Button("OK", role: .cancel) { }
-                } message: {
-                    Text("Cet événement n'est pas l'événement d'origine de la récurrence et ne peut pas être supprimé individuellement.")
-                }
+                    .alert("Suppression impossible", isPresented: $showDeletionError) {
+                        Button("OK", role: .cancel) { }
+                    } message: {
+                        Text("Cet événement n'est pas l'événement d'origine de la récurrence et ne peut pas être supprimé individuellement.")
+                    }
                 
                 Button("Fermer") {}
-                .buttonStyle(RoundedButtonStyle(width: 100, height: 50, action: {
-                    isPresented = false
-                }))
+                    .buttonStyle(RoundedButtonStyle(width: 100, height: 50, action: {
+                        isPresented = false
+                    }))
             }
             .padding(.top, 20)
         }
         .frame(minWidth: 350, maxHeight: 350)
         .padding()
-        .onChange(of: deletionSucceeded) { success in
-            if success {
+        .onChange(of: deletionSucceeded, initial: deletionSucceeded) { oldValue, newValue in
+            if newValue {
                 isPresented = false
             }
         }
+        
         .onDisappear {
             controller.fetchEvents()
         }

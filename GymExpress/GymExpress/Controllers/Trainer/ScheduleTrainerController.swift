@@ -12,7 +12,7 @@ class ScheduleTrainerController: ObservableObject {
     static let shared = ScheduleTrainerController()
     var dbManager: DatabaseManager = DatabaseManager.shared
     private var keyboardMonitor: Any? = nil
-        
+    
     @Published var startOfWeek: Date = Date()
     @Published var events: [CalendarEvent] = []
     
@@ -24,10 +24,10 @@ class ScheduleTrainerController: ObservableObject {
         guard let userId = LoginController.shared.currentUser?.id else {
             return
         }
-        // TODO - FIXER LE DECALAGE DANS LA BD        
+        // TODO - FIXER LE DECALAGE DANS LA BD
         if let fetchedEvents: [CalendarEvent] = dbManager.fetchDatas(request: Request.select(table: DbTable.events, columns: ["*"], condition: "WHERE start_date = ? AND is_deleted = ?"), params: [userId, false]) {
             var newEvents: [CalendarEvent] = []
-                                    
+            
             for event in fetchedEvents {
                 newEvents.append(event)
                 let occurrences = event.generateOccurrences()
@@ -51,9 +51,9 @@ class ScheduleTrainerController: ObservableObject {
             }
             return
         }
-
+        
         let success = dbManager.updateData(request: Request.update(table: DbTable.events, columns: ["is_deleted"], condition: "WHERE id = ?"), params: [true, event.id])
-
+        
         if success {
             DispatchQueue.main.async {
                 self.fetchEvents()
@@ -65,11 +65,11 @@ class ScheduleTrainerController: ObservableObject {
             }
         }
     }
-
+    
     func addEvent(event: CalendarEvent, startDate: Date) {
         var newEvents = events
         var tempEvent = event
-                
+        
         tempEvent.userId = LoginController.shared.currentUser?.id ?? -1
         newEvents.append(tempEvent)
         
@@ -105,7 +105,7 @@ class ScheduleTrainerController: ObservableObject {
             return event
         }
     }
-
+    
     func removeKeyboardListener() {
         if let monitor = keyboardMonitor {
             NSEvent.removeMonitor(monitor)

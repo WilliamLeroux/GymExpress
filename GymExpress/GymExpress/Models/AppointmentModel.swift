@@ -37,7 +37,7 @@ struct AppointmentModel: Identifiable, SQLConvertable, InitializableFromSQLITE {
         
         let columnCount = sqlite3_column_count(pointer)
         var columnIndex: Int32 = 0
-
+        
         for i in 0..<columnCount {
             columnIndex = Int32(DatabaseManager.shared.tableMaps[6].firstIndex(of: String(cString: sqlite3_column_name(pointer, i)!)) ?? 0)
             switch columnIndex {
@@ -65,9 +65,9 @@ struct AppointmentModel: Identifiable, SQLConvertable, InitializableFromSQLITE {
                     self.date = nil
                 }
             default:
-                #if DEBUG
-                    print("Unknown column, \(columnIndex)")
-                #endif
+#if DEBUG
+                print("Unknown column, \(columnIndex)")
+#endif
             }
         }
     }

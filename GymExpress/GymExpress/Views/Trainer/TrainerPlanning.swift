@@ -7,20 +7,19 @@
 
 import SwiftUI
 
-
 struct TrainingPlaningView: View {
     @ObservedObject var controller = TrainerPlanningController.shared
     @ObservedObject var exercisePlanController = ExercisePlanController.shared
-
+    
     @State private var lastName: String = "" /// Nom de famille saisi pour la recherche
     @State private var firstName: String = "" /// Prénom saisi pour la recherche
     @FocusState private var isTypingLastName: Bool /// Indique si l'utilisateur est en train de taper le nom de famille
     @FocusState private var isTypingFirstName: Bool /// Indique si l'utilisateur est en train de taper le prénom
     
     @State private var selectedExercises: [ExerciseModel] = []
-
+    
     let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"] /// Jours de la semaine pour la planification
-
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -32,7 +31,7 @@ struct TrainingPlaningView: View {
                             VStack(alignment: .center, spacing: 8) {
                                 TextFieldStyle(title: "Entrez le nom", text: $lastName, isTyping: $isTypingLastName)
                             }
-
+                            
                             VStack(alignment: .center, spacing: 8) {
                                 TextFieldStyle(title: "Entrez le prénom", text: $firstName, isTyping: $isTypingFirstName)
                             }
@@ -49,7 +48,7 @@ struct TrainingPlaningView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .center)
-
+                        
                         VStack(alignment: .leading, spacing: 8) {
                             if controller.selectedClients.isEmpty {
                                 Text("Aucun client trouvé")
@@ -90,7 +89,7 @@ struct TrainingPlaningView: View {
                                 .padding(.bottom, 10)
                             
                             let days = weekDays
-
+                            
                             HStack(alignment: .top, spacing: 10) {
                                 ForEach(days, id: \.self) { day in
                                     DayColumn(day: day)
@@ -110,40 +109,40 @@ struct TrainingPlaningView: View {
 struct DayColumn: View {
     @ObservedObject var controller = TrainerPlanningController.shared
     @StateObject private var exercisePlanController = ExercisePlanController.shared
-
+    
     let day: String
     @State private var isDeleteMode: Bool = false
     @State private var showExercisePlan: Bool = false
-
+    
     private var hasWorkout: Bool {
         let dayIndex = getDayIndex(day)
         return controller.workouts.contains { $0.day == dayIndex }
     }
-
+    
     private func getDayIndex(_ day: String) -> Int {
         let weekDays = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
         return weekDays.firstIndex(of: day) ?? 0
     }
-
+    
     var body: some View {
         VStack {
             Text(day)
                 .font(.system(size: 14, weight: .medium))
                 .padding(.bottom, 5)
-
+            
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(hasWorkout ? Color.green : Color.red, lineWidth: 4)
                     .frame(width: 105, height: 170)
                     .animation(.easeInOut, value: hasWorkout)
-
+                
                 Image(systemName: "dumbbell.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 50, height: 50)
                     .foregroundColor(hasWorkout ? Color.green : Color.red)
             }
-
+            
             HStack(spacing: 15) {
                 Button(action: {}) {
                     Image(systemName: "pencil")
@@ -164,7 +163,7 @@ struct DayColumn: View {
                             }
                             .buttonStyle(RoundedButtonStyle(width: 125, height: 50, padding: 2, action: saveWorkout))
                             .padding()
-
+                            
                             Button(action: {}) {
                                 Text("Annuler")
                                     .font(.headline)
@@ -178,7 +177,7 @@ struct DayColumn: View {
                     }
                     .frame(minWidth: 900, minHeight: 750)
                 }
-
+                
                 Button(action: {}) {
                     Image(systemName: "trash")
                         .foregroundColor(.black)
@@ -193,31 +192,32 @@ struct DayColumn: View {
         }
         .frame(maxWidth: .infinity)
     }
-
+    
     func saveWorkout() {
         guard let selectedClient = controller.selectedClient else {
             return
         }
-
+        
         let exercises = exercisePlanController.getExerciseModels()
-
+        
         if exercises.isEmpty {
             return
         }
-
+        
         let dayIndex = getDayIndex(day)
-
+        
         controller.addWorkout(
             for: selectedClient,
             exercises: exercises,
             day: dayIndex
         )
+        
         showExercisePlan.toggle()
     }
     
     func deleteWorkout() {
         let dayIndex = getDayIndex(day)
-
+        
         if let workoutToDelete = controller.workouts.first(where: { $0.day == dayIndex }) {
             controller.deleteWorkout(workoutToDelete)
         } else {}

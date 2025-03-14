@@ -54,7 +54,7 @@ class AppointmentController: ObservableObject {
         let calendar = Calendar.current
         
         let components = calendar.dateComponents([.year, .month, .day], from: date)
-
+        
         var dateComp = components
         dateComp.hour = calendar.component(.hour, from: time)
         dateComp.minute = calendar.component(.minute, from: time)
@@ -65,6 +65,10 @@ class AppointmentController: ObservableObject {
         if success {
             appointments[selectedEditIndex].date = startDate
         }
+    }
+    
+    func refresh() {
+        loadInitialData()
     }
     
 }

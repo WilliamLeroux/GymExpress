@@ -26,17 +26,18 @@ struct DashboardClientView: View {
                                 .scaledToFit()
                                 .scaleEffect(0.60),
                                      action: {
-                                        self.navController.selectedIndex = NavigationItemClient.progress.rawValue
-                                    }
+                                self.navController.selectedIndex = NavigationItemClient.progress.rawValue
+                            }
                             )
-                            smallBox(title: "Gérer mon abonnement", view:
+                            smallBox(title: "Gérer mon abonnement" ,view:
                                         Image(.subscription)
                                             .resizable()
                                             .scaledToFit()
-                                            .scaleEffect(0.60),
+                                            .scaleEffect(0.60)
+                                            .foregroundStyle(getMemberShipColor(membershipGrade: controller.currentMembership!.grade)),
                                      action: {
-                                        self.navController.selectedIndex = NavigationItemClient.subscription.rawValue
-                                    }
+                                self.navController.selectedIndex = NavigationItemClient.subscription.rawValue
+                            }
                             )
                         }
                         .frame(width: 400)
@@ -44,12 +45,12 @@ struct DashboardClientView: View {
                         HStack(){
                             smallBox(title: "Rendez-vous", view:
                                         Image(.appointment)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .scaleEffect(0.60),
+                                .resizable()
+                                .scaledToFit()
+                                .scaleEffect(0.60),
                                      action: {
-                                        self.navController.selectedIndex = NavigationItemClient.appointment.rawValue
-                                    }
+                                self.navController.selectedIndex = NavigationItemClient.appointment.rawValue
+                            }
                             )
                         }
                         .frame(width: 410, alignment: .leading)
@@ -86,8 +87,8 @@ extension DashboardClientView {
                     HStack {
                         GroupBox(label:
                                     Text("\(controller.calendar.weekdaySymbols[day])")
-                                .fontWeight(.semibold)
-                                .font(.system(size: 9))
+                            .fontWeight(.semibold)
+                            .font(.system(size: 9))
                         ) {
                             HStack(spacing: 0) {
                                 if controller.frequence[day] {
@@ -122,24 +123,24 @@ extension DashboardClientView {
                     Label("Aucun entraînment aujourd'hui", systemImage: "checkmark")
                         .labelStyle(.titleOnly)
                 } else {
-                        ForEach(0..<workout.count, id: \.self) { index in
-                            HStack {
-                                Label(workout[index], systemImage: "")
-                                    .labelStyle(.titleOnly)
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
-                                Spacer()
-                                    .frame(width: geometry.frame(in: .local).width * 0.5)
-                                Label("45 kg", systemImage: "")
-                                    .labelStyle(.titleOnly)
-                                    .font(.caption)
-                            }
-                            
-                            if index != workout.count - 1 {
-                                Divider()
-                                    .frame(width: geometry.frame(in: .local).width * 0.7)
-                            }
+                    ForEach(0..<workout.count, id: \.self) { index in
+                        HStack {
+                            Label(workout[index], systemImage: "")
+                                .labelStyle(.titleOnly)
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                            Spacer()
+                                .frame(width: geometry.frame(in: .local).width * 0.5)
+                            Label("45 kg", systemImage: "")
+                                .labelStyle(.titleOnly)
+                                .font(.caption)
                         }
+                        
+                        if index != workout.count - 1 {
+                            Divider()
+                                .frame(width: geometry.frame(in: .local).width * 0.7)
+                        }
+                    }
                 }
                 
             }
@@ -147,4 +148,3 @@ extension DashboardClientView {
         }
     }
 }
-
